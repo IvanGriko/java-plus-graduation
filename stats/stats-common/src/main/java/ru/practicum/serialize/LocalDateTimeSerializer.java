@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
         }
 
         @Autowired
-        public void setFormatter(@Value("${my-area-guide.datetime.format}") String dateTimeFormat) {
+        public void setFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
             this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
         }
 

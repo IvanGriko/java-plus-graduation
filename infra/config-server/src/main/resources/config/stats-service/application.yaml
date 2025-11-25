@@ -17,8 +17,9 @@ management:
   metrics.export.prometheus.enabled: true
   info.env.enabled: true
 
-my-area-guide:
-  datetime.format: yyyy-MM-dd HH:mm:ss
+explore-with-me:
+  datetime:
+    format: "yyyy-MM-dd'T'HH:mm:ss"
 
 server:
   port: 9090
