@@ -1,0 +1,3 @@
+my-area-guide:
+  datetime:
+    format: "yyyy-MM-dd'T'HH:mm:ss"
