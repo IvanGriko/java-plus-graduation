@@ -17,7 +17,7 @@ management:
   metrics.export.prometheus.enabled: true
   info.env.enabled: true
 
-explore-with-me:
+my-area-guide:
   datetime.format: yyyy-MM-dd HH:mm:ss
 
 server:

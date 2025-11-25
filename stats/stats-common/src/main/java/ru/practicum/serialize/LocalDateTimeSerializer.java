@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
     @Component
     public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
         private DateTimeFormatter formatter;
