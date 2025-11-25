@@ -10,20 +10,21 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-    @Component
-    public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
-        private DateTimeFormatter formatter;
-        public LocalDateTimeSerializer() {
-            super(LocalDateTime.class);
-        }
+@Component
+public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
+    private DateTimeFormatter formatter;
 
-        @Autowired
-        public void setFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
-            this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-        }
-
-        @Override
-        public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-            jsonGenerator.writeString(localDateTime.format(formatter));
-        }
+    public LocalDateTimeSerializer() {
+        super(LocalDateTime.class);
     }
+
+    @Autowired
+    public void setFormatter(@Value("${explore-with-me.datetime.format:yyyy-MM-dd'T'HH:mm:ss}") String dateTimeFormat) {
+        this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+    }
+
+    @Override
+    public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeString(localDateTime.format(formatter));
+    }
+}

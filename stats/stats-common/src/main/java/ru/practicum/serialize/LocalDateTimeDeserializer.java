@@ -11,21 +11,22 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-    @Component
-    public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
-        private DateTimeFormatter formatter;
-        public LocalDateTimeDeserializer() {
-            super(LocalDateTime.class);
-        }
+@Component
+public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
+    private DateTimeFormatter formatter;
 
-        @Autowired
-        public void setFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
-            this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-        }
-
-        @Override
-        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
-            String date = jsonParser.getText();
-            return LocalDateTime.parse(date, formatter);
-        }
+    public LocalDateTimeDeserializer() {
+        super(LocalDateTime.class);
     }
+
+    @Autowired
+    public void setFormatter(@Value("${explore-with-me.datetime.format:yyyy-MM-dd'T'HH:mm:ss}") String dateTimeFormat) {
+        this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+    }
+
+    @Override
+    public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+        String date = jsonParser.getText();
+        return LocalDateTime.parse(date, formatter);
+    }
+}
