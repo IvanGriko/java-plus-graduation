@@ -17,9 +17,11 @@ management:
 
 explore-with-me:
   stat-server.discovery.name: stats-server
-  datetime.format: yyyy-MM-dd HH:mm:ss
-  main.datetime.format: yyyy-MM-dd HH:mm:ss
-  stat.datetime.format: yyyy-MM-dd HH:mm:ss
+  datetime:
+    format: "yyyy-MM-dd'T'HH:mm:ss"
+#  datetime.format: yyyy-MM-dd HH:mm:ss
+#  main.datetime.format: yyyy-MM-dd HH:mm:ss
+#  stat.datetime.format: yyyy-MM-dd HH:mm:ss
 
 server:
   port: 0
