@@ -13,7 +13,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
     private DateTimeFormatter formatter;
 
-    @Value("${explore-with-me.datetime.format}")
+    @Value("${explore-with-me.datetime.format:yyyy-MM-dd'T'HH:mm:ss}")
     public void setFormatter(String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
