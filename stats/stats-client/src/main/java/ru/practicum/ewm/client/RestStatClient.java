@@ -40,7 +40,7 @@ public class RestStatClient implements StatClient {
             DiscoveryClient discoveryClient,
             @Value("${explore-with-me.stat-server.discovery.name:}") String name,
             @Value("${explore-with-me.stat-server.url:http://localhost:9090}") String url,
-            @Value("${explore-with-me.stat.datetime.format}") String format
+            @Value("${explore-with-me.stats.datetime.format}") String format
     ) {
         this.discoveryClient = discoveryClient;
         this.name = name;
