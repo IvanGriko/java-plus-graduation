@@ -11,7 +11,7 @@ logging:
     org.springframework.cloud.gateway: TRACE
 
 server:
-  port: 8080
+  port: 8081
   shutdown: graceful
 
 spring:
