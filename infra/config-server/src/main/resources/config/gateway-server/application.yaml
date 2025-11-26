@@ -1,5 +1,6 @@
 management:
-  endpoints.web.exposure.include: health,info,metrics,gateway
+  endpoints.web.exposure.include: "*"
+#  endpoints.web.exposure.include: health,info,metrics,gateway
   endpoint.health.show-details: always
   endpoint.gateway.access: read-only
   prometheus.metrics.export.enabled: true
