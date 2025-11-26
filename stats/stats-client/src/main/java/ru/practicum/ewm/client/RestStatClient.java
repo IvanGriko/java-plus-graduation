@@ -1,5 +1,7 @@
 package ru.practicum.ewm.client;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -27,14 +29,15 @@ import java.util.Random;
 
 @Slf4j
 @Component
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RestStatClient implements StatClient {
-    private final DiscoveryClient discoveryClient;
-    private final Random random = new Random();
-    private final DateTimeFormatter formatter;
-    private final String name;
-    private String statUrl;
-    private RestClient restClient;
-    private boolean doRenewingServerUrl = false;
+    final DiscoveryClient discoveryClient;
+    final Random random = new Random();
+    final DateTimeFormatter formatter;
+    final String name;
+    String statUrl;
+    RestClient restClient;
+    boolean doRenewingServerUrl = false;
 
     public RestStatClient(
             DiscoveryClient discoveryClient,
@@ -52,7 +55,6 @@ public class RestStatClient implements StatClient {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         if (name == null || name.isBlank()) return;
-
         FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
         fixedBackOffPolicy.setBackOffPeriod(5000L);
         MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy();
@@ -60,7 +62,6 @@ public class RestStatClient implements StatClient {
         RetryTemplate retryTemplate = new RetryTemplate();
         retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
         retryTemplate.setRetryPolicy(retryPolicy);
-
         try {
             ServiceInstance instance = retryTemplate.execute(retryContext -> {
                 List<ServiceInstance> instances =  discoveryClient.getInstances(name);
@@ -73,7 +74,6 @@ public class RestStatClient implements StatClient {
         } catch (Exception e) {
             log.warn("Discovery server error: {}", e.getMessage());
         }
-
         doRenewingServerUrl = true;
     }
 

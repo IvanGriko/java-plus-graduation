@@ -2,6 +2,8 @@ package ru.practicum.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.user.*;
+import ru.practicum.user.dto.NewUserRequestDto;
+import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
+import ru.practicum.user.service.UserService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,16 +29,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class UserServiceIntegrationTest {
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @PersistenceContext
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
     @BeforeEach
     void setUp() {
@@ -357,5 +364,4 @@ class UserServiceIntegrationTest {
         }
         return users;
     }
-
 }

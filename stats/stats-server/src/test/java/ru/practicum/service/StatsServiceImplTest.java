@@ -1,5 +1,7 @@
 package ru.practicum.service;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.EventHitDto;
 import ru.practicum.EventStatsResponseDto;
 import ru.practicum.model.Stat;
-import ru.practicum.repository.StatServiceRepository;
+import ru.practicum.repository.StatsServiceRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -22,18 +24,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class StatsServiceImplTest {
 
     @Autowired
-    private StatsService statsService;
+    StatsService statsService;
 
     @Autowired
-    private StatServiceRepository statServiceRepository;
+    StatsServiceRepository statsServiceRepository;
 
-    private EventHitDto eventHitDto1;
-    private EventHitDto eventHitDto2;
-    private EventHitDto eventHitDto3;
-    private EventHitDto eventHitDto4;
+    EventHitDto eventHitDto1;
+    EventHitDto eventHitDto2;
+    EventHitDto eventHitDto3;
+    EventHitDto eventHitDto4;
 
     @BeforeEach
     void setUp() {
@@ -74,7 +77,7 @@ class StatsServiceImplTest {
         statsService.hit(eventHitDto1);
 
         // Then
-        List<Stat> savedStats = statServiceRepository.findAll();
+        List<Stat> savedStats = statsServiceRepository.findAll();
         assertEquals(1, savedStats.size());
 
         Stat savedStat = savedStats.get(0);
@@ -92,7 +95,7 @@ class StatsServiceImplTest {
         statsService.hit(eventHitDto3);
 
         // Then
-        List<Stat> savedStats = statServiceRepository.findAll();
+        List<Stat> savedStats = statsServiceRepository.findAll();
         assertEquals(3, savedStats.size());
     }
 
@@ -354,5 +357,4 @@ class StatsServiceImplTest {
         assertEquals("/events/1", statsArray[1].getUri());
         assertEquals(1L, statsArray[1].getHits());
     }
-
 }

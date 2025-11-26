@@ -1,0 +1,50 @@
+package ru.practicum.user.controller;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.user.service.UserService;
+import ru.practicum.user.dto.NewUserRequestDto;
+import ru.practicum.user.dto.UserDto;
+
+import java.util.Collection;
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class UserController {
+
+    UserService userService;
+
+    @PostMapping("/admin/users")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto createUser(
+            @RequestBody @Valid NewUserRequestDto newUserRequestDto
+    ) {
+        return userService.create(newUserRequestDto);
+    }
+
+    @DeleteMapping("/admin/users/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(
+            @PathVariable @Positive(message = "User Id not valid") Long userId
+    ) {
+        userService.delete(userId);
+    }
+
+    @GetMapping("/admin/users")
+    public Collection<UserDto> getUsers(
+            @RequestParam(required = false) List<Long> ids,
+            @RequestParam(defaultValue = "0") Integer from,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return userService.findByIdListWithOffsetAndLimit(ids, from, size);
+    }
+}

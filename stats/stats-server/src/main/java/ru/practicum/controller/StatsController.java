@@ -1,7 +1,9 @@
 package ru.practicum.controller;
 
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,10 @@ import java.util.List;
 @RequestMapping
 @RequiredArgsConstructor
 @Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StatsController {
 
-    private final StatsService statsService;
+    StatsService statsService;
 
     @PostMapping("/hit")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -38,5 +41,4 @@ public class StatsController {
     ) {
         return statsService.getStats(start, end, uris, unique);
     }
-
 }

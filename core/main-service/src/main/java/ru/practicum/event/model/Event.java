@@ -3,11 +3,11 @@ package ru.practicum.event.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.category.Category;
-import ru.practicum.comment.Comment;
+import ru.practicum.category.model.Category;
+import ru.practicum.comment.model.Comment;
 import ru.practicum.event.dto.State;
-import ru.practicum.request.Request;
-import ru.practicum.user.User;
+import ru.practicum.request.model.Request;
+import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -70,9 +70,9 @@ public class Event {
     LocalDateTime createdOn;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private List<Request> requests;
+    List<Request> requests;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    List<Comment> comments;
 
 }

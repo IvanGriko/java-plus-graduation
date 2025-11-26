@@ -32,17 +32,12 @@ public class StatClientTest {
                 .build();
         LocalDateTime start = LocalDateTime.now().minusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(1);
-
         statClient.hit(hit);
-
         Collection<EventStatsResponseDto> eventStatsResponseDtoCollection = statClient.stats(start, end, null, true);
         System.out.println(eventStatsResponseDtoCollection.size() + " уникальных:");
         for (EventStatsResponseDto ev : eventStatsResponseDtoCollection) System.out.println(ev);
-
         Collection<EventStatsResponseDto> eventStatsResponseDtoCollection2 = statClient.stats(start, end, null, false);
         System.out.println(eventStatsResponseDtoCollection2.size() + " всего:");
         for (EventStatsResponseDto ev : eventStatsResponseDtoCollection2) System.out.println(ev);
-
     }
-
 }

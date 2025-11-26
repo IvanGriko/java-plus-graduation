@@ -28,5 +28,4 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
             throw new IllegalArgumentException("Failed to convert string " + source + " to LocalDateTime");
         }
     }
-
 }

@@ -2,6 +2,8 @@ package ru.practicum.mockmvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,24 +32,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Disabled("Выполнять только при запущенных Discovery and Config servers")
 @WebMvcTest(StatsController.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class StatsControllerTest {
 
-    private final String invalidDateTimeFormat = "2023-01-01T00:00:00";
-    private final String validApp = "ewm-main-service";
-    private final String validUri = "/events/1";
-    private final String validIp = "192.168.1.1";
-    private String validStartFormat;
-    private String validEndFormat;
-    @Autowired
-    private MockMvc mockMvc;
+    final String invalidDateTimeFormat = "2023-01-01T00:00:00";
+    final String validApp = "ewm-main-service";
+    final String validUri = "/events/1";
+    final String validIp = "192.168.1.1";
+    String validStartFormat;
+    String validEndFormat;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @MockitoBean
-    private StatsService statsService;
+    StatsService statsService;
 
-    private DateTimeFormatter formatter;
+    DateTimeFormatter formatter;
 
     @Value("${explore-with-me.datetime.format}")
     public void setFormatter(String dateTimeFormat) {
@@ -59,9 +63,6 @@ class StatsControllerTest {
         validStartFormat = LocalDateTime.of(2023, 1, 1, 0, 0, 0).format(formatter);
         validEndFormat = LocalDateTime.of(2023, 1, 2, 0, 0, 0).format(formatter);
     }
-
-
-    // ==================== POST /hit Tests ====================
 
     @Test
     void hit_ValidEventHitDto_ShouldReturnCreated() throws Exception {

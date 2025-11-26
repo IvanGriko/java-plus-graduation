@@ -13,7 +13,6 @@
     <artifactId>stats-server</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>ru.practicum</groupId>
             <artifactId>stats-common</artifactId>
@@ -27,7 +26,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -65,7 +63,6 @@
             <version>1.6.1</version>
             <scope>provided</scope>
         </dependency>
-        <!-- CLOUD DEPS -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -82,7 +79,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -112,8 +108,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
-
 </project>

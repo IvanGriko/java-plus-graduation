@@ -22,7 +22,7 @@ explore-with-me:
     format: "yyyy-MM-dd'T'HH:mm:ss"
 
 server:
-  port: 9090
+  port: 0
   shutdown: graceful
 
 spring:

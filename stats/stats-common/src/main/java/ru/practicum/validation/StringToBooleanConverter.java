@@ -14,5 +14,4 @@ public class StringToBooleanConverter implements Converter<String, Boolean> {
 
         throw new IllegalArgumentException("Failed to convert string " + source + " to Boolean");
     }
-
 }
