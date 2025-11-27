@@ -27,6 +27,7 @@
 		<stats-client.version>0.0.1-SNAPSHOT</stats-client.version>
 		<spring-cloud-dependencies.version>2025.0.0</spring-cloud-dependencies.version>
 		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+		<maven.compiler.release>8</maven.compiler.release>
 	</properties>
 
 	<dependencyManagement>
