@@ -24,5 +24,5 @@ spring:
               uri: lb://main-service
               predicates:
                 - Path=/**
-              filters:
-                - PrefixPath=/api/v1
+#              filters:
+#                - PrefixPath=/api/v1
