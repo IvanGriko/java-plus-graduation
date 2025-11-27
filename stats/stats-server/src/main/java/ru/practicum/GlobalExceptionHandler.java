@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,17 +40,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
-        String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
-        Object target = e.getBindingResult().getTarget();
-        log.debug("VALIDATION FAILED: {} for {}", errorMessage, target);
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.BAD_REQUEST)
-                .error("Validation Failed")
-                .message(errorMessage)
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        BindingResult bindingResult = e.getBindingResult();
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessages = new StringBuilder();
+            bindingResult.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append("\n"));
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .timestamp(Instant.now())
+                    .status(HttpStatus.BAD_REQUEST)
+                    .error("Validation Failed")
+                    .message(errorMessages.toString())
+                    .path(request.getRequestURI())
+                    .build();
+            log.debug("VALIDATION FAILED: {}", errorMessages.toString());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @ExceptionHandler({

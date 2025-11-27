@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -38,16 +39,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
-        String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
-        Object target = e.getBindingResult().getTarget();
-        log.debug("VALIDATION FAILED: {} for {}", errorMessage, target);
-        ApiError apiError = ApiError.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .reason("Validation Failed")
-                .message(errorMessage)
-                .timestamp(LocalDateTime.now())
-                .build();
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        BindingResult bindingResult = e.getBindingResult();
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            Object target = bindingResult.getTarget();
+            log.debug("VALIDATION FAILED: {} for {}", errorMessage, target);
+            ApiError apiError = ApiError.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .reason("Validation Failed")
+                    .message(errorMessage)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+            return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ExceptionHandler({
