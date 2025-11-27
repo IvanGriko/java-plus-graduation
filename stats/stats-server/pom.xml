@@ -94,6 +94,7 @@
                             <version>1.6.1</version>
                         </path>
                     </annotationProcessorPaths>
+                    <release>17</release>
                 </configuration>
             </plugin>
             <plugin>
