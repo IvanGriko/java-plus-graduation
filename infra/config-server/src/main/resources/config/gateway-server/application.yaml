@@ -1,5 +1,5 @@
 management:
-  endpoints.web.exposure.include: "*"
+  endpoints.web.exposure.include: health,info,metrics,gateway
   endpoint.health.show-details: always
   endpoint.gateway.access: read-only
   prometheus.metrics.export.enabled: true
@@ -11,7 +11,7 @@ logging:
     org.springframework.cloud.gateway: TRACE
 
 server:
-  port: 8081
+  port: 8080
   shutdown: graceful
 
 spring:
@@ -20,9 +20,8 @@ spring:
       server:
         webflux:
           routes:
+
             - id: main-service
               uri: lb://main-service
               predicates:
                 - Path=/**
-              filters:
-                - PrefixPath=/api/v1

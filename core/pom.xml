@@ -15,7 +15,6 @@
 
     <modules>
         <module>main-service</module>
-        <module>main-service</module>
     </modules>
 
 </project>
