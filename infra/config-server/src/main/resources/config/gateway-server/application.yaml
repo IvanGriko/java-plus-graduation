@@ -1,3 +1,18 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: main-service
+              uri: lb://main-service
+              predicates:
+                - Path=/**
+
+server:
+  port: 8080
+  shutdown: graceful
+
 management:
   endpoints.web.exposure.include: health,info,metrics,gateway
   endpoint.health.show-details: always
@@ -9,19 +24,3 @@ logging:
   level:
     root: INFO
     org.springframework.cloud.gateway: TRACE
-
-server:
-  port: 8080
-  shutdown: graceful
-
-spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-
-            - id: main-service
-              uri: lb://main-service
-              predicates:
-                - Path=/**

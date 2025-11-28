@@ -58,5 +58,4 @@ public class CategoryAdminController {
                 .status(HttpStatus.OK)
                 .body(categoryAdminService.updateCategory(catId, categoryDto));
     }
-
 }

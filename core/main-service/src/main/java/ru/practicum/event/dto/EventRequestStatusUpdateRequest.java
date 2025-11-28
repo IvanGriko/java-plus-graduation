@@ -1,14 +1,17 @@
 package ru.practicum.event.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventRequestStatusUpdateRequest {
 
-    private List<Integer> requestIds;
+    List<Integer> requestIds;
 
-    private State state;
+    State state;
 
 }

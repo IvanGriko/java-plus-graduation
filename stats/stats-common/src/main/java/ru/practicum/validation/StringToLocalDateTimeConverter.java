@@ -21,12 +21,10 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
     @Override
     public LocalDateTime convert(String source) {
         if (source == null || source.isEmpty()) return null;
-
         try {
             return LocalDateTime.parse(source, formatter);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Failed to convert string " + source + " to LocalDateTime");
         }
     }
-
 }

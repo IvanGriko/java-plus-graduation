@@ -20,25 +20,17 @@ public class UserController {
 
     private final UserService userService;
 
-    // MODIFY OPS
-
     @PostMapping("/admin/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(
-            @RequestBody @Valid NewUserRequestDto newUserRequestDto
-    ) {
+    public UserDto createUser(@RequestBody @Valid NewUserRequestDto newUserRequestDto) {
         return userService.create(newUserRequestDto);
     }
 
     @DeleteMapping("/admin/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(
-            @PathVariable @Positive(message = "User Id not valid") Long userId
-    ) {
+    public void deleteUser(@PathVariable @Positive(message = "User Id not valid") Long userId) {
         userService.delete(userId);
     }
-
-    // GET COLLECTION
 
     @GetMapping("/admin/users")
     public Collection<UserDto> getUsers(
@@ -48,6 +40,4 @@ public class UserController {
     ) {
         return userService.findByIdListWithOffsetAndLimit(ids, from, size);
     }
-
-
 }

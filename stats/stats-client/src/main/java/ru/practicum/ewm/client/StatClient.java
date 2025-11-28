@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface StatClient {
 
-    void hit(EventHitDto eventHitDto);
-
     Collection<EventStatsResponseDto> stats(
             LocalDateTime start,
             LocalDateTime end,
             List<String> uris,
             Boolean unique
     );
+
+    void hit(EventHitDto eventHitDto);
 
 }

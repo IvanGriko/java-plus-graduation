@@ -1,6 +1,8 @@
 package ru.practicum.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,29 +26,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Disabled("Выполнять только при запущенных Discovery and Config servers")
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @MockitoBean
-    private UserService userService;
-
-    // CREATE USER TESTS
+    UserService userService;
 
     @Test
     void createUser_WithValidData_ReturnsCreatedUser() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("test@example.com")
                 .name("Test User")
                 .build();
-
         UserDto expectedUser = UserDto.builder()
                 .id(1L)
                 .email("test@example.com")
@@ -54,8 +53,6 @@ class UserControllerTest {
                 .build();
 
         when(userService.create(any(NewUserRequestDto.class))).thenReturn(expectedUser);
-
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -69,7 +66,6 @@ class UserControllerTest {
 
     @Test
     void createUser_WithDuplicateEmail_ReturnsConflict() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("duplicate@example.com")
                 .name("Test User")
@@ -78,8 +74,6 @@ class UserControllerTest {
         when(userService.create(any(NewUserRequestDto.class)))
                 .thenThrow(new ConflictException("User with email duplicate@example.com already exists",
                         "Integrity constraint has been violated"));
-
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -90,13 +84,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithBlankEmail_ReturnsBadRequest() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("")
                 .name("Test User")
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -107,13 +99,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithInvalidEmail_ReturnsBadRequest() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("invalid-email")
                 .name("Test User")
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -124,13 +114,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithTooShortEmail_ReturnsBadRequest() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("a@b.c") // 5 characters, minimum is 6
                 .name("Test User")
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -141,14 +129,12 @@ class UserControllerTest {
 
     @Test
     void createUser_WithTooLongEmail_ReturnsBadRequest() throws Exception {
-        // Given
         String longEmail = "a".repeat(250) + "@example.com"; // More than 254 characters
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email(longEmail)
                 .name("Test User")
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -159,13 +145,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithBlankName_ReturnsBadRequest() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("test@example.com")
                 .name("")
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -176,13 +160,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithTooShortName_ReturnsBadRequest() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("test@example.com")
                 .name("A") // 1 character, minimum is 2
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -193,14 +175,12 @@ class UserControllerTest {
 
     @Test
     void createUser_WithTooLongName_ReturnsBadRequest() throws Exception {
-        // Given
         String longName = "A".repeat(251); // More than 250 characters
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("test@example.com")
                 .name(longName)
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -211,13 +191,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithNullEmail_ReturnsBadRequest() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email(null)
                 .name("Test User")
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -228,13 +206,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithNullName_ReturnsBadRequest() throws Exception {
-        // Given
         NewUserRequestDto requestDto = NewUserRequestDto.builder()
                 .email("test@example.com")
                 .name(null)
                 .build();
 
-        // When & Then
         mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -243,15 +219,11 @@ class UserControllerTest {
         verify(userService, never()).create(any(NewUserRequestDto.class));
     }
 
-    // DELETE USER TESTS
-
     @Test
     void deleteUser_WithValidId_ReturnsNoContent() throws Exception {
-        // Given
         Long userId = 1L;
         doNothing().when(userService).delete(userId);
 
-        // When & Then
         mockMvc.perform(delete("/admin/users/{userId}", userId))
                 .andExpect(status().isNoContent());
 
@@ -260,12 +232,10 @@ class UserControllerTest {
 
     @Test
     void deleteUser_WithNonExistentId_ReturnsNotFound() throws Exception {
-        // Given
         Long userId = 999L;
         doThrow(new NotFoundException("User with id=" + userId + " was not found"))
                 .when(userService).delete(userId);
 
-        // When & Then
         mockMvc.perform(delete("/admin/users/{userId}", userId))
                 .andExpect(status().isNotFound());
 
@@ -274,10 +244,8 @@ class UserControllerTest {
 
     @Test
     void deleteUser_WithInvalidId_ReturnsBadRequest() throws Exception {
-        // Given
         Long invalidUserId = -1L;
 
-        // When & Then
         mockMvc.perform(delete("/admin/users/{userId}", invalidUserId))
                 .andExpect(status().isBadRequest());
 
@@ -286,21 +254,16 @@ class UserControllerTest {
 
     @Test
     void deleteUser_WithZeroId_ReturnsBadRequest() throws Exception {
-        // Given
         Long invalidUserId = 0L;
 
-        // When & Then
         mockMvc.perform(delete("/admin/users/{userId}", invalidUserId))
                 .andExpect(status().isBadRequest());
 
         verify(userService, never()).delete(any(Long.class));
     }
 
-    // GET USERS TESTS
-
     @Test
     void getUsers_WithoutParameters_ReturnsDefaultPagedUsers() throws Exception {
-        // Given
         List<UserDto> expectedUsers = Arrays.asList(
                 UserDto.builder().id(1L).email("user1@example.com").name("User 1").build(),
                 UserDto.builder().id(2L).email("user2@example.com").name("User 2").build()
@@ -308,8 +271,6 @@ class UserControllerTest {
 
         when(userService.findByIdListWithOffsetAndLimit(null, 0, 10))
                 .thenReturn(expectedUsers);
-
-        // When & Then
         mockMvc.perform(get("/admin/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -325,15 +286,12 @@ class UserControllerTest {
 
     @Test
     void getUsers_WithCustomPagination_ReturnsPagedUsers() throws Exception {
-        // Given
         List<UserDto> expectedUsers = Arrays.asList(
                 UserDto.builder().id(3L).email("user3@example.com").name("User 3").build()
         );
 
         when(userService.findByIdListWithOffsetAndLimit(null, 5, 5))
                 .thenReturn(expectedUsers);
-
-        // When & Then
         mockMvc.perform(get("/admin/users")
                         .param("from", "5")
                         .param("size", "5"))
@@ -348,7 +306,6 @@ class UserControllerTest {
 
     @Test
     void getUsers_WithSpecificIds_ReturnsFilteredUsers() throws Exception {
-        // Given
         List<Long> userIds = Arrays.asList(1L, 3L);
         List<UserDto> expectedUsers = Arrays.asList(
                 UserDto.builder().id(1L).email("user1@example.com").name("User 1").build(),
@@ -357,8 +314,6 @@ class UserControllerTest {
 
         when(userService.findByIdListWithOffsetAndLimit(userIds, 0, 10))
                 .thenReturn(expectedUsers);
-
-        // When & Then
         mockMvc.perform(get("/admin/users")
                         .param("ids", "1,3"))
                 .andExpect(status().isOk())
@@ -371,11 +326,9 @@ class UserControllerTest {
 
     @Test
     void getUsers_WithEmptyResult_ReturnsEmptyList() throws Exception {
-        // Given
         when(userService.findByIdListWithOffsetAndLimit(null, 0, 10))
                 .thenReturn(Arrays.asList());
 
-        // When & Then
         mockMvc.perform(get("/admin/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
@@ -385,7 +338,6 @@ class UserControllerTest {
 
     @Test
     void getUsers_WithSingleId_ReturnsFilteredUser() throws Exception {
-        // Given
         List<Long> userIds = Arrays.asList(1L);
         List<UserDto> expectedUsers = Arrays.asList(
                 UserDto.builder().id(1L).email("user1@example.com").name("User 1").build()
@@ -393,8 +345,6 @@ class UserControllerTest {
 
         when(userService.findByIdListWithOffsetAndLimit(userIds, 0, 10))
                 .thenReturn(expectedUsers);
-
-        // When & Then
         mockMvc.perform(get("/admin/users")
                         .param("ids", "1"))
                 .andExpect(status().isOk())
@@ -408,13 +358,10 @@ class UserControllerTest {
 
     @Test
     void getUsers_WithNonExistentIds_ReturnsEmptyList() throws Exception {
-        // Given
         List<Long> userIds = Arrays.asList(999L, 1000L);
 
         when(userService.findByIdListWithOffsetAndLimit(userIds, 0, 10))
                 .thenReturn(Arrays.asList());
-
-        // When & Then
         mockMvc.perform(get("/admin/users")
                         .param("ids", "999,1000"))
                 .andExpect(status().isOk())
@@ -422,5 +369,4 @@ class UserControllerTest {
 
         verify(userService).findByIdListWithOffsetAndLimit(userIds, 0, 10);
     }
-
 }

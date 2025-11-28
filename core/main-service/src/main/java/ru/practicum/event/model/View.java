@@ -2,6 +2,7 @@ package ru.practicum.event.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -9,19 +10,20 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "views")
 public class View {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    Long id;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    private Event event;
+    Event event;
 
     @Column(name = "ip", length = 15, nullable = false)
-    private String ip;
+    String ip;
 
 }

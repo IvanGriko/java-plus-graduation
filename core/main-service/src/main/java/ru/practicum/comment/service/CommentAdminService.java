@@ -15,4 +15,5 @@ public interface CommentAdminService {
     CommentDto approveComment(Long comId);
 
     CommentDto rejectComment(Long comId);
+
 }

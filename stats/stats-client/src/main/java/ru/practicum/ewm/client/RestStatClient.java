@@ -1,5 +1,7 @@
 package ru.practicum.ewm.client;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -26,19 +28,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Component
 public class RestStatClient implements StatClient {
 
-    private final DiscoveryClient discoveryClient;
-    private final Random random = new Random();
-    private final DateTimeFormatter formatter;
-    private final String name;
-
-    private String statUrl;
-    private RestClient restClient;
-    private boolean doRenewingServerUrl = false;
+    RestClient restClient;
+    final String name;
+    final DiscoveryClient discoveryClient;
+    final Random random = new Random();
+    final DateTimeFormatter formatter;
+    volatile String statUrl;
+    boolean doRenewingServerUrl = false;
 
     public RestStatClient(
             DiscoveryClient discoveryClient,
@@ -54,89 +55,182 @@ public class RestStatClient implements StatClient {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void init() {
+    public void initializeStatUrl() {
         if (name == null || name.isBlank()) return;
-
-        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-        fixedBackOffPolicy.setBackOffPeriod(5000L);
-        MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy();
-        retryPolicy.setMaxAttempts(10);
-        RetryTemplate retryTemplate = new RetryTemplate();
-        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
-        retryTemplate.setRetryPolicy(retryPolicy);
-
         try {
-            ServiceInstance instance = retryTemplate.execute(retryContext -> {
-                List<ServiceInstance> instances =  discoveryClient.getInstances(name);
-                if (instances.isEmpty()) throw new RuntimeException("try again");
-                return instances.get(random.nextInt(instances.size()));
-            });
-            statUrl = instance.getUri().toString();
+            List<ServiceInstance> instances = discoveryClient.getInstances(name);
+            if (instances.isEmpty()) throw new IllegalArgumentException("Список пуст.");
+            statUrl = instances.get(random.nextInt(instances.size())).getUri().toString();
             restClient = RestClient.builder().baseUrl(statUrl).build();
-            log.info("Retrieved init stat server url: {}", statUrl);
+            log.info("Новый URL сервера статистики: {}", statUrl);
         } catch (Exception e) {
-            log.warn("Discovery server error: {}", e.getMessage());
+            log.warn("Ошибка при получении URL: {}", e.getMessage(), e);
         }
-
         doRenewingServerUrl = true;
     }
 
     @Scheduled(fixedDelay = 60000)
-    public void renewServerUrl() {
+    public void updateStatUrl() {
         if (!doRenewingServerUrl) return;
         try {
-            List<String> urls = discoveryClient.getInstances(name).stream()
-                    .map(i -> i.getUri().toString())
+            List<String> currentUrls = discoveryClient.getInstances(name)
+                    .stream()
+                    .map(si -> si.getUri().toString())
+                    .filter(u -> !u.equalsIgnoreCase(statUrl))
                     .toList();
-
-            if (urls.isEmpty() || urls.contains(statUrl)) return;
-
-            statUrl = urls.get(random.nextInt(urls.size()));
+            if (currentUrls.isEmpty()) return;
+            statUrl = currentUrls.get(random.nextInt(currentUrls.size()));
             restClient = RestClient.builder().baseUrl(statUrl).build();
-            log.info("Retrieved new stat server url: {}", statUrl);
+            log.info("URL сервера статистики обновлён: {}", statUrl);
         } catch (Exception e) {
-            log.warn("Discovery server error: {}", e.getMessage());
+            log.warn("Ошибка обновления URL: {}", e.getMessage(), e);
         }
     }
 
     @Override
     public void hit(EventHitDto eventHitDto) {
         try {
-            restClient
-                    .post()
+            restClient.post()
                     .uri("/hit")
                     .body(eventHitDto)
                     .contentType(MediaType.APPLICATION_JSON)
                     .retrieve()
                     .toBodilessEntity();
         } catch (RestClientException e) {
-            log.warn("Failed call /hit on stat server: {}", e.getMessage());
+            log.warn("Ошибка отправки данных на сервер статистики: {}", e.getMessage());
         }
     }
 
     @Override
-    public Collection<EventStatsResponseDto> stats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public Collection<EventStatsResponseDto> stats(LocalDateTime start,
+                                                   LocalDateTime end,
+                                                   List<String> uris,
+                                                   Boolean unique) {
         try {
-            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("/stats")
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath("/stats")
                     .queryParam("start", start.format(formatter))
                     .queryParam("end", end.format(formatter));
-            if (uris != null && !uris.isEmpty())
+            if (uris != null && !uris.isEmpty()) {
                 uriBuilder.queryParam("uris", String.join(",", uris));
-            if (unique != null)
+            }
+            if (unique != null) {
                 uriBuilder.queryParam("unique", unique);
-            String uri = uriBuilder.build().toUriString();
-            return restClient
-                    .get()
-                    .uri(uri)
+            }
+            return restClient.get()
+                    .uri(uriBuilder.build().toUriString())
                     .retrieve()
-                    .body(
-                            new ParameterizedTypeReference<Collection<EventStatsResponseDto>>() {
-                            }
-                    );
+                    .body(new ParameterizedTypeReference<>() {});
         } catch (RestClientException e) {
-            log.error("Failed call /stats on stat server: {}", e.getMessage());
+            log.error("Ошибка получения статистики: {}", e.getMessage());
             return Collections.emptyList();
         }
     }
-
 }
+
+//@Slf4j
+//@FieldDefaults(level = AccessLevel.PRIVATE)
+//@Component
+//public class RestStatClient implements StatClient {
+//
+//    final String name;
+//    final DiscoveryClient discoveryClient;
+//    final Random random = new Random();
+//    final DateTimeFormatter formatter;
+//    String statUrl;
+//    RestClient restClient;
+//    boolean doRenewingServerUrl = false;
+//
+//    public RestStatClient(
+//            DiscoveryClient discoveryClient,
+//            @Value("${explore-with-me.stat-server.discovery.name:}") String name,
+//            @Value("${explore-with-me.stat-server.url:http://localhost:9090}") String url,
+//            @Value("${explore-with-me.stat.datetime.format}") String format
+//    ) {
+//        this.discoveryClient = discoveryClient;
+//        this.name = name;
+//        this.formatter = DateTimeFormatter.ofPattern(format);
+//        this.statUrl = url;
+//        this.restClient = RestClient.builder().baseUrl(statUrl).build();
+//    }
+//
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void init() {
+//        if (name == null || name.isBlank()) return;
+//        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
+//        fixedBackOffPolicy.setBackOffPeriod(5000L);
+//        MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy();
+//        retryPolicy.setMaxAttempts(10);
+//        RetryTemplate retryTemplate = new RetryTemplate();
+//        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
+//        retryTemplate.setRetryPolicy(retryPolicy);
+//        try {
+//            ServiceInstance instance = retryTemplate.execute(retryContext -> {
+//                List<ServiceInstance> instances =  discoveryClient.getInstances(name);
+//                if (instances.isEmpty()) throw new RuntimeException("try again");
+//                return instances.get(random.nextInt(instances.size()));
+//            });
+//            statUrl = instance.getUri().toString();
+//            restClient = RestClient.builder().baseUrl(statUrl).build();
+//            log.info("Retrieved init stat server url: {}", statUrl);
+//        } catch (Exception e) {
+//            log.warn("Discovery server error: {}", e.getMessage());
+//        }
+//        doRenewingServerUrl = true;
+//    }
+//
+//    @Scheduled(fixedDelay = 60000)
+//    public void renewServerUrl() {
+//        if (!doRenewingServerUrl) return;
+//        try {
+//            List<String> urls = discoveryClient.getInstances(name).stream()
+//                    .map(i -> i.getUri().toString())
+//                    .toList();
+//            if (urls.isEmpty() || urls.contains(statUrl)) return;
+//            statUrl = urls.get(random.nextInt(urls.size()));
+//            restClient = RestClient.builder().baseUrl(statUrl).build();
+//            log.info("Retrieved new stat server url: {}", statUrl);
+//        } catch (Exception e) {
+//            log.warn("Discovery server error: {}", e.getMessage());
+//        }
+//    }
+//
+//    @Override
+//    public void hit(EventHitDto eventHitDto) {
+//        try {
+//            restClient
+//                    .post()
+//                    .uri("/hit")
+//                    .body(eventHitDto)
+//                    .contentType(MediaType.APPLICATION_JSON)
+//                    .retrieve()
+//                    .toBodilessEntity();
+//        } catch (RestClientException e) {
+//            log.warn("Failed call /hit on stat server: {}", e.getMessage());
+//        }
+//    }
+//
+//    @Override
+//    public Collection<EventStatsResponseDto> stats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+//        try {
+//            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("/stats")
+//                    .queryParam("start", start.format(formatter))
+//                    .queryParam("end", end.format(formatter));
+//            if (uris != null && !uris.isEmpty())
+//                uriBuilder.queryParam("uris", String.join(",", uris));
+//            if (unique != null)
+//                uriBuilder.queryParam("unique", unique);
+//            String uri = uriBuilder.build().toUriString();
+//            return restClient
+//                    .get()
+//                    .uri(uri)
+//                    .retrieve()
+//                    .body(
+//                            new ParameterizedTypeReference<Collection<EventStatsResponseDto>>() {
+//                            }
+//                    );
+//        } catch (RestClientException e) {
+//            log.error("Failed call /stats on stat server: {}", e.getMessage());
+//            return Collections.emptyList();
+//        }
+//    }
+//}

@@ -20,19 +20,14 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // SPRING EXCEPTIONS -----------------------------------------------
-
-    @ExceptionHandler(
-            ConstraintViolationException.class              // Custom annotation exceptions
-    )
-    public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException e, HttpServletRequest request) {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException e,
+                                                              HttpServletRequest request) {
         String errorMessage = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .findFirst()
                 .orElse("Invalid input");
-
         log.debug("VALIDATION FAILED: {}", e.getMessage());
-
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .reason("Validation Failed")
@@ -42,10 +37,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(
-            MethodArgumentNotValidException.class            // @Valid annotation exceptions
-    )
-    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
+                                                                          HttpServletRequest request) {
         String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
         Object target = e.getBindingResult().getTarget();
         log.debug("VALIDATION FAILED: {} for {}", errorMessage, target);
@@ -64,7 +58,8 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException.class,                 // wrong json in request body
             MissingServletRequestParameterException.class          // missing RequestParam
     })
-    public ResponseEntity<ApiError> handleIllegalArgument(Throwable e, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleIllegalArgument(Throwable e,
+                                                          HttpServletRequest request) {
         log.debug("ILLEGAL ARGUMENT: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
@@ -75,10 +70,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(
-            MissingRequestHeaderException.class                        // missing request header
-    )
-    public ResponseEntity<ApiError> handleMissingRequestHeaderException(MissingRequestHeaderException e, HttpServletRequest request) {
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ApiError> handleMissingRequestHeaderException(MissingRequestHeaderException e,
+                                                                        HttpServletRequest request) {
         log.debug("MISSING HEADER: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
@@ -89,12 +83,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    // CUSTOM EXCEPTIONS --------------------------------------------------------
-
-    @ExceptionHandler(
-            BadRequestException.class                        // custom bad request
-    )
-    public ResponseEntity<ApiError> handleBadRequestException(BadRequestException e, HttpServletRequest request) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiError> handleBadRequestException(BadRequestException e,
+                                                              HttpServletRequest request) {
         log.debug("BAD REQUEST: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
@@ -105,10 +96,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(
-            ConflictException.class                        // custom conflict exception
-    )
-    public ResponseEntity<ApiError> handleConflictException(ConflictException e, HttpServletRequest request) {
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiError> handleConflictException(ConflictException e,
+                                                            HttpServletRequest request) {
         log.debug("CONFLICT: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.CONFLICT)
@@ -119,10 +109,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(
-            ForbiddenException.class                        // custom forbidden exception
-    )
-    public ResponseEntity<ApiError> handleForbiddenException(ForbiddenException e, HttpServletRequest request) {
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiError> handleForbiddenException(ForbiddenException e,
+                                                             HttpServletRequest request) {
         log.debug("FORBIDDEN: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.FORBIDDEN)
@@ -133,10 +122,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(
-            NotFoundException.class                        // custom not_found exception
-    )
-    public ResponseEntity<ApiError> handleNotFoundException(NotFoundException e, HttpServletRequest request) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiError> handleNotFoundException(NotFoundException e,
+                                                            HttpServletRequest request) {
         log.debug("NOT FOUND: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.NOT_FOUND)
@@ -147,12 +135,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    // OTHER UNKNOWN EXCEPTIONS ---------------------------------------------------
-
-    @ExceptionHandler(
-            RuntimeException.class                        // Internal Server Error
-    )
-    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException e,
+                                                           HttpServletRequest request) {
         log.debug("INTERNAL SERVER ERROR: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -162,6 +147,4 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
 }

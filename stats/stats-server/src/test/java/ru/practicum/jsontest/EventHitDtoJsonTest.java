@@ -134,13 +134,17 @@ class EventHitDtoJsonTest {
                 .build();
 
         assertThat(json.write(eventHit))
-                .hasJsonPath("$.app").extractingJsonPathStringValue("$.app").isEqualTo("integration-test");
+                .hasJsonPath("$.app")
+                .extractingJsonPathStringValue("$.app").isEqualTo("integration-test");
         assertThat(json.write(eventHit))
-                .hasJsonPath("$.uri").extractingJsonPathStringValue("$.uri").isEqualTo("/api/v1/events/123");
+                .hasJsonPath("$.uri")
+                .extractingJsonPathStringValue("$.uri").isEqualTo("/api/v1/events/123");
         assertThat(json.write(eventHit))
-                .hasJsonPath("$.ip").extractingJsonPathStringValue("$.ip").isEqualTo("172.16.0.1");
+                .hasJsonPath("$.ip")
+                .extractingJsonPathStringValue("$.ip").isEqualTo("172.16.0.1");
         assertThat(json.write(eventHit))
-                .hasJsonPath("$.timestamp").extractingJsonPathStringValue("$.timestamp").isEqualTo(timestamp.format(formatter));
+                .hasJsonPath("$.timestamp")
+                .extractingJsonPathStringValue("$.timestamp").isEqualTo(timestamp.format(formatter));
     }
 
     @Test

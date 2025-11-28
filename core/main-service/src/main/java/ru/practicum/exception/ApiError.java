@@ -2,10 +2,8 @@ package ru.practicum.exception;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import ru.practicum.serialize.LocalDateTimeDeserializer;
 import ru.practicum.serialize.LocalDateTimeSerializer;
@@ -18,19 +16,20 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApiError {
 
-    private HttpStatus status;
+    HttpStatus status;
 
-    private String reason;
+    String reason;
 
-    private String message;
+    String message;
 
     @Builder.Default
-    private List<String> errors = new ArrayList<>();
+    List<String> errors = new ArrayList<>();
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime timestamp;
+    LocalDateTime timestamp;
 
 }

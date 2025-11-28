@@ -14,9 +14,9 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>stats-client</module>
         <module>stats-common</module>
         <module>stats-server</module>
-        <module>stats-client</module>
     </modules>
 
 </project>

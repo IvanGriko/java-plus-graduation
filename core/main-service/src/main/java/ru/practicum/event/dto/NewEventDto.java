@@ -2,41 +2,44 @@ package ru.practicum.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewEventDto {
 
     @NotNull
     @Positive
-    private Long category;
+    Long category;
 
     @NotBlank
     @Size(min = 3, max = 120)
-    private String title;
+    String title;
 
     @NotBlank
     @Size(min = 20, max = 2000)
-    private String annotation;
+    String annotation;
 
     @NotBlank
     @Size(min = 20, max = 7000)
-    private String description;
+    String description;
 
-    private LocationDto location;
+    LocationDto location;
 
-    private Boolean requestModeration = true;
+    Boolean requestModeration = true;
 
-    private Boolean paid = false;
+    Boolean paid = false;
 
     @PositiveOrZero
-    private Long participantLimit = 0L;
+    Long participantLimit = 0L;
 
     @NotNull
     @Future(message = "Event should be in future")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
 
 }

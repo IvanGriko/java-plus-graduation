@@ -2,6 +2,7 @@ package ru.practicum.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -9,18 +10,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    Long id;
 
     @Column(name = "email", length = 254, nullable = false, unique = true)
-    private String email;
+    String email;
 
     @Column(name = "name", length = 250, nullable = false)
-    private String name;
+    String name;
 
 }

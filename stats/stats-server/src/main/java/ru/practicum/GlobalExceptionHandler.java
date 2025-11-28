@@ -20,17 +20,14 @@ import java.time.Instant;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(
-            ConstraintViolationException.class              // Custom annotation exceptions
-    )
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException e, HttpServletRequest request) {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException e,
+                                                                   HttpServletRequest request) {
         String errorMessage = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .findFirst()
                 .orElse("Invalid input");
-
         log.debug("VALIDATION FAILED: {}", e.getMessage());
-
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .status(HttpStatus.BAD_REQUEST)
@@ -41,11 +38,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-
-    @ExceptionHandler(
-            MethodArgumentNotValidException.class            // @Valid annotation exceptions
-    )
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
+                                                                               HttpServletRequest request) {
         String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
         Object target = e.getBindingResult().getTarget();
         log.debug("VALIDATION FAILED: {} for {}", errorMessage, target);
@@ -65,7 +60,8 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException.class,                 // wrong json in request body
             MissingServletRequestParameterException.class          // missing RequestParam
     })
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(Throwable e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(Throwable e,
+                                                               HttpServletRequest request) {
         log.debug("ILLEGAL ARGUMENT: {}", e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(Instant.now())
@@ -77,11 +73,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-
-    @ExceptionHandler(
-            RuntimeException.class                        // Internal Server Error
-    )
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e,
+                                                                HttpServletRequest request) {
         log.debug("INTERNAL SERVER ERROR: {}", e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(Instant.now())
@@ -92,6 +86,4 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
 }

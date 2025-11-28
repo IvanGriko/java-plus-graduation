@@ -16,13 +16,10 @@ public class AtLeastOneNotNullValidator implements ConstraintValidator<AtLeastOn
     @Override
     public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
         if (o == null) return false;
-
         BeanWrapperImpl beanWrapper = new BeanWrapperImpl(o);
         for (String field : fields) {
             if (beanWrapper.getPropertyValue(field) != null) return true;
         }
-
         return false;
     }
-
 }

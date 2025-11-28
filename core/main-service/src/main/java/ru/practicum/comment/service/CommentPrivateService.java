@@ -10,4 +10,5 @@ public interface CommentPrivateService {
     void deleteComment(Long userId, Long comId);
 
     CommentDto patchComment(Long userId, Long comId, CommentCreateDto commentCreateDto);
+
 }

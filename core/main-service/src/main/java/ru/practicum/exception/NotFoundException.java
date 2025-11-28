@@ -17,5 +17,4 @@ public class NotFoundException extends RuntimeException {
     public String getReason() {
         return reason;
     }
-
 }

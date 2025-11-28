@@ -37,4 +37,5 @@ public interface StatsServiceRepository extends JpaRepository<Stat, Long> {
             "group by stat.app, stat.uri " +
             "order by count(stat.ip) desc ")
     List<EventStatsResponseDto> findAllByTimestampBetweenStartAndEndWithUrisIpNotUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
+
 }

@@ -22,8 +22,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    // MODIFY OPS
-
     @Transactional(readOnly = false)
     public UserDto create(NewUserRequestDto newUserRequestDto) {
         if (userRepository.existsByEmail(newUserRequestDto.getEmail())) {
@@ -42,8 +40,6 @@ public class UserService {
         userRepository.delete(userToDelete);
     }
 
-    // GET COLLECTION
-
     public List<UserDto> findByIdListWithOffsetAndLimit(List<Long> idList, Integer from, Integer size) {
         if (idList == null || idList.isEmpty()) {
             Sort sort = Sort.by(Sort.Direction.ASC, "id");
@@ -58,5 +54,4 @@ public class UserService {
                     .toList();
         }
     }
-
 }

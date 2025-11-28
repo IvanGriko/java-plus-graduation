@@ -1,6 +1,8 @@
 package ru.practicum.compilation.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +23,11 @@ import java.util.Set;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CompilationAdminServiceImpl implements CompilationAdminService {
 
-    private final CompilationRepository compilationRepository;
-    private final EventRepository eventRepository;
+    CompilationRepository compilationRepository;
+    EventRepository eventRepository;
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto request) {

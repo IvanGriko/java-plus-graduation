@@ -5,10 +5,8 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.validation.AtLeastOneNotNull;
 
 import java.time.LocalDateTime;
@@ -17,35 +15,36 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @AtLeastOneNotNull(fields = {"category", "title", "annotation", "description", "location", "paid",
         "participantLimit", "requestModeration", "stateAction", "eventDate"})
 public class UpdateEventDto {
 
     @Positive
-    private Long category;
+    Long category;
 
     @Size(min = 3, max = 120)
-    private String title;
+    String title;
 
     @Size(min = 20, max = 2000)
-    private String annotation;
+    String annotation;
 
     @Size(min = 20, max = 7000)
-    private String description;
+    String description;
 
-    private LocationDto location;
+    LocationDto location;
 
-    private Boolean paid;
+    Boolean paid;
 
     @PositiveOrZero
-    private Long participantLimit;
+    Long participantLimit;
 
-    private Boolean requestModeration;
+    Boolean requestModeration;
 
-    private StateAction stateAction;
+    StateAction stateAction;
 
     @Future(message = "Event should be in future")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
 
 }

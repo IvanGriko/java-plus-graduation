@@ -23,7 +23,6 @@ public class EventPublicController {
 
     private final EventPublicService eventPublicService;
 
-    // Получение событий с возможностью фильтрации
     @GetMapping
     List<EventShortDto> getAllEventsByParams(
             @RequestParam(required = false) String text,
@@ -52,7 +51,6 @@ public class EventPublicController {
         return eventPublicService.getAllEventsByParams(params, request);
     }
 
-    // Получение подробной информации об опубликованном событии по его идентификатору
     @GetMapping("/{id}")
     EventFullDto getInformationAboutEventByEventId(
             @PathVariable @Positive Long id,
@@ -61,5 +59,4 @@ public class EventPublicController {
         log.info("Calling to endpoint /events/{id} GetMapping for eventId: " + id);
         return eventPublicService.getEventById(id, request);
     }
-
 }

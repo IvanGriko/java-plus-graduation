@@ -42,7 +42,5 @@ public class StatClientTest {
         Collection<EventStatsResponseDto> eventStatsResponseDtoCollection2 = statClient.stats(start, end, null, false);
         System.out.println(eventStatsResponseDtoCollection2.size() + " всего:");
         for (EventStatsResponseDto ev : eventStatsResponseDtoCollection2) System.out.println(ev);
-
     }
-
 }

@@ -41,5 +41,4 @@ public class CommentPublicController {
         log.info("Calling the GET request to /events/{eventId}/comments/{commentId}");
         return ResponseEntity.ok(service.getCommentByEventAndCommentId(eventId, commentId));
     }
-
 }

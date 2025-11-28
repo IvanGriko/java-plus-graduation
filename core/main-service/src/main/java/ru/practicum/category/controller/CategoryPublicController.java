@@ -27,6 +27,7 @@ public class CategoryPublicController {
             @RequestParam(defaultValue = "10") @Positive int size
     ) {
         log.info("Calling the POST request to - /categories - endpoint");
+
         return ResponseEntity.ok(service.readAllCategories(from, size));
     }
 
@@ -35,6 +36,7 @@ public class CategoryPublicController {
             @PathVariable Long catId
     ) {
         log.info("Calling the GET request to - /categories/{catId} - endpoint");
+
         return ResponseEntity.ok(service.readCategoryById(catId));
     }
 }

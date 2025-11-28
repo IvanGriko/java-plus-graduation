@@ -1,6 +1,8 @@
 package ru.practicum.comment.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,10 +22,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommentAdminServiceImpl implements CommentAdminService {
 
-    private final CommentRepository repository;
-    private final UserRepository userRepository;
+    CommentRepository repository;
+    UserRepository userRepository;
 
     @Override
     public void delete(Long comId) {

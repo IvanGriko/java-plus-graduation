@@ -24,7 +24,6 @@ public class EventPrivateController {
 
     private final EventPrivateService eventPrivateService;
 
-    // Добавление нового события
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     EventFullDto addNewEventByUser(
@@ -35,7 +34,6 @@ public class EventPrivateController {
         return eventPrivateService.addEvent(userId, newEventDto);
     }
 
-    // Получение событий, добавленных текущим пользователем
     @GetMapping
     Collection<EventShortDto> getAllEventsByUserId(
             @PathVariable @Positive Long userId,
@@ -46,7 +44,6 @@ public class EventPrivateController {
         return eventPrivateService.getEventsByUserId(userId, from, size);
     }
 
-    // Получение полной информации о событии добавленном текущим пользователем
     @GetMapping("/{eventId}")
     EventFullDto getEventByUserIdAndEventId(
             @PathVariable @Positive Long userId,
@@ -57,7 +54,6 @@ public class EventPrivateController {
         return eventPrivateService.getEventByUserIdAndEventId(userId, eventId);
     }
 
-    // Изменение события добавленного текущим пользователем
     @PatchMapping("/{eventId}")
     EventFullDto updateEventByUserIdAndEventId(
             @PathVariable @Positive Long userId,
@@ -69,6 +65,4 @@ public class EventPrivateController {
                 + "Information by eventDto: " + updateEventDto.toString());
         return eventPrivateService.updateEventByUserIdAndEventId(userId, eventId, updateEventDto);
     }
-
-
 }

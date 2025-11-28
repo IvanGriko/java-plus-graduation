@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NewCompilationUpdateValidator implements CreateOrUpdateValidator.Update {
+
     private final Validator validator;
 
     public NewCompilationUpdateValidator(Validator validator) {
@@ -18,7 +19,6 @@ public class NewCompilationUpdateValidator implements CreateOrUpdateValidator.Up
                 .stream()
                 .map(constraintViolation -> constraintViolation.getPropertyPath().toString() + ": " + constraintViolation.getMessage())
                 .collect(Collectors.toSet());
-
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException("Validation errors: " + errors);
         }

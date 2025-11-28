@@ -40,5 +40,4 @@ public class CompilationPublicController {
         CompilationDto response = compilationPublicService.readCompilationById(compId);
         return ResponseEntity.ok(response);
     }
-
 }

@@ -27,7 +27,6 @@ public class EventAdminController {
 
     private final EventAdminService eventAdminService;
 
-    // Поиск событий
     @GetMapping
     Collection<EventFullDto> getAllEventsByParams(
             @RequestParam(required = false) List<Long> users,
@@ -47,12 +46,10 @@ public class EventAdminController {
                 .from(from)
                 .size(size)
                 .build();
-
         log.info("Calling to endpoint /admin/events GetMapping for params: " + params.toString());
         return eventAdminService.getAllEventsByParams(params);
     }
 
-    // Редактирование данных события и его статуса (отклонение/публикация).
     @PatchMapping("/{eventId}")
     EventFullDto updateEventByAdmin(
             @PathVariable Long eventId,
@@ -62,5 +59,4 @@ public class EventAdminController {
                 + " UpdateEvent: " + updateEventDto.toString());
         return eventAdminService.updateEventByAdmin(eventId, updateEventDto);
     }
-
 }

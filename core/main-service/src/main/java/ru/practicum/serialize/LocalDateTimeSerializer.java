@@ -28,5 +28,4 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
     public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeString(localDateTime.format(formatter));
     }
-
 }

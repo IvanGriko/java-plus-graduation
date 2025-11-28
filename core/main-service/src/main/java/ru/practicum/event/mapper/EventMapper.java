@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 public class EventMapper {
 
-
     public static Event toEvent(
             NewEventDto newEventDto,
             User initiator,
@@ -32,7 +31,6 @@ public class EventMapper {
                 .createdOn(LocalDateTime.now())
                 .build();
     }
-
 
     public static EventFullDto toEventFullDto(
             Event event,

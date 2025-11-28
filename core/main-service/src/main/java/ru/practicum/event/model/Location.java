@@ -2,6 +2,7 @@ package ru.practicum.event.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -9,10 +10,11 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Location {
 
-    private Float lat;
+    Float lat;
 
-    private Float lon;
+    Float lon;
 
 }

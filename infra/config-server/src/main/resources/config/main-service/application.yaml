@@ -3,29 +3,6 @@ info:
     name: main-service
     description: My Area Guide
     version: 1.0-SNAPSHOT
-  company:
-    name: Somekind Software
-
-logging:
-  level:
-    org.springframework.web: INFO
-    org.springframework.validation: INFO
-
-management:
-  endpoints.web.exposure.include: health,info,metrics
-  endpoint.health.show-details: always
-  metrics.export.prometheus.enabled: true
-  info.env.enabled: true
-
-explore-with-me:
-  stat-server.discovery.name: stats-server
-  datetime.format: yyyy-MM-dd HH:mm:ss
-  main.datetime.format: yyyy-MM-dd HH:mm:ss
-  stat.datetime.format: yyyy-MM-dd HH:mm:ss
-
-server:
-  port: 0
-  shutdown: graceful
 
 spring:
   lifecycle:
@@ -41,3 +18,24 @@ spring:
     url: jdbc:postgresql://localhost:5433/main_db
     username: postgres
     password: 12345
+
+server:
+  port: 0
+  shutdown: graceful
+
+management:
+  endpoints.web.exposure.include: health,info,metrics
+  endpoint.health.show-details: always
+  metrics.export.prometheus.enabled: true
+  info.env.enabled: true
+
+explore-with-me:
+  stat-server.discovery.name: stats-server
+  datetime.format: yyyy-MM-dd HH:mm:ss
+  main.datetime.format: yyyy-MM-dd HH:mm:ss
+  stat.datetime.format: yyyy-MM-dd HH:mm:ss
+
+logging:
+  level:
+    org.springframework.web: INFO
+    org.springframework.validation: INFO

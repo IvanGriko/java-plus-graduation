@@ -7,9 +7,10 @@ import java.util.List;
 
 public interface CommentPublicService {
 
-    public CommentDto getComment(Long comId);
+    CommentDto getComment(Long comId);
 
-    public List<CommentShortDto> getCommentsByEvent(Long eventId, int from, int size);
+    List<CommentShortDto> getCommentsByEvent(Long eventId, int from, int size);
 
-    public CommentDto getCommentByEventAndCommentId(Long eventId, Long commentId);
+    CommentDto getCommentByEventAndCommentId(Long eventId, Long commentId);
+
 }
