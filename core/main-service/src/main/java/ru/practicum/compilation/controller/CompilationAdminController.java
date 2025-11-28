@@ -1,28 +1,25 @@
 package ru.practicum.compilation.controller;
 
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.compilation.service.CompilationAdminService;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.NewCompilationDto;
 import ru.practicum.compilation.dto.UpdateCompilationDto;
+import ru.practicum.compilation.service.CompilationAdminService;
 
 @RestController
 @Validated
 @RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CompilationAdminController {
 
-    CompilationAdminService compilationAdminService;
+    private final CompilationAdminService compilationAdminService;
 
     @PostMapping
     public ResponseEntity<CompilationDto> postCompilations(

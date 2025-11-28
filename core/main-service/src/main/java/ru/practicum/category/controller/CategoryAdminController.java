@@ -1,17 +1,15 @@
 package ru.practicum.category.controller;
 
 import jakarta.validation.constraints.Positive;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.category.service.CategoryAdminService;
 import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.service.CategoryAdminService;
 import ru.practicum.validation.CreateOrUpdateValidator;
 
 @RestController
@@ -19,10 +17,9 @@ import ru.practicum.validation.CreateOrUpdateValidator;
 @Validated
 @RequestMapping(path = "/admin/categories")
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryAdminController {
 
-    CategoryAdminService categoryAdminService;
+    private final CategoryAdminService categoryAdminService;
 
     @PostMapping
     public ResponseEntity<CategoryDto> addCategory(
@@ -30,14 +27,11 @@ public class CategoryAdminController {
             CategoryDto requestCategory,
             BindingResult bindingResult
     ) {
-
         log.info("Calling the POST request to /admin/categories endpoint");
-
         if (bindingResult.hasErrors()) {
             log.error("Validation error with category name");
             return ResponseEntity.badRequest().body((requestCategory));
         }
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(categoryAdminService.createCategory(requestCategory));
@@ -60,7 +54,6 @@ public class CategoryAdminController {
             @RequestBody @Validated(CreateOrUpdateValidator.Update.class) CategoryDto categoryDto
     ) {
         log.info("Calling the PATCH request to /admin/categories/{catId} endpoint");
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(categoryAdminService.updateCategory(catId, categoryDto));

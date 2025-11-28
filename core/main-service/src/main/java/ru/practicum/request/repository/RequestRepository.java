@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.request.model.ParticipationRequestStatus;
+import ru.practicum.request.dto.ParticipationRequestStatus;
 import ru.practicum.request.model.Request;
 
 import java.util.List;
@@ -46,4 +46,5 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Object[]> getConfirmedRequestsByEventIds(
             @Param("eventIds") List<Long> eventIds
     );
+
 }

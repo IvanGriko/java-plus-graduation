@@ -1,14 +1,12 @@
 package ru.practicum.category.service;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.model.Category;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.mapper.CategoryMapper;
+import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
@@ -17,12 +15,12 @@ import ru.practicum.exception.NotFoundException;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = false)
 public class CategoryAdminServiceImpl implements CategoryAdminService {
 
-    CategoryRepository categoryRepository;
-    EventRepository eventRepository;
+    private final CategoryRepository categoryRepository;
+
+    private final EventRepository eventRepository;
 
     @Override
     public CategoryDto createCategory(CategoryDto requestCategory) {

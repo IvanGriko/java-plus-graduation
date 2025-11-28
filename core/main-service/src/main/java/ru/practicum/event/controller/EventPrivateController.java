@@ -2,9 +2,7 @@ package ru.practicum.event.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -19,14 +17,14 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/users/{userId}/events")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Slf4j
 @Validated
 public class EventPrivateController {
 
-    EventPrivateService eventPrivateService;
+    private final EventPrivateService eventPrivateService;
 
+    // Добавление нового события
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     EventFullDto addNewEventByUser(
@@ -37,6 +35,7 @@ public class EventPrivateController {
         return eventPrivateService.addEvent(userId, newEventDto);
     }
 
+    // Получение событий, добавленных текущим пользователем
     @GetMapping
     Collection<EventShortDto> getAllEventsByUserId(
             @PathVariable @Positive Long userId,
@@ -47,6 +46,7 @@ public class EventPrivateController {
         return eventPrivateService.getEventsByUserId(userId, from, size);
     }
 
+    // Получение полной информации о событии добавленном текущим пользователем
     @GetMapping("/{eventId}")
     EventFullDto getEventByUserIdAndEventId(
             @PathVariable @Positive Long userId,
@@ -57,6 +57,7 @@ public class EventPrivateController {
         return eventPrivateService.getEventByUserIdAndEventId(userId, eventId);
     }
 
+    // Изменение события добавленного текущим пользователем
     @PatchMapping("/{eventId}")
     EventFullDto updateEventByUserIdAndEventId(
             @PathVariable @Positive Long userId,
@@ -68,4 +69,6 @@ public class EventPrivateController {
                 + "Information by eventDto: " + updateEventDto.toString());
         return eventPrivateService.updateEventByUserIdAndEventId(userId, eventId, updateEventDto);
     }
+
+
 }

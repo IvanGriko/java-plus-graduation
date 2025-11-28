@@ -18,6 +18,7 @@ public class NewCompilationUpdateValidator implements CreateOrUpdateValidator.Up
                 .stream()
                 .map(constraintViolation -> constraintViolation.getPropertyPath().toString() + ": " + constraintViolation.getMessage())
                 .collect(Collectors.toSet());
+
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException("Validation errors: " + errors);
         }

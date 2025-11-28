@@ -17,4 +17,5 @@ public class ConflictException extends RuntimeException {
     public String getReason() {
         return reason;
     }
+
 }

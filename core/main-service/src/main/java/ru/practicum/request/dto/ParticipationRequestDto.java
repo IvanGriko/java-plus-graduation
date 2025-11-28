@@ -1,9 +1,10 @@
 package ru.practicum.request.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-import ru.practicum.request.model.ParticipationRequestStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,18 +12,17 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ParticipationRequestDto {
 
-    Long id;
+    private Long id;
 
-    Long requester;
+    private Long requester;
 
-    Long event;
+    private Long event;
 
-    ParticipationRequestStatus status;
+    private ParticipationRequestStatus status;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    LocalDateTime created;
+    private LocalDateTime created;
 
 }

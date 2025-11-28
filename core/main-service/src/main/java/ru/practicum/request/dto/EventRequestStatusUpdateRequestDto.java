@@ -4,9 +4,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-import ru.practicum.request.model.ParticipationRequestStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -14,14 +15,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventRequestStatusUpdateRequestDto {
 
     @NotEmpty(message = "Field 'requestIds' shouldn't be empty")
-    List<Long> requestIds;
+    private List<Long> requestIds;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Field 'status' shouldn't be null")
-    ParticipationRequestStatus status;
+    private ParticipationRequestStatus status;
 
 }

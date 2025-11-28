@@ -1,16 +1,14 @@
 package ru.practicum.comment.service;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.comment.dto.CommentCreateDto;
 import ru.practicum.comment.dto.CommentDto;
 import ru.practicum.comment.mapper.CommentMapper;
-import ru.practicum.comment.repository.CommentRepository;
 import ru.practicum.comment.model.Comment;
+import ru.practicum.comment.repository.CommentRepository;
 import ru.practicum.event.dto.State;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
@@ -24,13 +22,12 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
 public class CommentPrivateServiceImpl implements CommentPrivateService {
 
-    CommentRepository repository;
-    UserRepository userRepository;
-    EventRepository eventRepository;
+    private final CommentRepository repository;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public CommentDto createComment(Long userId, Long eventId, CommentCreateDto commentDto) {

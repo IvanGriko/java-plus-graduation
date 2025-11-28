@@ -1,8 +1,6 @@
 package ru.practicum.comment.service;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.comment.dto.CommentDto;
 import ru.practicum.comment.mapper.CommentMapper;
-import ru.practicum.comment.repository.CommentRepository;
 import ru.practicum.comment.model.Comment;
+import ru.practicum.comment.repository.CommentRepository;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.repository.UserRepository;
 
@@ -21,12 +19,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
 public class CommentAdminServiceImpl implements CommentAdminService {
 
-    CommentRepository repository;
-    UserRepository userRepository;
+    private final CommentRepository repository;
+    private final UserRepository userRepository;
 
     @Override
     public void delete(Long comId) {

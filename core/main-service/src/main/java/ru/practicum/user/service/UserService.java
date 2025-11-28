@@ -1,8 +1,6 @@
 package ru.practicum.user.service;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -19,11 +17,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
 public class UserService {
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    // MODIFY OPS
 
     @Transactional(readOnly = false)
     public UserDto create(NewUserRequestDto newUserRequestDto) {
@@ -43,6 +42,8 @@ public class UserService {
         userRepository.delete(userToDelete);
     }
 
+    // GET COLLECTION
+
     public List<UserDto> findByIdListWithOffsetAndLimit(List<Long> idList, Integer from, Integer size) {
         if (idList == null || idList.isEmpty()) {
             Sort sort = Sort.by(Sort.Direction.ASC, "id");
@@ -57,4 +58,5 @@ public class UserService {
                     .toList();
         }
     }
+
 }

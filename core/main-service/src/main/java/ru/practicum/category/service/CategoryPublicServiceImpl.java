@@ -1,15 +1,13 @@
 package ru.practicum.category.service;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.model.Category;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.mapper.CategoryMapper;
+import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.exception.NotFoundException;
 
@@ -21,10 +19,9 @@ import static ru.practicum.util.Util.createPageRequestAsc;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryPublicServiceImpl implements CategoryPublicService {
 
-    CategoryRepository repository;
+    private final CategoryRepository repository;
 
     @Override
     public List<CategoryDto> readAllCategories(Integer from, Integer size) {

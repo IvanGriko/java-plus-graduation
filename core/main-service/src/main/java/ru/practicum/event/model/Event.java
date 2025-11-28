@@ -2,7 +2,6 @@ package ru.practicum.event.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 import ru.practicum.category.model.Category;
 import ru.practicum.comment.model.Comment;
 import ru.practicum.event.dto.State;
@@ -18,61 +17,60 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "events")
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "initiator", nullable = false)
-    User initiator;
+    private User initiator;
 
     @ManyToOne
     @JoinColumn(name = "categories_id", nullable = false)
-    Category category;
+    private Category category;
 
     @Column(name = "title", length = 120, nullable = false)
-    String title;
+    private String title;
 
     @Column(name = "annotation", length = 2000, nullable = false)
-    String annotation;
+    private String annotation;
 
     @Column(name = "description", length = 7000, nullable = false)
-    String description;
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 20, nullable = false)
-    State state;
+    private State state;
 
     @Embedded
-    Location location;
+    private Location location;
 
     @Column(name = "participant_limit", nullable = false)
-    Long participantLimit;
+    private Long participantLimit;
 
     @Column(name = "request_moderation", nullable = false)
-    Boolean requestModeration;
+    private Boolean requestModeration;
 
     @Column(name = "paid", nullable = false)
-    Boolean paid;
+    private Boolean paid;
 
     @Column(name = "event_date", nullable = false)
-    LocalDateTime eventDate;
+    private LocalDateTime eventDate;
 
     @Column(name = "published_on")
-    LocalDateTime publishedOn;
+    private LocalDateTime publishedOn;
 
     @Column(name = "created_on", nullable = false)
-    LocalDateTime createdOn;
+    private LocalDateTime createdOn;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    List<Request> requests;
+    private List<Request> requests;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    List<Comment> comments;
+    private List<Comment> comments;
 
 }

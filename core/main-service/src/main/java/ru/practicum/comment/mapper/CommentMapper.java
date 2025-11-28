@@ -1,6 +1,5 @@
 package ru.practicum.comment.mapper;
 
-import lombok.experimental.UtilityClass;
 import ru.practicum.comment.dto.CommentCreateDto;
 import ru.practicum.comment.dto.CommentDto;
 import ru.practicum.comment.dto.CommentShortDto;
@@ -11,16 +10,15 @@ import ru.practicum.user.mapper.UserMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@UtilityClass
 public class CommentMapper {
 
-    public Comment toComment(CommentCreateDto commentDto) {
+    public static Comment toComment(CommentCreateDto commentDto) {
         return Comment.builder()
                 .text(commentDto.getText())
                 .build();
     }
 
-    public CommentDto toCommentDto(Comment comment) {
+    public static CommentDto toCommentDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
                 .author(UserMapper.toDto(comment.getAuthor()))
@@ -31,11 +29,11 @@ public class CommentMapper {
                 .build();
     }
 
-    public List<CommentDto> toListCommentDto(List<Comment> list) {
+    public static List<CommentDto> toListCommentDto(List<Comment> list) {
         return list.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
     }
 
-    public CommentShortDto toCommentShortDto(Comment comment) {
+    public static CommentShortDto toCommentShortDto(Comment comment) {
         return CommentShortDto.builder()
                 .author(UserMapper.toDto(comment.getAuthor()))
                 .createTime(comment.getText())
@@ -44,7 +42,8 @@ public class CommentMapper {
                 .build();
     }
 
-    public List<CommentShortDto> toListCommentShortDto(List<Comment> list) {
+    public static List<CommentShortDto> toListCommentShortDto(List<Comment> list) {
         return list.stream().map(CommentMapper::toCommentShortDto).collect(Collectors.toList());
     }
+
 }

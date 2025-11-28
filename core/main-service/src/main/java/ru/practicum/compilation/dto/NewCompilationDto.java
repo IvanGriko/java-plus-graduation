@@ -2,8 +2,10 @@ package ru.practicum.compilation.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,17 +14,16 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewCompilationDto {
 
     @Builder.Default
-    Set<Long> events = new HashSet<>();
+    private Set<Long> events = new HashSet<>();
 
     @Builder.Default
-    Boolean pinned = false;
+    private Boolean pinned = false;
 
     @NotBlank
     @Size(min = 1, max = 50)
-    String title;
+    private String title;
 
 }

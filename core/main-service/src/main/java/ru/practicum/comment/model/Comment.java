@@ -2,7 +2,6 @@ package ru.practicum.comment.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 import ru.practicum.event.model.Event;
 import ru.practicum.user.model.User;
 
@@ -14,35 +13,35 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "comments")
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "textual_content", length = 1000, nullable = false)
-    String text;
+    private String text;
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
-    User author;
+    private User author;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
-    Event event;
+    private Event event;
 
     @Column(name = "create_time", nullable = false)
-    LocalDateTime createTime;
+    private LocalDateTime createTime;
 
     @Column(name = "patch_time")
-    LocalDateTime patchTime;
+    private LocalDateTime patchTime;
 
     @Column(name = "approved", nullable = false)
-    Boolean approved;
+    private Boolean approved;
 
     public boolean isApproved() {
         return approved;
     }
+
 }

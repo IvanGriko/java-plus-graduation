@@ -20,4 +20,5 @@ public class LocationMapper {
                 .lon(location.getLon())
                 .build();
     }
+
 }

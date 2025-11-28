@@ -30,4 +30,5 @@ public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
         String date = jsonParser.getText();
         return LocalDateTime.parse(date, formatter);
     }
+
 }

@@ -1,8 +1,6 @@
 package ru.practicum.compilation.service;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.mapper.CompilationMapper;
-import ru.practicum.compilation.repository.CompilationRepository;
 import ru.practicum.compilation.model.Compilation;
+import ru.practicum.compilation.repository.CompilationRepository;
 import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
@@ -21,10 +19,9 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CompilationPublicServiceImpl implements CompilationPublicService {
 
-    CompilationRepository compilationRepository;
+    private final CompilationRepository compilationRepository;
 
     @Override
     public CompilationDto readCompilationById(Long compId) {

@@ -1,8 +1,10 @@
 package ru.practicum.compilation.dto;
 
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.validation.AtLeastOneNotNull;
 import ru.practicum.validation.NotBlankButNullAllowed;
 
@@ -13,17 +15,16 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @AtLeastOneNotNull(fields = {"events", "pinned", "title"}, message = "DTO has only null data fields")
 public class UpdateCompilationDto {
 
     @Builder.Default
-    Set<Long> events = new HashSet<>();
+    private Set<Long> events = new HashSet<>();
 
-    Boolean pinned;
+    private Boolean pinned;
 
     @NotBlankButNullAllowed
     @Size(min = 1, max = 50)
-    String title;
+    private String title;
 
 }

@@ -2,9 +2,7 @@ package ru.practicum.compilation.controller;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,10 +17,9 @@ import java.util.List;
 @RequestMapping("/compilations")
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CompilationPublicController {
 
-    CompilationPublicService compilationPublicService;
+    private final CompilationPublicService compilationPublicService;
 
     @GetMapping
     public ResponseEntity<List<CompilationDto>> getCompilation(
@@ -43,4 +40,5 @@ public class CompilationPublicController {
         CompilationDto response = compilationPublicService.readCompilationById(compId);
         return ResponseEntity.ok(response);
     }
+
 }

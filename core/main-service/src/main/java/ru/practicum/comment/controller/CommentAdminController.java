@@ -2,15 +2,13 @@ package ru.practicum.comment.controller;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.comment.service.CommentAdminService;
 import ru.practicum.comment.dto.CommentDto;
+import ru.practicum.comment.service.CommentAdminService;
 
 import java.util.List;
 
@@ -18,10 +16,9 @@ import java.util.List;
 @RequestMapping(path = "/admin")
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommentAdminController {
 
-    CommentAdminService service;
+    private final CommentAdminService service;
 
     @GetMapping("/comments/search")
     public ResponseEntity<List<CommentDto>> search(@RequestParam @NotBlank String text,

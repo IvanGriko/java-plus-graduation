@@ -9,4 +9,5 @@ public class NotBlankButNullAllowedValidator implements ConstraintValidator<NotB
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         return s == null || !s.isBlank();
     }
+
 }

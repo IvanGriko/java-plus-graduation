@@ -1,16 +1,17 @@
 package ru.practicum.comment.dto;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentCountDto {
 
-    Long eventId;
-    Long commentCount;
+    private Long eventId;
+    private Long commentCount;
 
 }

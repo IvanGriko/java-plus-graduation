@@ -2,9 +2,7 @@ package ru.practicum.comment.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +16,9 @@ import ru.practicum.comment.service.CommentPrivateService;
 @Validated
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommentPrivateController {
 
-    CommentPrivateService service;
+    private final CommentPrivateService service;
 
     @PostMapping("/users/{userId}/events/{eventId}/comments")
     public ResponseEntity<CommentDto> create(@PathVariable @Positive Long userId,

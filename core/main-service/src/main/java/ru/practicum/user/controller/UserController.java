@@ -2,15 +2,13 @@ package ru.practicum.user.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.user.service.UserService;
 import ru.practicum.user.dto.NewUserRequestDto;
 import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.service.UserService;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,10 +16,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
+
+    // MODIFY OPS
 
     @PostMapping("/admin/users")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,6 +38,8 @@ public class UserController {
         userService.delete(userId);
     }
 
+    // GET COLLECTION
+
     @GetMapping("/admin/users")
     public Collection<UserDto> getUsers(
             @RequestParam(required = false) List<Long> ids,
@@ -47,4 +48,6 @@ public class UserController {
     ) {
         return userService.findByIdListWithOffsetAndLimit(ids, from, size);
     }
+
+
 }

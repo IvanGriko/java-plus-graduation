@@ -1,15 +1,16 @@
 package ru.practicum.event.mapper;
 
-import ru.practicum.category.model.Category;
 import ru.practicum.category.mapper.CategoryMapper;
+import ru.practicum.category.model.Category;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.model.Event;
-import ru.practicum.user.model.User;
 import ru.practicum.user.mapper.UserMapper;
+import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 
 public class EventMapper {
+
 
     public static Event toEvent(
             NewEventDto newEventDto,
@@ -31,6 +32,7 @@ public class EventMapper {
                 .createdOn(LocalDateTime.now())
                 .build();
     }
+
 
     public static EventFullDto toEventFullDto(
             Event event,

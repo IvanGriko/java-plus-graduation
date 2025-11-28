@@ -17,4 +17,5 @@ public class ForbiddenException extends RuntimeException {
     public String getReason() {
         return reason;
     }
+
 }

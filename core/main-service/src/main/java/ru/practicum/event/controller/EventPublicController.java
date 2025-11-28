@@ -3,9 +3,7 @@ package ru.practicum.event.controller;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
@@ -20,12 +18,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class EventPublicController {
 
-    EventPublicService eventPublicService;
+    private final EventPublicService eventPublicService;
 
+    // Получение событий с возможностью фильтрации
     @GetMapping
     List<EventShortDto> getAllEventsByParams(
             @RequestParam(required = false) String text,
@@ -54,6 +52,7 @@ public class EventPublicController {
         return eventPublicService.getAllEventsByParams(params, request);
     }
 
+    // Получение подробной информации об опубликованном событии по его идентификатору
     @GetMapping("/{id}")
     EventFullDto getInformationAboutEventByEventId(
             @PathVariable @Positive Long id,
@@ -62,4 +61,5 @@ public class EventPublicController {
         log.info("Calling to endpoint /events/{id} GetMapping for eventId: " + id);
         return eventPublicService.getEventById(id, request);
     }
+
 }
