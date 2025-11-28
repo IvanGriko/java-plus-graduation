@@ -1,7 +1,5 @@
 package ru.practicum.ewm.client;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -20,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.EventHitDto;
 import ru.practicum.EventStatsResponseDto;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -27,23 +26,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+
 @Slf4j
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RestStatClient implements StatClient {
-    final DiscoveryClient discoveryClient;
-    final Random random = new Random();
-    final DateTimeFormatter formatter;
-    final String name;
-    String statUrl;
-    RestClient restClient;
-    boolean doRenewingServerUrl = false;
+
+    private final DiscoveryClient discoveryClient;
+    private final Random random = new Random();
+    private final DateTimeFormatter formatter;
+    private final String name;
+
+    private String statUrl;
+    private RestClient restClient;
+    private boolean doRenewingServerUrl = false;
 
     public RestStatClient(
             DiscoveryClient discoveryClient,
             @Value("${explore-with-me.stat-server.discovery.name:}") String name,
             @Value("${explore-with-me.stat-server.url:http://localhost:9090}") String url,
-            @Value("${explore-with-me.stats.datetime.format}") String format
+            @Value("${explore-with-me.stat.datetime.format}") String format
     ) {
         this.discoveryClient = discoveryClient;
         this.name = name;
@@ -55,6 +56,7 @@ public class RestStatClient implements StatClient {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         if (name == null || name.isBlank()) return;
+
         FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
         fixedBackOffPolicy.setBackOffPeriod(5000L);
         MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy();
@@ -62,6 +64,7 @@ public class RestStatClient implements StatClient {
         RetryTemplate retryTemplate = new RetryTemplate();
         retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
         retryTemplate.setRetryPolicy(retryPolicy);
+
         try {
             ServiceInstance instance = retryTemplate.execute(retryContext -> {
                 List<ServiceInstance> instances =  discoveryClient.getInstances(name);
@@ -74,6 +77,7 @@ public class RestStatClient implements StatClient {
         } catch (Exception e) {
             log.warn("Discovery server error: {}", e.getMessage());
         }
+
         doRenewingServerUrl = true;
     }
 
@@ -84,7 +88,9 @@ public class RestStatClient implements StatClient {
             List<String> urls = discoveryClient.getInstances(name).stream()
                     .map(i -> i.getUri().toString())
                     .toList();
+
             if (urls.isEmpty() || urls.contains(statUrl)) return;
+
             statUrl = urls.get(random.nextInt(urls.size()));
             restClient = RestClient.builder().baseUrl(statUrl).build();
             log.info("Retrieved new stat server url: {}", statUrl);
@@ -132,4 +138,5 @@ public class RestStatClient implements StatClient {
             return Collections.emptyList();
         }
     }
+
 }

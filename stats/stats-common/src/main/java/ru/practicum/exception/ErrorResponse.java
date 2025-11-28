@@ -1,7 +1,9 @@
 package ru.practicum.exception;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
@@ -10,17 +12,12 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ErrorResponse {
 
-    Instant timestamp;
-
-    HttpStatus status;
-
-    String error;
-
-    String message;
-
-    String path;
+    private Instant timestamp;
+    private HttpStatus status;
+    private String error;
+    private String message;
+    private String path;
 
 }

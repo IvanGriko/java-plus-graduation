@@ -13,7 +13,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
     private DateTimeFormatter formatter;
 
-    @Value("${explore-with-me.datetime.format:yyyy-MM-dd'T'HH:mm:ss}")
+    @Value("${explore-with-me.datetime.format}")
     public void setFormatter(String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
@@ -28,4 +28,5 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
             throw new IllegalArgumentException("Failed to convert string " + source + " to LocalDateTime");
         }
     }
+
 }

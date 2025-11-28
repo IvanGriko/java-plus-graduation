@@ -7,12 +7,14 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
 public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
+
     private DateTimeFormatter formatter;
 
     public LocalDateTimeDeserializer() {
@@ -20,7 +22,7 @@ public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
     }
 
     @Autowired
-    public void setFormatter(@Value("${explore-with-me.datetime.format:yyyy-MM-dd'T'HH:mm:ss}") String dateTimeFormat) {
+    public void setFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
@@ -29,4 +31,5 @@ public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
         String date = jsonParser.getText();
         return LocalDateTime.parse(date, formatter);
     }
+
 }

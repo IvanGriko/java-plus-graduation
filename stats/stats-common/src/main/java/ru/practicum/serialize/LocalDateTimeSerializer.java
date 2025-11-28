@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
 public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
+
     private DateTimeFormatter formatter;
 
     public LocalDateTimeSerializer() {
@@ -19,7 +21,7 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
     }
 
     @Autowired
-    public void setFormatter(@Value("${explore-with-me.datetime.format:yyyy-MM-dd'T'HH:mm:ss}") String dateTimeFormat) {
+    public void setFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
@@ -27,4 +29,5 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
     public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeString(localDateTime.format(formatter));
     }
+
 }

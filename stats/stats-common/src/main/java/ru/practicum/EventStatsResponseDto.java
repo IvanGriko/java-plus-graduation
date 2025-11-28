@@ -1,19 +1,20 @@
 package ru.practicum;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventStatsResponseDto {
 
-    String app;
+    private String app;
 
-    String uri;
+    private String uri;
 
-    Long hits;
+    private Long hits;
 
 }

@@ -2,8 +2,10 @@ package ru.practicum;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,20 +13,19 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventHitDto {
 
     @NotNull(message = "Field 'app' should not be null")
-    String app;
+    private String app;
 
     @NotNull(message = "Field 'uri' should not be null")
-    String uri;
+    private String uri;
 
     @NotNull(message = "Field 'ip' should not be null")
-    String ip;
+    private String ip;
 
     @NotNull(message = "Field 'timestamp' should not be null")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime timestamp;
+    private LocalDateTime timestamp;
 
 }
