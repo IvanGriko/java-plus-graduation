@@ -13,7 +13,6 @@ import ru.practicum.dto.EventHitDto;
 import ru.practicum.dto.EventStatsResponseDto;
 import ru.practicum.model.Stat;
 import ru.practicum.repository.StatServiceRepository;
-import ru.practicum.repository.StatsServiceRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
