@@ -8,22 +8,22 @@ import ru.practicum.user.model.User;
 public class RequestMapper {
 
     public static ParticipationRequestDto toDto(Request request) {
-        ParticipationRequestDto dto = new ParticipationRequestDto();
-        dto.setId(request.getId());
-        dto.setRequester(request.getRequester().getId());
-        dto.setEvent(request.getEvent().getId());
-        dto.setStatus(request.getStatus());
-        dto.setCreated(request.getCreated());
-        return dto;
+        return ParticipationRequestDto.builder()
+                .id(request.getId())
+                .requester(request.getRequester().getId())
+                .event(request.getEvent().getId())
+                .status(request.getStatus())
+                .created(request.getCreated())
+                .build();
     }
 
     public static Request toEntity(ParticipationRequestDto dto, User requester, Event event) {
-        Request request = new Request();
-        request.setId(dto.getId());
-        request.setRequester(requester);
-        request.setEvent(event);
-        request.setStatus(dto.getStatus());
-        request.setCreated(dto.getCreated());
-        return request;
+        return Request.builder()
+                .id(dto.getId())
+                .requester(requester)
+                .event(event)
+                .status(dto.getStatus())
+                .created(dto.getCreated())
+                .build();
     }
 }

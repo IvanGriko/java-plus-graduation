@@ -26,17 +26,50 @@ public class CategoryPublicController {
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Positive int size
     ) {
-        log.info("Calling the POST request to - /categories - endpoint");
-
-        return ResponseEntity.ok(service.readAllCategories(from, size));
+        log.info("GET запрос на получение всех категорий: from={}, size={}", from, size);
+        List<CategoryDto> categories = service.readAllCategories(from, size);
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{catId}")
     public ResponseEntity<CategoryDto> readCategoryById(
             @PathVariable Long catId
     ) {
-        log.info("Calling the GET request to - /categories/{catId} - endpoint");
-
-        return ResponseEntity.ok(service.readCategoryById(catId));
+        log.info("GET запрос на получение категории с ID={}", catId);
+        CategoryDto category = service.readCategoryById(catId);
+        if (category == null) {
+            log.warn("Категория с ID={} не найдена", catId);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(category);
     }
 }
+
+//@RestController
+//@RequiredArgsConstructor
+//@Validated
+//@RequestMapping(path = "/categories")
+//@Slf4j
+//public class CategoryPublicController {
+//
+//    private final CategoryPublicService service;
+//
+//    @GetMapping
+//    public ResponseEntity<List<CategoryDto>> readAllCategories(
+//            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+//            @RequestParam(defaultValue = "10") @Positive int size
+//    ) {
+//        log.info("Calling the POST request to - /categories - endpoint");
+//
+//        return ResponseEntity.ok(service.readAllCategories(from, size));
+//    }
+//
+//    @GetMapping("/{catId}")
+//    public ResponseEntity<CategoryDto> readCategoryById(
+//            @PathVariable Long catId
+//    ) {
+//        log.info("Calling the GET request to - /categories/{catId} - endpoint");
+//
+//        return ResponseEntity.ok(service.readCategoryById(catId));
+//    }
+//}

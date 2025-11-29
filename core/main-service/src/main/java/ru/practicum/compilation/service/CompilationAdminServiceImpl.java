@@ -31,33 +31,36 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto request) {
-        log.info("createCompilation - invoked");
-        Set<Event> events;
-        events = (request.getEvents() != null && !request.getEvents().isEmpty()) ?
-                new HashSet<>(eventRepository.findAllById(request.getEvents())) : new HashSet<>();
+        log.info("Создание подборки с данными: {}", request);
+        Set<Event> events = request.getEvents() != null && !request.getEvents().isEmpty()
+                ? new HashSet<>(eventRepository.findAllById(request.getEvents()))
+                : new HashSet<>();
         Compilation compilation = Compilation.builder()
                 .pinned(request.getPinned() != null && request.getPinned())
                 .title(request.getTitle())
                 .events(events)
                 .build();
-        return CompilationMapper.toCompilationDto(compilationRepository.save(compilation));
+        Compilation savedCompilation = compilationRepository.save(compilation);
+        log.info("Подборка с ID={} успешно создана", savedCompilation.getId());
+        return CompilationMapper.toCompilationDto(savedCompilation);
     }
 
     @Override
     public void deleteCompilation(Long compId) {
-        log.info("deleteCompilation(- invoked");
+        log.info("Удаление подборки с ID={}", compId);
         if (!compilationRepository.existsById(compId)) {
-            throw new NotFoundException("Compilation Not Found");
+            log.error("Подборка с ID={} не найдена", compId);
+            throw new NotFoundException("Подборка не найдена");
         }
-        log.info("Result: compilation with id {} deleted ", compId);
         compilationRepository.deleteById(compId);
+        log.info("Подборка с ID={} успешно удалена", compId);
     }
 
     @Override
     public CompilationDto updateCompilation(Long compId, UpdateCompilationDto updateCompilationDto) {
-        log.info("updateCompilation - invoked");
+        log.info("Обновление подборки с ID={} и данными: {}", compId, updateCompilationDto);
         Compilation compilation = compilationRepository.findById(compId)
-                .orElseThrow(() -> new NotFoundException("Compilation with id " + compId + " not found"));
+                .orElseThrow(() -> new NotFoundException("Подборка с указанным ID не найдена"));
         if (updateCompilationDto.getTitle() != null) {
             compilation.setTitle(updateCompilationDto.getTitle());
         }
@@ -65,11 +68,66 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
             compilation.setPinned(updateCompilationDto.getPinned());
         }
         if (updateCompilationDto.getEvents() != null && !updateCompilationDto.getEvents().isEmpty()) {
-            HashSet<Event> events = new HashSet<>(eventRepository.findAllById(updateCompilationDto.getEvents()));
+            Set<Event> events = new HashSet<>(eventRepository.findAllById(updateCompilationDto.getEvents()));
             compilation.setEvents(events);
         }
         Compilation updatedCompilation = compilationRepository.save(compilation);
-        log.info("Result: compilation with id {} updated ", compId);
+        log.info("Подборка с ID={} успешно обновлена", compId);
         return CompilationMapper.toCompilationDto(updatedCompilation);
     }
 }
+
+//@Service
+//@Transactional
+//@RequiredArgsConstructor
+//@Slf4j
+//@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+//public class CompilationAdminServiceImpl implements CompilationAdminService {
+//
+//    CompilationRepository compilationRepository;
+//    EventRepository eventRepository;
+//
+//    @Override
+//    public CompilationDto createCompilation(NewCompilationDto request) {
+//        log.info("createCompilation - invoked");
+//        Set<Event> events;
+//        events = (request.getEvents() != null && !request.getEvents().isEmpty()) ?
+//                new HashSet<>(eventRepository.findAllById(request.getEvents())) : new HashSet<>();
+//        Compilation compilation = Compilation.builder()
+//                .pinned(request.getPinned() != null && request.getPinned())
+//                .title(request.getTitle())
+//                .events(events)
+//                .build();
+//        return CompilationMapper.toCompilationDto(compilationRepository.save(compilation));
+//    }
+//
+//    @Override
+//    public void deleteCompilation(Long compId) {
+//        log.info("deleteCompilation(- invoked");
+//        if (!compilationRepository.existsById(compId)) {
+//            throw new NotFoundException("Compilation Not Found");
+//        }
+//        log.info("Result: compilation with id {} deleted ", compId);
+//        compilationRepository.deleteById(compId);
+//    }
+//
+//    @Override
+//    public CompilationDto updateCompilation(Long compId, UpdateCompilationDto updateCompilationDto) {
+//        log.info("updateCompilation - invoked");
+//        Compilation compilation = compilationRepository.findById(compId)
+//                .orElseThrow(() -> new NotFoundException("Compilation with id " + compId + " not found"));
+//        if (updateCompilationDto.getTitle() != null) {
+//            compilation.setTitle(updateCompilationDto.getTitle());
+//        }
+//        if (updateCompilationDto.getPinned() != null) {
+//            compilation.setPinned(updateCompilationDto.getPinned());
+//        }
+//        if (updateCompilationDto.getEvents() != null && !updateCompilationDto.getEvents().isEmpty()) {
+//            HashSet<Event> events = new HashSet<>(eventRepository.findAllById(updateCompilationDto.getEvents()));
+//            compilation.setEvents(events);
+//        }
+//        Compilation updatedCompilation = compilationRepository.save(compilation);
+//        log.info("Result: compilation with id {} updated ", compId);
+//        return CompilationMapper.toCompilationDto(updatedCompilation);
+//    }
+//}

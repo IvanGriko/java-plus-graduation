@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/events")
+@RequiredArgsConstructor
 @Slf4j
 public class EventPublicController {
 
     private final EventPublicService eventPublicService;
 
     @GetMapping
-    List<EventShortDto> getAllEventsByParams(
+    public List<EventShortDto> getAllEventsByParams(
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) Boolean paid,
@@ -47,16 +47,62 @@ public class EventPublicController {
                 .from(from)
                 .size(size)
                 .build();
-        log.info("Calling to endpoint /events GetMapping for params: " + params.toString());
+        log.info("Получение всех событий с параметрами: {}", params);
         return eventPublicService.getAllEventsByParams(params, request);
     }
 
     @GetMapping("/{id}")
-    EventFullDto getInformationAboutEventByEventId(
+    public EventFullDto getInformationAboutEventByEventId(
             @PathVariable @Positive Long id,
             HttpServletRequest request
     ) {
-        log.info("Calling to endpoint /events/{id} GetMapping for eventId: " + id);
+        log.info("Получение информации о событии с ID={}", id);
         return eventPublicService.getEventById(id, request);
     }
 }
+
+//@RestController
+//@RequiredArgsConstructor
+//@RequestMapping("/events")
+//@Slf4j
+//public class EventPublicController {
+//
+//    private final EventPublicService eventPublicService;
+//
+//    @GetMapping
+//    List<EventShortDto> getAllEventsByParams(
+//            @RequestParam(required = false) String text,
+//            @RequestParam(required = false) List<Long> categories,
+//            @RequestParam(required = false) Boolean paid,
+//            @RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+//            @RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+//            @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+//            @RequestParam(defaultValue = "EVENT_DATE") EventSort eventSort,
+//            @RequestParam(defaultValue = "0") Long from,
+//            @RequestParam(defaultValue = "10") Long size,
+//            HttpServletRequest request
+//    ) {
+//        EventParams params = EventParams.builder()
+//                .text(text)
+//                .categories(categories)
+//                .paid(paid)
+//                .rangeStart(rangeStart)
+//                .rangeEnd(rangeEnd)
+//                .onlyAvailable(onlyAvailable)
+//                .eventSort(eventSort)
+//                .from(from)
+//                .size(size)
+//                .build();
+//        log.info("Calling to endpoint /events GetMapping for params: " + params.toString());
+//        return eventPublicService.getAllEventsByParams(params, request);
+//    }
+//
+//    @GetMapping("/{id}")
+//    EventFullDto getInformationAboutEventByEventId(
+//            @PathVariable @Positive Long id,
+//            HttpServletRequest request
+//    ) {
+//        log.info("Calling to endpoint /events/{id} GetMapping for eventId: " + id);
+//        return eventPublicService.getEventById(id, request);
+//    }
+//}

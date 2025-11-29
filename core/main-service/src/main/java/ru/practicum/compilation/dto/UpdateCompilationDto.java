@@ -14,7 +14,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AtLeastOneNotNull(fields = {"events", "pinned", "title"}, message = "DTO has only null data fields")
+@AtLeastOneNotNull(fields = {"events", "pinned", "title"},
+        message = "Хотя бы одно из полей 'events', 'pinned' или 'title' должен быть заполнен")
 public class UpdateCompilationDto {
 
     @Builder.Default
@@ -23,7 +24,26 @@ public class UpdateCompilationDto {
     Boolean pinned;
 
     @NotBlankButNullAllowed
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "Длина заголовка должна быть от 1 до 50 символов")
     String title;
 
 }
+
+//@Data
+//@Builder
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@FieldDefaults(level = AccessLevel.PRIVATE)
+//@AtLeastOneNotNull(fields = {"events", "pinned", "title"}, message = "DTO has only null data fields")
+//public class UpdateCompilationDto {
+//
+//    @Builder.Default
+//    Set<Long> events = new HashSet<>();
+//
+//    Boolean pinned;
+//
+//    @NotBlankButNullAllowed
+//    @Size(min = 1, max = 50)
+//    String title;
+//
+//}

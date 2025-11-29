@@ -2,6 +2,7 @@ package ru.practicum.compilation.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,20 +26,56 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     @Override
     public CompilationDto readCompilationById(Long compId) {
-        log.info("readCompilationById - invoked");
-        Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
-                new NotFoundException("Compilation not found"));
-        log.info("Result:  {}", compilation);
+        log.info("Получение подборки с ID={}", compId);
+        Compilation compilation = compilationRepository.findById(compId)
+                .orElseThrow(() -> {
+                    log.error("Подборка с ID={} не найдена", compId);
+                    return new NotFoundException("Подборка не найдена");
+                });
+        log.info("Результат: {}", compilation);
         return CompilationMapper.toCompilationDto(compilation);
     }
 
     @Override
     public List<CompilationDto> readAllCompilations(Boolean pinned, int from, int size) {
-        Pageable pageable = PageRequest.of(from, size, Sort.Direction.ASC, "id");
-        List<Compilation> compilations;
-        compilations = (pinned == null) ? compilationRepository.findAll(pageable).getContent() :
-                compilationRepository.findAllByPinned(pinned, pageable);
-        log.info("Result: {}", compilations);
+        log.info("Получение подборок, pinned={}, from={}, size={}", pinned, from, size);
+        Pageable pageable = PageRequest.of(from / size, size, Sort.Direction.ASC, "id");
+        Page<Compilation> page;
+        if (pinned == null) {
+            page = compilationRepository.findAll(pageable);
+        } else {
+            page = (Page<Compilation>) compilationRepository.findAllByPinned(pinned, pageable);
+        }
+        List<Compilation> compilations = page.getContent();
+        log.info("Результат: количество подборок = {}", compilations.size());
         return CompilationMapper.toCompilationDtoList(compilations);
     }
 }
+
+//@Service
+//@Transactional(readOnly = true)
+//@RequiredArgsConstructor
+//@Slf4j
+//public class CompilationPublicServiceImpl implements CompilationPublicService {
+//
+//    private final CompilationRepository compilationRepository;
+//
+//    @Override
+//    public CompilationDto readCompilationById(Long compId) {
+//        log.info("readCompilationById - invoked");
+//        Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
+//                new NotFoundException("Compilation not found"));
+//        log.info("Result:  {}", compilation);
+//        return CompilationMapper.toCompilationDto(compilation);
+//    }
+//
+//    @Override
+//    public List<CompilationDto> readAllCompilations(Boolean pinned, int from, int size) {
+//        Pageable pageable = PageRequest.of(from, size, Sort.Direction.ASC, "id");
+//        List<Compilation> compilations;
+//        compilations = (pinned == null) ? compilationRepository.findAll(pageable).getContent() :
+//                compilationRepository.findAllByPinned(pinned, pageable);
+//        log.info("Result: {}", compilations);
+//        return CompilationMapper.toCompilationDtoList(compilations);
+//    }
+//}

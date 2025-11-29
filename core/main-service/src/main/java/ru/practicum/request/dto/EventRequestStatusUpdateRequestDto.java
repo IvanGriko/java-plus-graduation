@@ -16,11 +16,11 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventRequestStatusUpdateRequestDto {
 
-    @NotEmpty(message = "Field 'requestIds' shouldn't be empty")
+    @NotEmpty(message = "Список 'requestIds' не должен быть пустым")
     List<Long> requestIds;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Field 'status' shouldn't be null")
+    @NotNull(message = "Поле 'status' не должно быть пустым")
     ParticipationRequestStatus status;
 
 }

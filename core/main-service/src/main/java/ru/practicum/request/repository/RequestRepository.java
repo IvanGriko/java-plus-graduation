@@ -11,20 +11,21 @@ import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
-
-    long countByEventIdAndStatus(Long eventId, ParticipationRequestStatus status);
-
     List<Request> findByRequesterId(Long userId);
 
     List<Request> findByEventId(Long eventId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Request r SET r.status = :status WHERE r.id IN :ids")
-    void updateStatusByIds(
-            @Param("ids") List<Long> ids,
-            @Param("status") ParticipationRequestStatus status
-    );
+    @Query("""
+            UPDATE Request r
+            SET r.status = :status
+            WHERE r.id IN :ids
+            """)
+    void updateStatusByIds(@Param("ids") List<Long> ids, @Param("status") ParticipationRequestStatus status);
+
+    boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
+
+    long countByEventIdAndStatus(Long eventId, ParticipationRequestStatus status);
 
     @Modifying(clearAutomatically = true)
     @Query("""
@@ -33,18 +34,52 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             WHERE r.event.id = :eventId
             AND r.status = 'PENDING'
             """)
-    void setStatusToRejectForAllPending(
-            @Param("eventId") Long eventId
-    );
+    void setStatusToRejectForAllPending(@Param("eventId") Long eventId);
 
     @Query("""
-            SELECT r.event.id, count(r)
+            SELECT r.event.id, COUNT(r)
             FROM Request r
             WHERE r.event.id IN :eventIds
             GROUP BY r.event.id
             """)
-    List<Object[]> getConfirmedRequestsByEventIds(
-            @Param("eventIds") List<Long> eventIds
-    );
+    List<Object[]> getConfirmedRequestsByEventIds(@Param("eventIds") List<Long> eventIds);
 
 }
+
+//    boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
+//
+//    long countByEventIdAndStatus(Long eventId, ParticipationRequestStatus status);
+//
+//    List<Request> findByRequesterId(Long userId);
+//
+//    List<Request> findByEventId(Long eventId);
+//
+//    @Modifying(clearAutomatically = true)
+//    @Query("UPDATE Request r SET r.status = :status WHERE r.id IN :ids")
+//    void updateStatusByIds(
+//            @Param("ids") List<Long> ids,
+//            @Param("status") ParticipationRequestStatus status
+//    );
+//
+//    @Modifying(clearAutomatically = true)
+//    @Query("""
+//            UPDATE Request r
+//            SET r.status = 'REJECTED'
+//            WHERE r.event.id = :eventId
+//            AND r.status = 'PENDING'
+//            """)
+//    void setStatusToRejectForAllPending(
+//            @Param("eventId") Long eventId
+//    );
+//
+//    @Query("""
+//            SELECT r.event.id, count(r)
+//            FROM Request r
+//            WHERE r.event.id IN :eventIds
+//            GROUP BY r.event.id
+//            """)
+//    List<Object[]> getConfirmedRequestsByEventIds(
+//            @Param("eventIds") List<Long> eventIds
+//    );
+//
+//}

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @ControllerAdvice
@@ -23,15 +24,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException e,
                                                               HttpServletRequest request) {
-        String errorMessage = e.getConstraintViolations().stream()
+        Optional<String> message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
-                .findFirst()
-                .orElse("Invalid input");
-        log.debug("VALIDATION FAILED: {}", e.getMessage());
+                .findFirst();
+        log.info("Провал валидации: {}", message.orElse("Некорректный ввод"));
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .reason("Validation Failed")
-                .message(errorMessage)
+                .reason("Провал валидации")
+                .message(message.orElse("Некорректный ввод"))
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
@@ -40,30 +40,38 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
                                                                           HttpServletRequest request) {
-        String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
-        Object target = e.getBindingResult().getTarget();
-        log.debug("VALIDATION FAILED: {} for {}", errorMessage, target);
+        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        log.info("Провал валидации: {}", errorMessage);
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .reason("Validation Failed")
+                .reason("Провал валидации")
                 .message(errorMessage)
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({
-            IllegalArgumentException.class,                        // wrong arguments like -1
-            MethodArgumentTypeMismatchException.class,             // argument type mismatch
-            HttpMessageNotReadableException.class,                 // wrong json in request body
-            MissingServletRequestParameterException.class          // missing RequestParam
-    })
-    public ResponseEntity<ApiError> handleIllegalArgument(Throwable e,
-                                                          HttpServletRequest request) {
-        log.debug("ILLEGAL ARGUMENT: {}", e.getMessage());
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException e,
+                                                           HttpServletRequest request) {
+        log.error("Возникла ошибка сервера: {}", e.getMessage(), e);
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .reason("Ошибка сервера")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentTypeMismatchException.class,
+            HttpMessageNotReadableException.class, MissingServletRequestParameterException.class})
+    public ResponseEntity<ApiError> handleIllegalArguments(Exception e,
+                                                           HttpServletRequest request) {
+        log.info("Неправильный запрос: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .reason("Illegal Argument")
+                .reason("Неправильный запрос")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -73,23 +81,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ApiError> handleMissingRequestHeaderException(MissingRequestHeaderException e,
                                                                         HttpServletRequest request) {
-        log.debug("MISSING HEADER: {}", e.getMessage());
+        log.info("Отсутствует требуемый заголовок: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .reason("Missing header")
-                .message(e.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiError> handleBadRequestException(BadRequestException e,
-                                                              HttpServletRequest request) {
-        log.debug("BAD REQUEST: {}", e.getMessage());
-        ApiError apiError = ApiError.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .reason(e.getReason())
+                .reason("Отсутствует заголовок")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -99,10 +94,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ApiError> handleConflictException(ConflictException e,
                                                             HttpServletRequest request) {
-        log.debug("CONFLICT: {}", e.getMessage());
+        log.info("Конфликт ресурсов: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.CONFLICT)
-                .reason(e.getReason())
+                .reason("Конфликт")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -112,10 +107,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ApiError> handleForbiddenException(ForbiddenException e,
                                                              HttpServletRequest request) {
-        log.debug("FORBIDDEN: {}", e.getMessage());
+        log.info("Доступ запрещён: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.FORBIDDEN)
-                .reason(e.getReason())
+                .reason("Доступ запрещён")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -125,26 +120,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiError> handleNotFoundException(NotFoundException e,
                                                             HttpServletRequest request) {
-        log.debug("NOT FOUND: {}", e.getMessage());
+        log.info("Ресурс не найден: {}", e.getMessage());
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.NOT_FOUND)
-                .reason(e.getReason())
+                .reason("Ресурс не найден")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException e,
-                                                           HttpServletRequest request) {
-        log.debug("INTERNAL SERVER ERROR: {}", e.getMessage());
-        ApiError apiError = ApiError.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .reason("Internal Server Error")
-                .message(e.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

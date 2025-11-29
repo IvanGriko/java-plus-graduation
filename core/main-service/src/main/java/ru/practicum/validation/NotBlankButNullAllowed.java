@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotBlankButNullAllowed {
 
-    String message() default "Shouldn't be blank (but can be null)";
+    String message() default "Поле не должно быть пустым (но может быть null)";
 
     Class<?>[] groups() default {};
 

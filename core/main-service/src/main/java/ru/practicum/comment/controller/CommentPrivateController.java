@@ -21,29 +21,70 @@ public class CommentPrivateController {
     private final CommentPrivateService service;
 
     @PostMapping("/users/{userId}/events/{eventId}/comments")
-    public ResponseEntity<CommentDto> create(@PathVariable @Positive Long userId,
-                                             @PathVariable @Positive Long eventId,
-                                             @RequestBody @Valid CommentCreateDto commentCreateDto) {
-        log.info("Calling the GET request to /users/{userId}/events/{eventId}/comment endpoint");
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.createComment(userId, eventId, commentCreateDto));
+    public ResponseEntity<CommentDto> createComment(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
+            @RequestBody @Valid CommentCreateDto commentCreateDto
+    ) {
+        log.info("Создание комментария пользователя с ID {} к событию с ID {}", userId, eventId);
+        CommentDto createdComment = service.createComment(userId, eventId, commentCreateDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
     }
 
     @DeleteMapping("/users/{userId}/comments/{comId}")
-    public ResponseEntity<String> delete(@PathVariable @Positive Long userId,
-                                         @PathVariable @Positive Long comId) {
-        log.info("Calling the GET request to /users/{userId}/comment/{comId} endpoint");
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long comId
+    ) {
+        log.info("Удаление комментария с ID {} пользователем с ID {}", comId, userId);
         service.deleteComment(userId, comId);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body("Comment deleted by user: " + comId);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/users/{userId}/comments/{comId}")
-    public ResponseEntity<CommentDto> patch(@PathVariable @Positive Long userId,
-                                            @PathVariable @Positive Long comId,
-                                            @RequestBody @Valid CommentCreateDto commentCreateDto) {
-        log.info("Calling the PATCH request to users/{userId}/comment/{comId} endpoint");
-        return ResponseEntity.ok(service.patchComment(userId, comId, commentCreateDto));
+    public ResponseEntity<CommentDto> updateComment(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long comId,
+            @RequestBody @Valid CommentCreateDto commentCreateDto
+    ) {
+        log.info("Обновление комментария с ID {} пользователем с ID {}", comId, userId);
+        CommentDto updatedComment = service.patchComment(userId, comId, commentCreateDto);
+        return ResponseEntity.ok(updatedComment);
     }
 }
+
+//@RestController
+//@Validated
+//@RequiredArgsConstructor
+//@Slf4j
+//public class CommentPrivateController {
+//
+//    private final CommentPrivateService service;
+//
+//    @PostMapping("/users/{userId}/events/{eventId}/comments")
+//    public ResponseEntity<CommentDto> create(@PathVariable @Positive Long userId,
+//                                             @PathVariable @Positive Long eventId,
+//                                             @RequestBody @Valid CommentCreateDto commentCreateDto) {
+//        log.info("Calling the GET request to /users/{userId}/events/{eventId}/comment endpoint");
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(service.createComment(userId, eventId, commentCreateDto));
+//    }
+//
+//    @DeleteMapping("/users/{userId}/comments/{comId}")
+//    public ResponseEntity<String> delete(@PathVariable @Positive Long userId,
+//                                         @PathVariable @Positive Long comId) {
+//        log.info("Calling the GET request to /users/{userId}/comment/{comId} endpoint");
+//        service.deleteComment(userId, comId);
+//        return ResponseEntity
+//                .status(HttpStatus.NO_CONTENT)
+//                .body("Comment deleted by user: " + comId);
+//    }
+//
+//    @PatchMapping("/users/{userId}/comments/{comId}")
+//    public ResponseEntity<CommentDto> patch(@PathVariable @Positive Long userId,
+//                                            @PathVariable @Positive Long comId,
+//                                            @RequestBody @Valid CommentCreateDto commentCreateDto) {
+//        log.info("Calling the PATCH request to users/{userId}/comment/{comId} endpoint");
+//        return ResponseEntity.ok(service.patchComment(userId, comId, commentCreateDto));
+//    }
+//}

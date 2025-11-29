@@ -48,7 +48,7 @@ public class JpaSpecifications {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("eventDate"), params.getRangeStart()));
             if (params.getRangeEnd() != null)
                 predicates.add(cb.lessThanOrEqualTo(root.get("eventDate"), params.getRangeEnd()));
-            if (params.getOnlyAvailable() == true) {
+            if (params.getOnlyAvailable()) {
                 Join<Event, Request> requestJoin = root.join("requests", JoinType.LEFT);
                 requestJoin.on(cb.equal(requestJoin.get("status"), ParticipationRequestStatus.CONFIRMED));
                 query.groupBy(root.get("id"));

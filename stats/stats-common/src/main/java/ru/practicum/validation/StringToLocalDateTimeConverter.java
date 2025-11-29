@@ -23,7 +23,6 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
         if (source == null || source.isEmpty()) {
             throw new IllegalArgumentException("Не указан временной диапазон для преобразования");
         }
-
         try {
             return LocalDateTime.parse(source, formatter);
         } catch (DateTimeParseException e) {

@@ -26,42 +26,96 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     @Override
     public CategoryDto createCategory(CategoryDto requestCategory) {
-        log.info("createCategories - invoked");
+        log.info("Создание новой категории: {}", requestCategory.getName());
         if (categoryRepository.existsByName(requestCategory.getName())) {
-            log.error("Category name not unique {}", requestCategory.getName());
-            throw new ConflictException("Category with this name already exists");
+            log.error("Категория с таким названием уже существует: {}", requestCategory.getName());
+            throw new ConflictException("Категория с таким названием уже существует");
         }
-        Category result = categoryRepository.saveAndFlush(CategoryMapper.toCategories(requestCategory));
-        log.info("Result: category - {} - saved", result.getName());
-        return CategoryMapper.toCategoryDto(result);
+        Category createdCategory = categoryRepository.save(CategoryMapper.toCategories(requestCategory));
+        log.info("Категория '{}' успешно создана", createdCategory.getName());
+        return CategoryMapper.toCategoryDto(createdCategory);
     }
 
     @Override
     public void deleteCategory(Long catId) {
-        log.info("deleteCategories - invoked");
+        log.info("Удаление категории с ID={}", catId);
         if (!categoryRepository.existsById(catId)) {
-            log.error("Category with this id does not exist {}", catId);
-            throw new NotFoundException("Category with this id does not exist");
+            log.error("Категория с ID={} не найдена", catId);
+            throw new NotFoundException("Категория с указанным ID не найдена");
         }
         if (eventRepository.existsByCategoryId(catId)) {
-            throw new ConflictException("Can't delete a category with associated events");
+            log.error("Нельзя удалить категорию, потому что с ней связаны события");
+            throw new ConflictException("Нельзя удалить категорию, потому что с ней связаны события");
         }
-        log.info("Result: category with id - {} - deleted", catId);
         categoryRepository.deleteById(catId);
+        log.info("Категория с ID={} успешно удалена", catId);
     }
 
     @Override
     public CategoryDto updateCategory(Long catId, CategoryDto categoryDto) {
-        log.info("updateCategories - invoked");
-        Category category = categoryRepository.findById(catId).orElseThrow(()
-                -> new NotFoundException("This Category not found"));
-        if (!category.getName().equals(categoryDto.getName()) &&
+        log.info("Обновление категории с ID={}: {}", catId, categoryDto.getName());
+        Category existingCategory = categoryRepository.findById(catId)
+                .orElseThrow(() -> new NotFoundException("Категория с указанным ID не найдена"));
+        if (!existingCategory.getName().equals(categoryDto.getName()) &&
                 categoryRepository.existsByName(categoryDto.getName())) {
-            log.error("Category with this name not unique: {}", categoryDto.getName());
-            throw new ConflictException("Category with this name not unique: " + categoryDto.getName());
+            log.error("Категория с таким названием уже существует: {}", categoryDto.getName());
+            throw new ConflictException("Категория с таким названием уже существует");
         }
-        category.setName(categoryDto.getName());
-        log.info("Result: category - {} updated", category.getName());
-        return CategoryMapper.toCategoryDto(category);
+        existingCategory.setName(categoryDto.getName());
+        categoryRepository.save(existingCategory);
+        log.info("Категория с ID={} успешно обновлена", catId);
+        return CategoryMapper.toCategoryDto(existingCategory);
     }
 }
+
+//@Service
+//@RequiredArgsConstructor
+//@Slf4j
+//@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+//@Transactional(readOnly = false)
+//public class CategoryAdminServiceImpl implements CategoryAdminService {
+//
+//    CategoryRepository categoryRepository;
+//    EventRepository eventRepository;
+//
+//    @Override
+//    public CategoryDto createCategory(CategoryDto requestCategory) {
+//        log.info("Создание новой категории: {}", requestCategory.getName());
+//        if (categoryRepository.existsByName(requestCategory.getName())) {
+//            log.error("Категория с таким названием уже существует: {}", requestCategory.getName());
+//            throw new ConflictException("Категория с таким названием уже существует");
+//        }
+//        Category createdCategory = categoryRepository.saveAndFlush(CategoryMapper.toCategories(requestCategory));
+//        log.info("Категория '{}' успешно создана", createdCategory.getName());
+//        return CategoryMapper.toCategoryDto(createdCategory);
+//    }
+//
+//    @Override
+//    public void deleteCategory(Long catId) {
+//        log.info("deleteCategories - invoked");
+//        if (!categoryRepository.existsById(catId)) {
+//            log.error("Category with this id does not exist {}", catId);
+//            throw new NotFoundException("Category with this id does not exist");
+//        }
+//        if (eventRepository.existsByCategoryId(catId)) {
+//            throw new ConflictException("Can't delete a category with associated events");
+//        }
+//        log.info("Result: category with id - {} - deleted", catId);
+//        categoryRepository.deleteById(catId);
+//    }
+//
+//    @Override
+//    public CategoryDto updateCategory(Long catId, CategoryDto categoryDto) {
+//        log.info("updateCategories - invoked");
+//        Category category = categoryRepository.findById(catId).orElseThrow(()
+//                -> new NotFoundException("This Category not found"));
+//        if (!category.getName().equals(categoryDto.getName()) &&
+//                categoryRepository.existsByName(categoryDto.getName())) {
+//            log.error("Category with this name not unique: {}", categoryDto.getName());
+//            throw new ConflictException("Category with this name not unique: " + categoryDto.getName());
+//        }
+//        category.setName(categoryDto.getName());
+//        log.info("Result: category - {} updated", category.getName());
+//        return CategoryMapper.toCategoryDto(category);
+//    }
+//}

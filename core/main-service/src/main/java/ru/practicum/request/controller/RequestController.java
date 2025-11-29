@@ -23,31 +23,31 @@ public class RequestController {
     @PostMapping("/users/{userId}/requests")
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto addRequest(
-            @PathVariable @Positive(message = "User Id not valid") Long userId,
-            @RequestParam @Positive(message = "Event Id not valid") Long eventId
+            @PathVariable @Positive(message = "Указан некорректный идентификатор пользователя") Long userId,
+            @RequestParam @Positive(message = "Указан некорректный идентификатор события") Long eventId
     ) {
         return requestService.addRequest(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/requests/{requestId}/cancel")
     public ParticipationRequestDto cancelRequest(
-            @PathVariable @Positive(message = "User Id not valid") Long userId,
-            @PathVariable @Positive(message = "Request Id not valid") Long requestId
+            @PathVariable @Positive(message = "Указан некорректный идентификатор пользователя") Long userId,
+            @PathVariable @Positive(message = "Указан некорректный идентификатор запроса") Long requestId
     ) {
         return requestService.cancelRequest(userId, requestId);
     }
 
     @GetMapping("/users/{userId}/requests")
     public Collection<ParticipationRequestDto> getRequesterRequests(
-            @PathVariable @Positive(message = "User Id not valid") Long userId
+            @PathVariable @Positive(message = "Указан некорректный идентификатор пользователя") Long userId
     ) {
         return requestService.findRequesterRequests(userId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}/requests")
     public EventRequestStatusUpdateResultDto moderateRequest(
-            @PathVariable @Positive(message = "User Id not valid") Long userId,
-            @PathVariable @Positive(message = "Event Id not valid") Long eventId,
+            @PathVariable @Positive(message = "Указан некорректный идентификатор пользователя") Long userId,
+            @PathVariable @Positive(message = "Указан некорректный идентификатор события") Long eventId,
             @RequestBody @Valid EventRequestStatusUpdateRequestDto updateRequestDto
     ) {
         return requestService.moderateRequest(userId, eventId, updateRequestDto);
@@ -55,9 +55,58 @@ public class RequestController {
 
     @GetMapping("/users/{userId}/events/{eventId}/requests")
     public Collection<ParticipationRequestDto> getEventRequests(
-            @PathVariable @Positive(message = "User Id not valid") Long userId,
-            @PathVariable @Positive(message = "Event Id not valid") Long eventId
+            @PathVariable @Positive(message = "Указан некорректный идентификатор пользователя") Long userId,
+            @PathVariable @Positive(message = "Указан некорректный идентификатор события") Long eventId
     ) {
         return requestService.findEventRequests(userId, eventId);
     }
 }
+
+//@RestController
+//@RequiredArgsConstructor
+//@Validated
+//public class RequestController {
+//
+//    private final RequestService requestService;
+//
+//    @PostMapping("/users/{userId}/requests")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ParticipationRequestDto addRequest(
+//            @PathVariable @Positive(message = "User Id not valid") Long userId,
+//            @RequestParam @Positive(message = "Event Id not valid") Long eventId
+//    ) {
+//        return requestService.addRequest(userId, eventId);
+//    }
+//
+//    @PatchMapping("/users/{userId}/requests/{requestId}/cancel")
+//    public ParticipationRequestDto cancelRequest(
+//            @PathVariable @Positive(message = "User Id not valid") Long userId,
+//            @PathVariable @Positive(message = "Request Id not valid") Long requestId
+//    ) {
+//        return requestService.cancelRequest(userId, requestId);
+//    }
+//
+//    @GetMapping("/users/{userId}/requests")
+//    public Collection<ParticipationRequestDto> getRequesterRequests(
+//            @PathVariable @Positive(message = "User Id not valid") Long userId
+//    ) {
+//        return requestService.findRequesterRequests(userId);
+//    }
+//
+//    @PatchMapping("/users/{userId}/events/{eventId}/requests")
+//    public EventRequestStatusUpdateResultDto moderateRequest(
+//            @PathVariable @Positive(message = "User Id not valid") Long userId,
+//            @PathVariable @Positive(message = "Event Id not valid") Long eventId,
+//            @RequestBody @Valid EventRequestStatusUpdateRequestDto updateRequestDto
+//    ) {
+//        return requestService.moderateRequest(userId, eventId, updateRequestDto);
+//    }
+//
+//    @GetMapping("/users/{userId}/events/{eventId}/requests")
+//    public Collection<ParticipationRequestDto> getEventRequests(
+//            @PathVariable @Positive(message = "User Id not valid") Long userId,
+//            @PathVariable @Positive(message = "Event Id not valid") Long eventId
+//    ) {
+//        return requestService.findEventRequests(userId, eventId);
+//    }
+//}
