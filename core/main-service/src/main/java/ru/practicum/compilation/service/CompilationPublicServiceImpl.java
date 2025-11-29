@@ -38,16 +38,11 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     @Override
     public List<CompilationDto> readAllCompilations(Boolean pinned, int from, int size) {
-        log.info("Получение подборок, pinned={}, from={}, size={}", pinned, from, size);
-        Pageable pageable = PageRequest.of(from / size, size, Sort.Direction.ASC, "id");
-        Page<Compilation> page;
-        if (pinned == null) {
-            page = compilationRepository.findAll(pageable);
-        } else {
-            page = (Page<Compilation>) compilationRepository.findAllByPinned(pinned, pageable);
-        }
-        List<Compilation> compilations = page.getContent();
-        log.info("Результат: количество подборок = {}", compilations.size());
+        Pageable pageable = PageRequest.of(from, size, Sort.Direction.ASC, "id");
+        List<Compilation> compilations;
+        compilations = (pinned == null) ? compilationRepository.findAll(pageable).getContent() :
+                compilationRepository.findAllByPinned(pinned, pageable);
+        log.info("Результат: {}", compilations);
         return CompilationMapper.toCompilationDtoList(compilations);
     }
 }

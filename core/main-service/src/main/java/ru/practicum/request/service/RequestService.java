@@ -47,20 +47,19 @@ public class RequestService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие с указанным идентификатором не найдено"));
         if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
-            throw new ConflictException("Пользователь уже подавал заявку на это событие", "Запрещённое действие");
+            throw new ConflictException("Пользователь уже подал заявку на участие в этом событии", "Запрещённое действие");
         }
         if (Objects.equals(requester.getId(), event.getInitiator().getId())) {
-            throw new ConflictException("Организатор не может подавать заявку на своё событие", "Запрещённое действие");
+            throw new ConflictException("Организатор события не может подавать заявку на участие в нём", "Запрещённое действие");
         }
         if (event.getState() != State.PUBLISHED) {
-            throw new ConflictException("Нельзя подавать заявки на неопубликованные события", "Запрещённое действие");
+            throw new ConflictException("Участие в неопубликованном событии невозможно", "Запрещённое действие");
         }
         long confirmedRequestsCount = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
         if (event.getParticipantLimit() > 0 && confirmedRequestsCount >= event.getParticipantLimit()) {
-            throw new ConflictException("Количество участников достигло установленного лимита", "Запрещённое действие");
+            throw new ConflictException("Достигнут предел участников события", "Запрещённое действие");
         }
-        ParticipationRequestStatus initialRequestStatus = event.getRequestModeration() ?
-                ParticipationRequestStatus.PENDING : ParticipationRequestStatus.CONFIRMED;
+        ParticipationRequestStatus initialRequestStatus = ParticipationRequestStatus.CONFIRMED;
         Request newRequest = Request.builder()
                 .requester(requester)
                 .event(event)
