@@ -41,37 +41,33 @@ public class RequestService {
 
     @Transactional(readOnly = false)
     public ParticipationRequestDto addRequest(Long userId, Long eventId) {
-        log.info("Добавление заявки участника с id {} на событие с id {}", userId, eventId);
         User requester = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с указанным идентификатором не найден"));
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие с указанным идентификатором не найдено"));
+                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
         if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
-            throw new ConflictException("Пользователь уже подал заявку на участие в этом событии", "Запрещённое действие");
+            throw new ConflictException("User tries to make duplicate request", "Forbidden action");
         }
         if (Objects.equals(requester.getId(), event.getInitiator().getId())) {
-            throw new ConflictException("Организатор события не может подавать заявку на участие в нём", "Запрещённое действие");
+            throw new ConflictException("User tries to request for his own event", "Forbidden action");
         }
         if (event.getState() != State.PUBLISHED) {
-            throw new ConflictException("Участие в неопубликованном событии невозможно", "Запрещённое действие");
+            throw new ConflictException("User tries to request for non-published event", "Forbidden action");
         }
-        long confirmedRequestsCount = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
-        if (event.getParticipantLimit() > 0 && confirmedRequestsCount >= event.getParticipantLimit()) {
-            throw new ConflictException("Достигнут предел участников события", "Запрещённое действие");
+        long confirmedRequestCount = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
+        if (event.getParticipantLimit() > 0 && confirmedRequestCount >= event.getParticipantLimit()) {
+            throw new ConflictException("Participants limit is already reached", "Forbidden action");
         }
-        ParticipationRequestStatus initialRequestStatus = ParticipationRequestStatus.CONFIRMED;
+        ParticipationRequestStatus newRequestStatus = ParticipationRequestStatus.PENDING;
+        if (!event.getRequestModeration()) newRequestStatus = ParticipationRequestStatus.CONFIRMED;
+        if (Objects.equals(event.getParticipantLimit(), 0L)) newRequestStatus = ParticipationRequestStatus.CONFIRMED;
         Request newRequest = Request.builder()
                 .requester(requester)
                 .event(event)
-                .status(initialRequestStatus)
+                .status(newRequestStatus)
                 .created(LocalDateTime.now())
                 .build();
-        try {
-            requestRepository.save(newRequest);
-        } catch (DataIntegrityViolationException ex) {
-            log.warn("Ошибка сохранения заявки: {}", ex.getMessage());
-            throw new ConflictException("Заявка не была успешно сохранена", "Ошибка серверной стороны");
-        }
+        requestRepository.save(newRequest);
         return RequestMapper.toDto(newRequest);
     }
 
