@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.EventHitDto;
-import ru.practicum.EventStatsResponseDto;
+import ru.practicum.dto.EventHitDto;
+import ru.practicum.dto.EventStatsResponseDto;
 import ru.practicum.model.Stat;
+import ru.practicum.repository.StatServiceRepository;
 import ru.practicum.repository.StatsServiceRepository;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ class StatsServiceImplTest {
     StatsService statsService;
 
     @Autowired
-    StatsServiceRepository statsServiceRepository;
+    StatServiceRepository statServiceRepository;
 
     EventHitDto eventHitDto1;
     EventHitDto eventHitDto2;
@@ -71,7 +72,7 @@ class StatsServiceImplTest {
     void hit_ShouldSaveEventSuccessfully() {
         statsService.hit(eventHitDto1);
 
-        List<Stat> savedStats = statsServiceRepository.findAll();
+        List<Stat> savedStats = statServiceRepository.findAll();
         assertEquals(1, savedStats.size());
 
         Stat savedStat = savedStats.get(0);
@@ -87,7 +88,7 @@ class StatsServiceImplTest {
         statsService.hit(eventHitDto2);
         statsService.hit(eventHitDto3);
 
-        List<Stat> savedStats = statsServiceRepository.findAll();
+        List<Stat> savedStats = statServiceRepository.findAll();
         assertEquals(3, savedStats.size());
     }
 

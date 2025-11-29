@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.EventHitDto;
-import ru.practicum.EventStatsResponseDto;
+import ru.practicum.dto.EventHitDto;
+import ru.practicum.dto.EventStatsResponseDto;
 import ru.practicum.service.StatsService;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,5 @@
 package ru.practicum.serialize;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @Component
 public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
@@ -22,13 +22,17 @@ public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
     }
 
     @Autowired
-    public void setFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
+    public void configureFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
     @Override
-    public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
-        String date = jsonParser.getText();
-        return LocalDateTime.parse(date, formatter);
+    public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+        try {
+            String inputDate = parser.getText();
+            return LocalDateTime.parse(inputDate, formatter);
+        } catch (DateTimeParseException | NullPointerException exception) {
+            throw new IOException("Ошибка десериализации даты: неверный формат или пустое значение", exception);
+        }
     }
 }

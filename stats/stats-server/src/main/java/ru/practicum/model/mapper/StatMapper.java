@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import ru.practicum.EventHitDto;
+import ru.practicum.dto.EventHitDto;
 import ru.practicum.model.Stat;
 
 @Mapper(componentModel = "spring")

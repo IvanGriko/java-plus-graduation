@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.EventHitDto;
-import ru.practicum.EventStatsResponseDto;
+import ru.practicum.dto.EventHitDto;
+import ru.practicum.dto.EventStatsResponseDto;
 import ru.practicum.ewm.client.StatClient;
 
 import java.time.LocalDateTime;

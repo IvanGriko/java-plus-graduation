@@ -21,12 +21,14 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
     }
 
     @Autowired
-    public void setFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
+    public void configureFormatter(@Value("${explore-with-me.datetime.format}") String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
     @Override
-    public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeString(localDateTime.format(formatter));
+    public void serialize(LocalDateTime localDateTime,
+                          JsonGenerator generator,
+                          SerializerProvider provider) throws IOException {
+        generator.writeString(localDateTime.format(formatter));
     }
 }

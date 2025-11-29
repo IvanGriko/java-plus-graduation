@@ -25,7 +25,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>21</java.version>
+		<java.version>22</java.version>
 		<stats-client.version>0.0.1-SNAPSHOT</stats-client.version>
 		<spring-cloud-dependencies.version>2025.0.0</spring-cloud-dependencies.version>
 		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>

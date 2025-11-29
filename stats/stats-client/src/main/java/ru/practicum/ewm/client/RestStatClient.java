@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.practicum.EventHitDto;
-import ru.practicum.EventStatsResponseDto;
+import ru.practicum.dto.EventHitDto;
+import ru.practicum.dto.EventStatsResponseDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +39,7 @@ public class RestStatClient implements StatClient {
     final Random random = new Random();
     final DateTimeFormatter formatter;
     volatile String statUrl;
-    boolean doRenewingServerUrl = false;
+    boolean enableDynamicUrlUpdate = false;
 
     public RestStatClient(
             DiscoveryClient discoveryClient,
@@ -66,12 +66,12 @@ public class RestStatClient implements StatClient {
         } catch (Exception e) {
             log.warn("Ошибка при получении URL: {}", e.getMessage(), e);
         }
-        doRenewingServerUrl = true;
+        enableDynamicUrlUpdate = true;
     }
 
     @Scheduled(fixedDelay = 60000)
     public void updateStatUrl() {
-        if (!doRenewingServerUrl) return;
+        if (!enableDynamicUrlUpdate) return;
         try {
             List<String> currentUrls = discoveryClient.getInstances(name)
                     .stream()
@@ -126,111 +126,3 @@ public class RestStatClient implements StatClient {
         }
     }
 }
-
-//@Slf4j
-//@FieldDefaults(level = AccessLevel.PRIVATE)
-//@Component
-//public class RestStatClient implements StatClient {
-//
-//    final String name;
-//    final DiscoveryClient discoveryClient;
-//    final Random random = new Random();
-//    final DateTimeFormatter formatter;
-//    String statUrl;
-//    RestClient restClient;
-//    boolean doRenewingServerUrl = false;
-//
-//    public RestStatClient(
-//            DiscoveryClient discoveryClient,
-//            @Value("${explore-with-me.stat-server.discovery.name:}") String name,
-//            @Value("${explore-with-me.stat-server.url:http://localhost:9090}") String url,
-//            @Value("${explore-with-me.stat.datetime.format}") String format
-//    ) {
-//        this.discoveryClient = discoveryClient;
-//        this.name = name;
-//        this.formatter = DateTimeFormatter.ofPattern(format);
-//        this.statUrl = url;
-//        this.restClient = RestClient.builder().baseUrl(statUrl).build();
-//    }
-//
-//    @EventListener(ApplicationReadyEvent.class)
-//    public void init() {
-//        if (name == null || name.isBlank()) return;
-//        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-//        fixedBackOffPolicy.setBackOffPeriod(5000L);
-//        MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy();
-//        retryPolicy.setMaxAttempts(10);
-//        RetryTemplate retryTemplate = new RetryTemplate();
-//        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
-//        retryTemplate.setRetryPolicy(retryPolicy);
-//        try {
-//            ServiceInstance instance = retryTemplate.execute(retryContext -> {
-//                List<ServiceInstance> instances =  discoveryClient.getInstances(name);
-//                if (instances.isEmpty()) throw new RuntimeException("try again");
-//                return instances.get(random.nextInt(instances.size()));
-//            });
-//            statUrl = instance.getUri().toString();
-//            restClient = RestClient.builder().baseUrl(statUrl).build();
-//            log.info("Retrieved init stat server url: {}", statUrl);
-//        } catch (Exception e) {
-//            log.warn("Discovery server error: {}", e.getMessage());
-//        }
-//        doRenewingServerUrl = true;
-//    }
-//
-//    @Scheduled(fixedDelay = 60000)
-//    public void renewServerUrl() {
-//        if (!doRenewingServerUrl) return;
-//        try {
-//            List<String> urls = discoveryClient.getInstances(name).stream()
-//                    .map(i -> i.getUri().toString())
-//                    .toList();
-//            if (urls.isEmpty() || urls.contains(statUrl)) return;
-//            statUrl = urls.get(random.nextInt(urls.size()));
-//            restClient = RestClient.builder().baseUrl(statUrl).build();
-//            log.info("Retrieved new stat server url: {}", statUrl);
-//        } catch (Exception e) {
-//            log.warn("Discovery server error: {}", e.getMessage());
-//        }
-//    }
-//
-//    @Override
-//    public void hit(EventHitDto eventHitDto) {
-//        try {
-//            restClient
-//                    .post()
-//                    .uri("/hit")
-//                    .body(eventHitDto)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .retrieve()
-//                    .toBodilessEntity();
-//        } catch (RestClientException e) {
-//            log.warn("Failed call /hit on stat server: {}", e.getMessage());
-//        }
-//    }
-//
-//    @Override
-//    public Collection<EventStatsResponseDto> stats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-//        try {
-//            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("/stats")
-//                    .queryParam("start", start.format(formatter))
-//                    .queryParam("end", end.format(formatter));
-//            if (uris != null && !uris.isEmpty())
-//                uriBuilder.queryParam("uris", String.join(",", uris));
-//            if (unique != null)
-//                uriBuilder.queryParam("unique", unique);
-//            String uri = uriBuilder.build().toUriString();
-//            return restClient
-//                    .get()
-//                    .uri(uri)
-//                    .retrieve()
-//                    .body(
-//                            new ParameterizedTypeReference<Collection<EventStatsResponseDto>>() {
-//                            }
-//                    );
-//        } catch (RestClientException e) {
-//            log.error("Failed call /stats on stat server: {}", e.getMessage());
-//            return Collections.emptyList();
-//        }
-//    }
-//}

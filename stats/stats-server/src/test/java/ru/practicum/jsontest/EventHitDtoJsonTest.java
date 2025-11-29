@@ -3,21 +3,21 @@ package ru.practicum.jsontest;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.core.env.Environment;
-import ru.practicum.EventHitDto;
+import ru.practicum.dto.EventHitDto;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled("Выполнять только при запущенных Discovery and Config servers")
+@Disabled("Выполнять только при запущенных Discovery и Config серверах")
 @JsonTest
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class EventHitDtoJsonTest {
@@ -26,19 +26,20 @@ class EventHitDtoJsonTest {
     JacksonTester<EventHitDto> json;
 
     @Autowired
-    Environment environment;
+    Environment env;
 
     DateTimeFormatter formatter;
 
     @PostConstruct
     void setup() {
-        String dateTimeFormat = environment.getProperty("explore-with-me.datetime.format");
+        String dateTimeFormat = env.getProperty("explore-with-me.datetime.format");
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
     @Test
-    void shouldSerializeEventHitDto() throws Exception {
-        LocalDateTime timestamp = LocalDateTime.of(2024, 7, 15, 14, 30, 45);
+    void testBasicSerialization() throws Exception {
+        System.out.println("--- Начинаем тестирование базовой сериализации ---");
+        LocalDateTime timestamp = LocalDateTime.of(2024, Month.JULY, 15, 14, 30, 45);
         EventHitDto eventHit = EventHitDto.builder()
                 .app("main-service")
                 .uri("/events/1")
@@ -46,86 +47,51 @@ class EventHitDtoJsonTest {
                 .timestamp(timestamp)
                 .build();
 
-        assertThat(json.write(eventHit)).isStrictlyEqualToJson("{" + """
-                    "app": "main-service",
-                    "uri": "/events/1",
-                    "ip": "192.168.1.1",
-                    "timestamp": "FORMATTED"
-                }
-                """.replace("FORMATTED", timestamp.format(formatter)));
+        System.out.println("Производим сериализацию объекта:");
+        String expectedJson = "{" +
+                "\n\t\"app\": \"main-service\"," +
+                "\n\t\"uri\": \"/events/1\"," +
+                "\n\t\"ip\": \"192.168.1.1\"," +
+                "\n\t\"timestamp\": \"%s\"" +
+                "\n}".formatted(timestamp.format(formatter));
+
+        assertThat(json.write(eventHit))
+                .as("Проверка сериализации объекта EventHitDto")
+                .isStrictlyEqualToJson(expectedJson);
     }
 
     @Test
-    void shouldDeserializeEventHitDto() throws Exception {
-        LocalDateTime timestamp = LocalDateTime.of(2024, 7, 15, 14, 30, 45);
-        String jsonContent = "{" + """
-                    "app": "main-service",
-                    "uri": "/events/1",
-                    "ip": "192.168.1.1",
-                    "timestamp": "FORMATTED"
-                }
-                """.replace("FORMATTED", timestamp.format(formatter));
+    void testDeserializationWithValidJSON() throws Exception {
+        System.out.println("\n\n--- Начинаем тестирование десериализации с правильным JSON ---");
+        LocalDateTime timestamp = LocalDateTime.of(2024, Month.DECEMBER, 25, 23, 59, 59);
+        String content = "{" +
+                "\n\t\"app\": \"main-service\"," +
+                "\n\t\"uri\": \"/events/1\"," +
+                "\n\t\"ip\": \"192.168.1.1\"," +
+                "\n\t\"timestamp\": \"%s\"" +
+                "\n}".formatted(timestamp.format(formatter));
 
-        EventHitDto eventHit = json.parse(jsonContent).getObject();
+        System.out.println("Производим десериализацию объекта:");
+        EventHitDto eventHit = json.parse(content).getObject();
 
-        Assertions.assertThat(eventHit.getApp()).isEqualTo("main-service");
-        Assertions.assertThat(eventHit.getUri()).isEqualTo("/events/1");
-        Assertions.assertThat(eventHit.getIp()).isEqualTo("192.168.1.1");
-        Assertions.assertThat(eventHit.getTimestamp()).isEqualTo(timestamp);
-    }
-
-    @Test
-    void shouldSerializeWithDifferentDateTimeFormat() throws Exception {
-        LocalDateTime timestamp = LocalDateTime.of(2024, 12, 25, 23, 59, 59);
-        EventHitDto eventHit = EventHitDto.builder()
-                .app("analytics-service")
-                .uri("/api/stats")
-                .ip("10.0.0.1")
-                .timestamp(timestamp)
-                .build();
-
-        assertThat(json.write(eventHit)).hasJsonPath("$.timestamp")
-                .extractingJsonPathStringValue("$.timestamp")
-                .isEqualTo(timestamp.format(formatter));
-    }
-
-    @Test
-    void shouldDeserializeWithSpecialCharacters() throws Exception {
-        LocalDateTime timestamp = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
-        String jsonContent = "{" + """
-                    "app": "test-app",
-                    "uri": "/events/search?query=test&eventSort=date",
-                    "ip": "127.0.0.1",
-                    "timestamp": "FORMATTED"
-                }
-                """.replace("FORMATTED", timestamp.format(formatter));
-        EventHitDto eventHit = json.parse(jsonContent).getObject();
-
-        Assertions.assertThat(eventHit.getApp()).isEqualTo("test-app");
-        Assertions.assertThat(eventHit.getUri()).isEqualTo("/events/search?query=test&eventSort=date");
-        Assertions.assertThat(eventHit.getIp()).isEqualTo("127.0.0.1");
-        Assertions.assertThat(eventHit.getTimestamp()).isEqualTo(timestamp);
-    }
-
-    @Test
-    void shouldDeserializeTimestampCorrectly() throws Exception {
-        LocalDateTime timestamp = LocalDateTime.of(2024, 3, 15, 16, 45, 22);
-        String jsonContent = "{" + """
-                    "app": "web-app",
-                    "uri": "/",
-                    "ip": "203.0.113.1",
-                    "timestamp": "FORMATTED"
-                }
-                """.replace("FORMATTED", timestamp.format(formatter));
-        EventHitDto eventHit = json.parse(jsonContent).getObject();
-
-        Assertions.assertThat(eventHit.getTimestamp())
+        assertThat(eventHit.getApp())
+                .as("Проверка атрибута 'app'")
+                .isEqualTo("main-service");
+        assertThat(eventHit.getUri())
+                .as("Проверка атрибута 'uri'")
+                .isEqualTo("/events/1");
+        assertThat(eventHit.getIp())
+                .as("Проверка атрибута 'ip'")
+                .isEqualTo("192.168.1.1");
+        assertThat(eventHit.getTimestamp())
+                .as("Проверка атрибута 'timestamp'")
                 .isEqualTo(timestamp);
     }
 
     @Test
-    void shouldSerializeAllFieldsCorrectly() throws Exception {
-        LocalDateTime timestamp = LocalDateTime.of(2024, 8, 20, 12, 0, 0);
+    void testAlternativeDateTimeFormats() throws Exception {
+        System.out.println("\n\n--- Начинаем тестирование сериализации с альтернативным форматом даты ---");
+        LocalDateTime timestamp = LocalDateTime.of(2024, Month.AUGUST, 20, 12, 0, 0);
         EventHitDto eventHit = EventHitDto.builder()
                 .app("integration-test")
                 .uri("/api/v1/events/123")
@@ -133,35 +99,105 @@ class EventHitDtoJsonTest {
                 .timestamp(timestamp)
                 .build();
 
-        assertThat(json.write(eventHit))
-                .hasJsonPath("$.app")
-                .extractingJsonPathStringValue("$.app").isEqualTo("integration-test");
-        assertThat(json.write(eventHit))
-                .hasJsonPath("$.uri")
-                .extractingJsonPathStringValue("$.uri").isEqualTo("/api/v1/events/123");
-        assertThat(json.write(eventHit))
-                .hasJsonPath("$.ip")
-                .extractingJsonPathStringValue("$.ip").isEqualTo("172.16.0.1");
+        System.out.println("Производим сериализацию объекта с альтернативным форматом даты:");
         assertThat(json.write(eventHit))
                 .hasJsonPath("$.timestamp")
-                .extractingJsonPathStringValue("$.timestamp").isEqualTo(timestamp.format(formatter));
+                .extractingJsonPathStringValue("$.timestamp")
+                .isEqualTo(timestamp.format(formatter));
     }
 
     @Test
-    void shouldRoundTripSerializationAndDeserialization() throws Exception {
+    void testDeserializationWithSpecialCharactersInURI() throws Exception {
+        System.out.println("\n\n--- Начинаем тестирование десериализации с URI, содержащим спецсимволы ---");
+        LocalDateTime timestamp = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0);
+        String content = "{" +
+                "\n\t\"app\": \"test-app\"," +
+                "\n\t\"uri\": \"/events/search?query=test&eventSort=date\"," +
+                "\n\t\"ip\": \"127.0.0.1\"," +
+                "\n\t\"timestamp\": \"%s\"" +
+                "\n}".formatted(timestamp.format(formatter));
+
+        System.out.println("Производим десериализацию объекта с специальным URI:");
+        EventHitDto eventHit = json.parse(content).getObject();
+
+        assertThat(eventHit.getApp())
+                .as("Проверка атрибута 'app'")
+                .isEqualTo("test-app");
+        assertThat(eventHit.getUri())
+                .as("Проверка атрибута 'uri'")
+                .isEqualTo("/events/search?query=test&eventSort=date");
+        assertThat(eventHit.getIp())
+                .as("Проверка атрибута 'ip'")
+                .isEqualTo("127.0.0.1");
+        assertThat(eventHit.getTimestamp())
+                .as("Проверка атрибута 'timestamp'")
+                .isEqualTo(timestamp);
+    }
+
+    @Test
+    void testTimestampDeserializationAccuracy() throws Exception {
+        System.out.println("\n\n--- Начинаем тестирование точности десериализации поля 'timestamp' ---");
+        LocalDateTime timestamp = LocalDateTime.of(2024, Month.MARCH, 15, 16, 45, 22);
+        String content = "{" +
+                "\n\t\"app\": \"web-app\"," +
+                "\n\t\"uri\": \"/\"," +
+                "\n\t\"ip\": \"203.0.113.1\"," +
+                "\n\t\"timestamp\": \"%s\"" +
+                "\n}".formatted(timestamp.format(formatter));
+
+        System.out.println("Производим десериализацию объекта с конкретным временем:");
+        EventHitDto eventHit = json.parse(content).getObject();
+
+        assertThat(eventHit.getTimestamp())
+                .as("Проверка точного воспроизведения поля 'timestamp'")
+                .isEqualTo(timestamp);
+    }
+
+    @Test
+    void testCompleteSerializationCycle() throws Exception {
+        System.out.println("\n\n--- Начинаем тестирование цикла полной сериализации и десериализации ---");
         EventHitDto original = EventHitDto.builder()
                 .app("round-trip-test")
                 .uri("/test/roundtrip")
                 .ip("192.168.1.100")
-                .timestamp(LocalDateTime.of(2024, 5, 10, 15, 30, 45))
+                .timestamp(LocalDateTime.of(2024, Month.MAY, 10, 15, 30, 45))
                 .build();
-        String jsonString = json.write(original).getJson();
-        EventHitDto deserialized = json.parse(jsonString).getObject();
 
-        Assertions.assertThat(deserialized).isEqualTo(original);
-        Assertions.assertThat(deserialized.getApp()).isEqualTo(original.getApp());
-        Assertions.assertThat(deserialized.getUri()).isEqualTo(original.getUri());
-        Assertions.assertThat(deserialized.getIp()).isEqualTo(original.getIp());
-        Assertions.assertThat(deserialized.getTimestamp()).isEqualTo(original.getTimestamp());
+        System.out.println("Производим сериализацию и последующую десериализацию объекта:");
+        String serialized = json.write(original).getJson();
+        EventHitDto deserialized = json.parse(serialized).getObject();
+
+        assertThat(deserialized)
+                .as("Проверка целостности объекта после циклической операции")
+                .usingRecursiveComparison()
+                .isEqualTo(original);
+    }
+
+    @Test
+    void testDeserializationEdgeCases() throws Exception {
+        System.out.println("\n\n--- Начинаем тестирование крайних случаев десериализации ---");
+        LocalDateTime timestamp = LocalDateTime.of(2024, Month.JUNE, 30, 23, 59, 59);
+        String content = "{" +
+                "\n\t\"app\": \"edge-case-app\"," +
+                "\n\t\"uri\": \"/special/path\"," +
+                "\n\t\"ip\": \"192.168.1.255\"," +
+                "\n\t\"timestamp\": \"%s\"" +
+                "\n}".formatted(timestamp.format(formatter));
+
+        System.out.println("Производим десериализацию объекта с особыми параметрами:");
+        EventHitDto eventHit = json.parse(content).getObject();
+
+        assertThat(eventHit.getApp())
+                .as("Проверка атрибута 'app' при экстремальном случае")
+                .isEqualTo("edge-case-app");
+        assertThat(eventHit.getUri())
+                .as("Проверка атрибута 'uri' при экстремальном случае")
+                .isEqualTo("/special/path");
+        assertThat(eventHit.getIp())
+                .as("Проверка атрибута 'ip' при экстремальном случае")
+                .isEqualTo("192.168.1.255");
+        assertThat(eventHit.getTimestamp())
+                .as("Проверка атрибута 'timestamp' при экстремальном случае")
+                .isEqualTo(timestamp);
     }
 }

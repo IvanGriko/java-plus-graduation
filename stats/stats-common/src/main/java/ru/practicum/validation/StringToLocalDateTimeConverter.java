@@ -14,17 +14,20 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
     private DateTimeFormatter formatter;
 
     @Value("${explore-with-me.datetime.format}")
-    public void setFormatter(String dateTimeFormat) {
+    public void injectFormatter(String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
     @Override
     public LocalDateTime convert(String source) {
-        if (source == null || source.isEmpty()) return null;
+        if (source == null || source.isEmpty()) {
+            throw new IllegalArgumentException("Не указан временной диапазон для преобразования");
+        }
+
         try {
             return LocalDateTime.parse(source, formatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Failed to convert string " + source + " to LocalDateTime");
+            throw new IllegalArgumentException("Ошибка преобразования строки '" + source + "' в формат LocalDateTime", e);
         }
     }
 }
