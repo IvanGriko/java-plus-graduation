@@ -43,10 +43,9 @@ public class EventPublicServiceImpl implements EventPublicService {
 
     @Override
     public List<EventShortDto> getAllEventsByParams(EventParams params, HttpServletRequest request) {
-        log.info("Получение всех событий с параметрами: {}", params);
-//        if (params.getRangeStart() != null && params.getRangeEnd() != null && params.getRangeEnd().isBefore(params.getRangeStart())) {
-//            throw new BadRequestException("Параметр 'rangeStart' должен предшествовать 'rangeEnd'");
-//        }
+        if (params.getRangeStart() != null && params.getRangeEnd() != null && params.getRangeEnd().isBefore(params.getRangeStart())) {
+            throw new BadRequestException("rangeStart should be before rangeEnd");
+        }
         if (params.getRangeStart() == null) params.setRangeStart(LocalDateTime.now());
         Sort sort = Sort.by(Sort.Direction.ASC, "eventDate");
         if (EventSort.VIEWS.equals(params.getEventSort())) sort = Sort.by(Sort.Direction.DESC, "views");
