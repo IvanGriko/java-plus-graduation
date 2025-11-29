@@ -49,7 +49,8 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>--enable-preview</compilerArgs>
-                    <release>22</release>
+                    <target>22</target>
+                    <source>22</source>
                 </configuration>
             </plugin>
         </plugins>
