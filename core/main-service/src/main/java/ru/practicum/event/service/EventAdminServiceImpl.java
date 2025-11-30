@@ -28,11 +28,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-//@Service
-//@RequiredArgsConstructor
-//@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-//@Slf4j
-//@Transactional(readOnly = true)
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
+@Transactional(readOnly = true)
 //public class EventAdminServiceImpl implements EventAdminService {
 //
 //    EventRepository eventRepository;
