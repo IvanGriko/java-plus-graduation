@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EventHitDto;
@@ -42,15 +43,25 @@ public class EventPublicServiceImpl implements EventPublicService {
     ViewRepository viewRepository;
 
     @Override
-    public List<EventShortDto> getAllEventsByParams(EventParams params, HttpServletRequest request) {
+    public List<EventShortDto> getAllEventsByParams(
+            EventParams params,
+            HttpServletRequest request
+    ) {
         if (params.getRangeStart() != null && params.getRangeEnd() != null && params.getRangeEnd().isBefore(params.getRangeStart())) {
-            throw new BadRequestException("rangeStart should be before rangeEnd");
+            throw new BadRequestException("Начальная дата должна быть меньше конечной");
         }
-        if (params.getRangeStart() == null) params.setRangeStart(LocalDateTime.now());
+        if (params.getRangeStart() == null) {
+            params.setRangeStart(LocalDateTime.now());
+        }
         Sort sort = Sort.by(Sort.Direction.ASC, "eventDate");
-        if (EventSort.VIEWS.equals(params.getEventSort())) sort = Sort.by(Sort.Direction.DESC, "views");
-        PageRequest pageRequest = PageRequest.of(params.getFrom().intValue() / params.getSize().intValue(),
-                params.getSize().intValue(), sort);
+        if (EventSort.VIEWS.equals(params.getEventSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "views");
+        }
+        PageRequest pageRequest = PageRequest.of(
+                params.getFrom().intValue() / params.getSize().intValue(),
+                params.getSize().intValue(),
+                sort
+        );
         Page<Event> events = eventRepository.findAll(JpaSpecifications.publicFilters(params), pageRequest);
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Long> confirmedRequestsMap = requestRepository.getConfirmedRequestsByEventIds(eventIds)
