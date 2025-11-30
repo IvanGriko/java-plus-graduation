@@ -148,6 +148,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
 public class EventPrivateServiceImpl implements EventPrivateService {
@@ -161,11 +162,11 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     @Transactional(readOnly = false)
     public EventFullDto addEvent(Long userId, NewEventDto newEventDto) {
+        log.info("Добавление нового события для пользователя с id {}", userId);
         User initiator = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с указанным идентификатором не найден"));
         Category category = categoryRepository.findById(newEventDto.getCategory())
-                .orElseThrow(() -> new NotFoundException("Category with id=" + newEventDto.getCategory() +
-                        " was not found"));
+                .orElseThrow(() -> new NotFoundException("Категория с указанным идентификатором не найдена"));
         Event newEvent = EventMapper.toEvent(newEventDto, initiator, category);
         eventRepository.save(newEvent);
         return EventMapper.toEventFullDto(newEvent, 0L, 0L);
@@ -173,12 +174,13 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
+        log.info("Получение события с id {} для пользователя с id {}", eventId, userId);
         User initiator = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с указанным идентификатором не найден"));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
+                .orElseThrow(() -> new NotFoundException("Событие с указанным идентификатором не найдено"));
         if (!Objects.equals(initiator.getId(), event.getInitiator().getId())) {
-            throw new ConflictException("User " + userId + " is not an initiator of event " + eventId, "Forbidden action");
+            throw new ConflictException("Пользователь не является создателем данного события", "Запрещённое действие");
         }
         Long confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), ParticipationRequestStatus.CONFIRMED);
         Long views = viewRepository.countByEventId(eventId);
@@ -187,8 +189,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public List<EventShortDto> getEventsByUserId(Long userId, Long from, Long size) {
+        log.info("Получение событий пользователя с id {}", userId);
         User initiator = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с указанным идентификатором не найден"));
         Pageable pageable = PageRequest.of(
                 from.intValue() / size.intValue(),
                 size.intValue(),
@@ -216,23 +219,24 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     @Transactional(readOnly = false)
     public EventFullDto updateEventByUserIdAndEventId(Long userId, Long eventId, UpdateEventDto updateEventDto) {
+        log.info("Обновление события с id {} пользователем с id {}", eventId, userId);
         User initiator = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с указанным идентификатором не найден"));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
+                .orElseThrow(() -> new NotFoundException("Событие с указанным идентификатором не найдено"));
         if (!Objects.equals(initiator.getId(), event.getInitiator().getId())) {
-            throw new ConflictException("User " + userId + " is not an initiator of event " + eventId, "Forbidden action");
+            throw new ConflictException("Пользователь не является создателем данного события", "Запрещённое действие");
         }
         if (event.getState() != State.PENDING && event.getState() != State.CANCELED) {
-            throw new ConflictException("Only pending or canceled events can be changed");
+            throw new ConflictException("Можно редактировать только ожидающие или отменённые события", "Запрещённое действие");
         }
         if (updateEventDto.getEventDate() != null &&
                 updateEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ConflictException("Event date must be at least 2 hours from now");
+            throw new ConflictException("Дата события должна быть минимум через 2 часа от текущего момента", "Запрещённое действие");
         }
         if (updateEventDto.getCategory() != null) {
             Category category = categoryRepository.findById(updateEventDto.getCategory())
-                    .orElseThrow(() -> new NotFoundException("Category with id=" + updateEventDto.getCategory() + " not found"));
+                    .orElseThrow(() -> new NotFoundException("Категория с указанным идентификатором не найдена"));
             event.setCategory(category);
         }
         if (updateEventDto.getTitle() != null) event.setTitle(updateEventDto.getTitle());

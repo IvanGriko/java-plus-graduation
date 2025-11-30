@@ -125,14 +125,22 @@ public class EventPublicServiceImpl implements EventPublicService {
 
     @Override
     public List<EventShortDto> getAllEventsByParams(EventParams params, HttpServletRequest request) {
+        log.info("Получение всех событий с параметрами: {}", params);
         if (params.getRangeStart() != null && params.getRangeEnd() != null && params.getRangeEnd().isBefore(params.getRangeStart())) {
             throw new BadRequestException("Конечная дата должна быть позже начальной", "Ошибка валидации");
         }
-        if (params.getRangeStart() == null) params.setRangeStart(LocalDateTime.now());
+        if (params.getRangeStart() == null) {
+            params.setRangeStart(LocalDateTime.now());
+        }
         Sort sort = Sort.by(Sort.Direction.ASC, "eventDate");
-        if (EventSort.VIEWS.equals(params.getEventSort())) sort = Sort.by(Sort.Direction.DESC, "views");
-        PageRequest pageRequest = PageRequest.of(params.getFrom().intValue() / params.getSize().intValue(),
-                params.getSize().intValue(), sort);
+        if (EventSort.VIEWS.equals(params.getEventSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "views");
+        }
+        PageRequest pageRequest = PageRequest.of(
+                params.getFrom().intValue() / params.getSize().intValue(),
+                params.getSize().intValue(),
+                sort
+        );
         Page<Event> events = eventRepository.findAll(JpaSpecifications.publicFilters(params), pageRequest);
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Long> confirmedRequestsMap = requestRepository.getConfirmedRequestsByEventIds(eventIds)
@@ -161,8 +169,9 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     @Transactional(readOnly = false)
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
+        log.info("Получение информации о событии с идентификатором {}", eventId);
         Event event = eventRepository.findByIdAndState(eventId, State.PUBLISHED)
-                .orElseThrow(() -> new NotFoundException("Event not found"));
+                .orElseThrow(() -> new NotFoundException("Событие с указанным идентификатором не найдено"));
         Long confirmedRequests = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
         Long views = viewRepository.countByEventId(eventId);
         if (!viewRepository.existsByEventIdAndIp(eventId, request.getRemoteAddr())) {

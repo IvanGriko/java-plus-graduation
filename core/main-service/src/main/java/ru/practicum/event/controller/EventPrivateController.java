@@ -15,55 +15,6 @@ import ru.practicum.event.service.EventPrivateService;
 
 import java.util.Collection;
 
-//@RestController
-//@RequestMapping("/users/{userId}/events")
-//@RequiredArgsConstructor
-//@Slf4j
-//@Validated
-//public class EventPrivateController {
-//
-//    private final EventPrivateService eventPrivateService;
-//
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public EventFullDto addNewEventByUser(
-//            @PathVariable @Positive Long userId,
-//            @Valid @RequestBody NewEventDto newEventDto
-//    ) {
-//        log.info("Создание события пользователем с ID={}. Данные события: {}", userId, newEventDto);
-//        return eventPrivateService.addEvent(userId, newEventDto);
-//    }
-//
-//    @GetMapping
-//    public Collection<EventShortDto> getAllEventsByUserId(
-//            @PathVariable @Positive Long userId,
-//            @RequestParam(defaultValue = "0") Long from,
-//            @RequestParam(defaultValue = "10") Long size
-//    ) {
-//        log.info("Получение всех событий пользователя с ID={}", userId);
-//        return eventPrivateService.getEventsByUserId(userId, from, size);
-//    }
-//
-//    @GetMapping("/{eventId}")
-//    public EventFullDto getEventByUserIdAndEventId(
-//            @PathVariable @Positive Long userId,
-//            @PathVariable @Positive Long eventId
-//    ) {
-//        log.info("Получение события с ID={} пользователя с ID={}", eventId, userId);
-//        return eventPrivateService.getEventByUserIdAndEventId(userId, eventId);
-//    }
-//
-//    @PatchMapping("/{eventId}")
-//    public EventFullDto updateEventByUserIdAndEventId(
-//            @PathVariable @Positive Long userId,
-//            @PathVariable @Positive Long eventId,
-//            @Valid @RequestBody UpdateEventDto updateEventDto
-//    ) {
-//        log.info("Обновление события с ID={} пользователя с ID={}. Новые данные: {}", eventId, userId, updateEventDto);
-//        return eventPrivateService.updateEventByUserIdAndEventId(userId, eventId, updateEventDto);
-//    }
-//}
-
 @RestController
 @RequestMapping("/users/{userId}/events")
 @RequiredArgsConstructor
@@ -79,7 +30,7 @@ public class EventPrivateController {
             @PathVariable @Positive Long userId,
             @Valid @RequestBody NewEventDto newEventDto
     ) {
-        log.info("Calling to endpoint /users/{userId}/events PostMapping for userId: " + userId);
+        log.info("Добавление нового события пользователем с идентификатором {}", userId);
         return eventPrivateService.addEvent(userId, newEventDto);
     }
 
@@ -89,7 +40,7 @@ public class EventPrivateController {
             @RequestParam(defaultValue = "0") Long from,
             @RequestParam(defaultValue = "10") Long size
     ) {
-        log.info("Calling to endpoint /users/{userId}/events GetMapping for userId: " + userId);
+        log.info("Получение всех событий пользователя с идентификатором {}", userId);
         return eventPrivateService.getEventsByUserId(userId, from, size);
     }
 
@@ -98,8 +49,7 @@ public class EventPrivateController {
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long eventId
     ) {
-        log.info("Calling to endpoint /users/{userId}/events/{eventId} GetMapping for userId: "
-                + userId + " and eventId: " + eventId);
+        log.info("Получение события с идентификатором {} пользователя с идентификатором {}", eventId, userId);
         return eventPrivateService.getEventByUserIdAndEventId(userId, eventId);
     }
 
@@ -109,9 +59,8 @@ public class EventPrivateController {
             @PathVariable @Positive Long eventId,
             @Valid @RequestBody UpdateEventDto updateEventDto
     ) {
-        log.info("Calling to endpoint /users/{userId}/events/{eventId} PatchMapping for userId: " + userId
-                + " and eventId: " + eventId + "."
-                + "Information by eventDto: " + updateEventDto.toString());
+        log.info("Обновление события с идентификатором {} пользователя с идентификатором {}. Данные обновления: {}",
+                eventId, userId, updateEventDto);
         return eventPrivateService.updateEventByUserIdAndEventId(userId, eventId, updateEventDto);
     }
 }
