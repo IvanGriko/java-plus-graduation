@@ -1,5 +1,7 @@
 package ru.practicum.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class BadRequestException extends RuntimeException {
 
     private final String reason;
@@ -16,5 +18,9 @@ public class BadRequestException extends RuntimeException {
 
     public String getReason() {
         return reason;
+    }
+
+    public HttpStatus getStatus() {
+        return HttpStatus.BAD_REQUEST;
     }
 }

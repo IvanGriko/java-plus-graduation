@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EventHitDto;
@@ -114,6 +113,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
 public class EventPublicServiceImpl implements EventPublicService {
@@ -126,7 +126,7 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     public List<EventShortDto> getAllEventsByParams(EventParams params, HttpServletRequest request) {
         if (params.getRangeStart() != null && params.getRangeEnd() != null && params.getRangeEnd().isBefore(params.getRangeStart())) {
-            throw new BadRequestException("rangeStart should be before rangeEnd");
+            throw new BadRequestException("Конечная дата должна быть позже начальной", "Ошибка валидации");
         }
         if (params.getRangeStart() == null) params.setRangeStart(LocalDateTime.now());
         Sort sort = Sort.by(Sort.Direction.ASC, "eventDate");
