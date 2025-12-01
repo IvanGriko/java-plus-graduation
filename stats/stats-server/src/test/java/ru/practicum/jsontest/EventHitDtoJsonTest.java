@@ -38,7 +38,6 @@ class EventHitDtoJsonTest {
 
     @Test
     void testBasicSerialization() throws Exception {
-        System.out.println("--- Начинаем тестирование базовой сериализации ---");
         LocalDateTime timestamp = LocalDateTime.of(2024, Month.JULY, 15, 14, 30, 45);
         EventHitDto eventHit = EventHitDto.builder()
                 .app("main-service")
@@ -47,7 +46,6 @@ class EventHitDtoJsonTest {
                 .timestamp(timestamp)
                 .build();
 
-        System.out.println("Производим сериализацию объекта:");
         String expectedJson = "{" +
                 "\n\t\"app\": \"main-service\"," +
                 "\n\t\"uri\": \"/events/1\"," +
@@ -62,7 +60,6 @@ class EventHitDtoJsonTest {
 
     @Test
     void testDeserializationWithValidJSON() throws Exception {
-        System.out.println("\n\n--- Начинаем тестирование десериализации с правильным JSON ---");
         LocalDateTime timestamp = LocalDateTime.of(2024, Month.DECEMBER, 25, 23, 59, 59);
         String content = "{" +
                 "\n\t\"app\": \"main-service\"," +
@@ -71,7 +68,6 @@ class EventHitDtoJsonTest {
                 "\n\t\"timestamp\": \"%s\"" +
                 "\n}".formatted(timestamp.format(formatter));
 
-        System.out.println("Производим десериализацию объекта:");
         EventHitDto eventHit = json.parse(content).getObject();
 
         assertThat(eventHit.getApp())
@@ -90,7 +86,6 @@ class EventHitDtoJsonTest {
 
     @Test
     void testAlternativeDateTimeFormats() throws Exception {
-        System.out.println("\n\n--- Начинаем тестирование сериализации с альтернативным форматом даты ---");
         LocalDateTime timestamp = LocalDateTime.of(2024, Month.AUGUST, 20, 12, 0, 0);
         EventHitDto eventHit = EventHitDto.builder()
                 .app("integration-test")
@@ -99,7 +94,6 @@ class EventHitDtoJsonTest {
                 .timestamp(timestamp)
                 .build();
 
-        System.out.println("Производим сериализацию объекта с альтернативным форматом даты:");
         assertThat(json.write(eventHit))
                 .hasJsonPath("$.timestamp")
                 .extractingJsonPathStringValue("$.timestamp")
@@ -108,7 +102,6 @@ class EventHitDtoJsonTest {
 
     @Test
     void testDeserializationWithSpecialCharactersInURI() throws Exception {
-        System.out.println("\n\n--- Начинаем тестирование десериализации с URI, содержащим спецсимволы ---");
         LocalDateTime timestamp = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0);
         String content = "{" +
                 "\n\t\"app\": \"test-app\"," +
@@ -117,7 +110,6 @@ class EventHitDtoJsonTest {
                 "\n\t\"timestamp\": \"%s\"" +
                 "\n}".formatted(timestamp.format(formatter));
 
-        System.out.println("Производим десериализацию объекта с специальным URI:");
         EventHitDto eventHit = json.parse(content).getObject();
 
         assertThat(eventHit.getApp())
@@ -136,7 +128,6 @@ class EventHitDtoJsonTest {
 
     @Test
     void testTimestampDeserializationAccuracy() throws Exception {
-        System.out.println("\n\n--- Начинаем тестирование точности десериализации поля 'timestamp' ---");
         LocalDateTime timestamp = LocalDateTime.of(2024, Month.MARCH, 15, 16, 45, 22);
         String content = "{" +
                 "\n\t\"app\": \"web-app\"," +
@@ -145,7 +136,6 @@ class EventHitDtoJsonTest {
                 "\n\t\"timestamp\": \"%s\"" +
                 "\n}".formatted(timestamp.format(formatter));
 
-        System.out.println("Производим десериализацию объекта с конкретным временем:");
         EventHitDto eventHit = json.parse(content).getObject();
 
         assertThat(eventHit.getTimestamp())
@@ -155,7 +145,6 @@ class EventHitDtoJsonTest {
 
     @Test
     void testCompleteSerializationCycle() throws Exception {
-        System.out.println("\n\n--- Начинаем тестирование цикла полной сериализации и десериализации ---");
         EventHitDto original = EventHitDto.builder()
                 .app("round-trip-test")
                 .uri("/test/roundtrip")
@@ -163,7 +152,6 @@ class EventHitDtoJsonTest {
                 .timestamp(LocalDateTime.of(2024, Month.MAY, 10, 15, 30, 45))
                 .build();
 
-        System.out.println("Производим сериализацию и последующую десериализацию объекта:");
         String serialized = json.write(original).getJson();
         EventHitDto deserialized = json.parse(serialized).getObject();
 
@@ -175,7 +163,6 @@ class EventHitDtoJsonTest {
 
     @Test
     void testDeserializationEdgeCases() throws Exception {
-        System.out.println("\n\n--- Начинаем тестирование крайних случаев десериализации ---");
         LocalDateTime timestamp = LocalDateTime.of(2024, Month.JUNE, 30, 23, 59, 59);
         String content = "{" +
                 "\n\t\"app\": \"edge-case-app\"," +
@@ -184,7 +171,6 @@ class EventHitDtoJsonTest {
                 "\n\t\"timestamp\": \"%s\"" +
                 "\n}".formatted(timestamp.format(formatter));
 
-        System.out.println("Производим десериализацию объекта с особыми параметрами:");
         EventHitDto eventHit = json.parse(content).getObject();
 
         assertThat(eventHit.getApp())

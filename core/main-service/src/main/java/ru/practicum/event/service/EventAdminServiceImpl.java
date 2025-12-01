@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 @Transactional(readOnly = true)
-
 public class EventAdminServiceImpl implements EventAdminService {
 
     EventRepository eventRepository;

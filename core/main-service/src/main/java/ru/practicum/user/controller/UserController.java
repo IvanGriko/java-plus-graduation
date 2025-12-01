@@ -46,32 +46,3 @@ public class UserController {
         return userService.findByIdListWithOffsetAndLimit(ids, from, size);
     }
 }
-
-//@RestController
-//@RequiredArgsConstructor
-//@Validated
-//public class UserController {
-//
-//    private final UserService userService;
-//
-//    @PostMapping("/admin/users")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public UserDto createUser(@RequestBody @Valid NewUserRequestDto newUserRequestDto) {
-//        return userService.create(newUserRequestDto);
-//    }
-//
-//    @DeleteMapping("/admin/users/{userId}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void deleteUser(@PathVariable @Positive(message = "User Id not valid") Long userId) {
-//        userService.delete(userId);
-//    }
-//
-//    @GetMapping("/admin/users")
-//    public Collection<UserDto> getUsers(
-//            @RequestParam(required = false) List<Long> ids,
-//            @RequestParam(defaultValue = "0") Integer from,
-//            @RequestParam(defaultValue = "10") Integer size
-//    ) {
-//        return userService.findByIdListWithOffsetAndLimit(ids, from, size);
-//    }
-//}

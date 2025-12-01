@@ -36,5 +36,3 @@ logging:
   level:
     org.springframework.web: INFO
     org.springframework.validation: INFO
-
-

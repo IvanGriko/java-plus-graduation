@@ -29,24 +29,3 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByEventIdAndId(Long eventId, Long commentId);
 
 }
-
-//public interface CommentRepository extends JpaRepository<Comment, Long> {
-//
-//    Page<Comment> findAllByEventId(Long eventId, Pageable pageable);
-//
-//    @Query("select new ru.practicum.comment.dto.CommentCountDto(c.event.id, count(c.id)) " +
-//            "from Comment as c " +
-//            "where c.event.id in ?1 " +
-//            "group by c.event.id")
-//    List<CommentCountDto> findAllCommentCount(List<Long> listEventId);
-//
-//    @Query("select c " +
-//            "from Comment as c " +
-//            "where c.text ilike concat('%', ?1, '%')")
-//    Page<Comment> findAllByText(String text, Pageable pageable);
-//
-//    Page<Comment> findAllByAuthorId(Long userId, Pageable pageable);
-//
-//    Optional<Comment> findByEventIdAndId(Long eventId, Long commentId);
-//
-//}
