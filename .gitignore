@@ -11,12 +11,16 @@ hs_err_pid*
 replay_pid*
 out/
 target/
+stat-postgres/
+main-postgres/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
+/stat-postgres/
+/main-postgres/
+/.github/
