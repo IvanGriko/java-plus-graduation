@@ -1,14 +1,159 @@
 services:
-  stats-server:
+
+  discovery-server:
+    build: infra/discovery-server
+    image: discovery-server
+    container_name: discovery-server
+    restart: on-failure
     ports:
-      - "9090:9090"
+      - "8761:8761"
+    environment:
+      - eureka.instance.hostname=discovery-server
 
-  stats-db:
-    image: postgres:16.1
+  config-server:
+    build: infra/config-server
+    image: config-server
+    container_name: config-server
+    restart: on-failure
+    ports:
+      - "8181:8181"
+    depends_on:
+      - discovery-server
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
+      - eureka.instance.hostname=config-server
+      - server.port=8181
 
-  ewm-service:
+  gateway-server:
+    build: infra/gateway-server
+    image: gateway-server
+    container_name: gateway-server
+    restart: on-failure
     ports:
       - "8080:8080"
+    depends_on:
+      - discovery-server
+      - config-server
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
+      - eureka.instance.hostname=gateway-server
+      - server.port=8080
 
-  ewm-db:
-    image: postgres:16.1
+  user-service:
+    build: core/core-user
+    image: core-user
+    container_name: core-user
+    restart: on-failure
+    ports:
+      - "8082:8082"
+    depends_on:
+      - db-main
+      - discovery-server
+      - config-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-main:5432/main_db?currentSchema=user_service
+      - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
+      - eureka.instance.hostname=core-user
+      - server.port=8082
+
+  event-service:
+    build: core/core-event
+    image: core-event
+    container_name: core-event
+    restart: on-failure
+    ports:
+      - "8083:8083"
+    depends_on:
+      - db-main
+      - discovery-server
+      - config-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-main:5432/main_db?currentSchema=event_service
+      - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
+      - eureka.instance.hostname=core-event
+      - server.port=8083
+
+  request-service:
+    build: core/core-request
+    image: core-request
+    container_name: core-request
+    restart: on-failure
+    ports:
+      - "8084:8084"
+    depends_on:
+      - db-main
+      - discovery-server
+      - config-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-main:5432/main_db?currentSchema=request_service
+      - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
+      - eureka.instance.hostname=core-request
+      - server.port=8084
+
+  comment-service:
+    build: core/core-comment
+    image: core-comment
+    container_name: core-comment
+    restart: on-failure
+    ports:
+      - "8085:8085"
+    depends_on:
+      - db-main
+      - discovery-server
+      - config-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-main:5432/main_db?currentSchema=comment_service
+      - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
+      - eureka.instance.hostname=core-comment
+      - server.port=8085
+
+  stats-server:
+    build: stats/stats-server
+    image: stats-server
+    container_name: stats-server
+    restart: on-failure
+    ports:
+      - "8090:8090"
+    depends_on:
+      - db-stat
+      - discovery-server
+      - config-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-stat:5432/stat_db
+      - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
+      - eureka.instance.hostname=stats-server
+      - server.port=8090
+
+  db-main:
+    image: postgres:alpine
+    container_name: db-main
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./main-postgres:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=main_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+  db-stat:
+    image: postgres:alpine
+    container_name: db-stat
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./stat-postgres:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=stat_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
