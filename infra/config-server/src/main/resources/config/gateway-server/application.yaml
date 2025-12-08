@@ -1,18 +1,3 @@
-spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            - id: main-service
-              uri: lb://main-service
-              predicates:
-                - Path=/**
-
-server:
-  port: 8080
-  shutdown: graceful
-
 management:
   endpoints.web.exposure.include: health,info,metrics,gateway
   endpoint.health.show-details: always
@@ -24,3 +9,59 @@ logging:
   level:
     root: INFO
     org.springframework.cloud.gateway: TRACE
+
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+
+            - id: user_service
+              uri: lb://core-user
+              predicates:
+                - Path=
+                  /admin/users,
+                  /admin/users/*,
+                  /admin/users/*/short,
+                  /admin/users/all/*
+
+            - id: comment_service
+              uri: lb://core-comment
+              predicates:
+                - Path=
+                  /comments/**,
+                  /events/*/comments/**,
+                  /users/*/events/*/comments,
+                  /users/*/comments/**,
+                  /admin/comments/**,
+                  /admin/users/*/comments
+
+            - id: request_service
+              uri: lb://core-request
+              predicates:
+                - Path=
+                  /requests/**,
+                  /users/*/requests,
+                  /users/*/requests/*/cancel,
+                  /users/*/events/*/requests
+
+            - id: event-service
+              uri: lb://core-event
+              predicates:
+                - Path=
+                  /admin/events/**,
+                  /users/*/events,
+                  /users/*/events/*,
+                  /events,
+                  /events/*,
+                  /events/*/dto/*,
+                  /events/dto/list/comment,
+                  /categories/**,
+                  /admin/categories/**,
+                  /compilations/**,
+                  /admin/compilations/**
