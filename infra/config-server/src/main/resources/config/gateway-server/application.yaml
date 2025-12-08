@@ -22,7 +22,7 @@ spring:
           routes:
 
             - id: user_service
-              uri: lb://core-user
+              uri: lb://user-service
               predicates:
                 - Path=
                   /admin/users,

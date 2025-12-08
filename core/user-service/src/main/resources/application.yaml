@@ -1,6 +1,6 @@
 spring:
   application:
-    name: core-user
+    name: user-service
   config:
     import: "configserver:"
   cloud:

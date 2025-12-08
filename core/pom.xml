@@ -16,7 +16,7 @@
     <modules>
         <module>core-common</module>
         <module>core-event</module>
-        <module>core-user</module>
+        <module>user-service</module>
         <module>core-comment</module>
         <module>core-request</module>
     </modules>
