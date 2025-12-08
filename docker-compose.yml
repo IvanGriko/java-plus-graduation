@@ -39,7 +39,7 @@ services:
       - eureka.instance.hostname=gateway-server
       - server.port=8080
 
-  user-service:
+  core-user:
     build: core/core-user
     image: core-user
     container_name: core-user
@@ -56,7 +56,7 @@ services:
       - eureka.instance.hostname=core-user
       - server.port=8082
 
-  event-service:
+  core-event:
     build: core/core-event
     image: core-event
     container_name: core-event
@@ -73,7 +73,7 @@ services:
       - eureka.instance.hostname=core-event
       - server.port=8083
 
-  request-service:
+  core-request:
     build: core/core-request
     image: core-request
     container_name: core-request
@@ -90,7 +90,7 @@ services:
       - eureka.instance.hostname=core-request
       - server.port=8084
 
-  comment-service:
+  core-comment:
     build: core/core-comment
     image: core-comment
     container_name: core-comment
