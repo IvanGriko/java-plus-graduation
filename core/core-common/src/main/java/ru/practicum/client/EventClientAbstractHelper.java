@@ -25,8 +25,7 @@ public abstract class EventClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о событии с ID " + eventId,
                     "Сервис событий недоступен");
         }
@@ -38,8 +37,7 @@ public abstract class EventClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             return EventInteractionDto.withOnlyId(eventId);
         }
     }
@@ -50,8 +48,7 @@ public abstract class EventClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о событии с ID " + eventId,
                     "Сервис событий недоступен");
         }
@@ -63,8 +60,7 @@ public abstract class EventClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             return EventCommentDto.withOnlyId(eventId);
         }
     }
@@ -75,8 +71,7 @@ public abstract class EventClientAbstractHelper {
                     .collect(Collectors.toMap(EventCommentDto::getId, dto -> dto));
         } catch (RuntimeException e) {
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             return eventIdList.stream()
                     .collect(Collectors.toMap(id -> id, EventCommentDto::withOnlyId));
         }

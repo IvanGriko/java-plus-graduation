@@ -21,7 +21,7 @@ public abstract class RequestClientAbstractHelper {
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(),
                     e.getMessage());
-            return eventIdList.stream().collect(Collectors.toMap(id -> id, id -> -1L)); // "-1" обозначает отсутствующие данные
+            return eventIdList.stream().collect(Collectors.toMap(id -> id, id -> -1L));
         }
     }
 

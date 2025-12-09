@@ -122,4 +122,5 @@ public class RestStatClient implements StatClient {
             return Collections.emptyList();
         }
     }
+
 }

@@ -27,7 +27,8 @@ public class CommentPublicController implements CommentPublicApi {
 
     @Override
     public Collection<CommentShortDto> getByEventId(Long eventId, int from, int size) {
-        log.info("Запрашиваются короткие комментарии для события с ID {}: начиная с {} элемента, размер выборки {}", eventId, from, size);
+        log.info("Запрашиваются короткие комментарии для события с ID {}: начиная с {} элемента, размер выборки {}",
+                eventId, from, size);
         return commentPublicService.getCommentsByEvent(eventId, from, size);
     }
 

@@ -25,8 +25,7 @@ public abstract class UserClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о пользователе с ID " + userId,
                     "Сервис пользователей недоступен");
         }
@@ -38,8 +37,7 @@ public abstract class UserClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             return UserShortDto.withOnlyId(userId);
         }
     }
@@ -50,8 +48,7 @@ public abstract class UserClientAbstractHelper {
                     .collect(Collectors.toMap(UserShortDto::getId, u -> u));
         } catch (RuntimeException e) {
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             return userIdList.stream()
                     .collect(Collectors.toMap(id -> id, UserShortDto::withOnlyId));
         }
@@ -63,8 +60,7 @@ public abstract class UserClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о пользователе с ID " + userId,
                     "Сервис пользователей недоступен");
         }
@@ -76,8 +72,7 @@ public abstract class UserClientAbstractHelper {
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             return UserDto.withOnlyId(userId);
         }
     }
@@ -88,8 +83,7 @@ public abstract class UserClientAbstractHelper {
                     .collect(Collectors.toMap(UserDto::getId, u -> u));
         } catch (RuntimeException e) {
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
+                    e.getClass().getSimpleName(), e.getMessage());
             return userIdList.stream()
                     .collect(Collectors.toMap(id -> id, UserDto::withOnlyId));
         }

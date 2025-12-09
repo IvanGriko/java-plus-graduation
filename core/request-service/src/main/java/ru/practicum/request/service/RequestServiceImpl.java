@@ -140,7 +140,8 @@ public class RequestServiceImpl implements RequestService {
             for (Request request : requests) {
                 if (!Objects.equals(request.getStatus(), ParticipationRequestStatus.PENDING)) {
                     log.error("Заявка с ID {} не находится в состоянии ожидания", request.getId());
-                    throw new ConflictException("Можно изменить статус только заявок в состоянии ожидания", "Запрещённое действие");
+                    throw new ConflictException("Можно изменить статус только заявок в состоянии ожидания",
+                            "Запрещённое действие");
                 }
             }
             List<Long> requestsToConfirm = new ArrayList<>();

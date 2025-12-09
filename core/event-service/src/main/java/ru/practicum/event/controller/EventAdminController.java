@@ -24,8 +24,14 @@ public class EventAdminController implements EventAdminApi {
     private final EventAdminService eventAdminService;
 
     @Override
-    public Collection<EventFullDto> getAllEventsByParams(List<Long> users, List<State> states, List<Long> categories,
-                                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+    public Collection<EventFullDto> getAllEventsByParams(List<Long> users,
+                                                         List<State> states,
+                                                         List<Long> categories,
+                                                         LocalDateTime rangeStart,
+                                                         LocalDateTime rangeEnd,
+                                                         Integer from,
+                                                         Integer size
+    ) {
         log.info("Получение всех событий администраторами");
         EventAdminParams params = EventAdminParams.builder()
                 .users(users)

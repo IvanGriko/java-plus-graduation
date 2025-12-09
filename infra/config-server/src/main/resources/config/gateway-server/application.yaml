@@ -5,11 +5,6 @@ management:
   prometheus.metrics.export.enabled: true
   info.env.enabled: true
 
-logging:
-  level:
-    root: INFO
-    org.springframework.cloud.gateway: TRACE
-
 server:
   port: 8080
   shutdown: graceful
@@ -66,3 +61,7 @@ spring:
                   /compilations/**,
                   /admin/compilations/**
 
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: TRACE
