@@ -31,7 +31,7 @@ spring:
                   /admin/users/all/*
 
             - id: comment_service
-              uri: lb://core-comment
+              uri: lb://comment-service
               predicates:
                 - Path=
                   /comments/**,
@@ -42,7 +42,7 @@ spring:
                   /admin/users/*/comments
 
             - id: request_service
-              uri: lb://core-request
+              uri: lb://request-service
               predicates:
                 - Path=
                   /requests/**,
@@ -50,8 +50,8 @@ spring:
                   /users/*/requests/*/cancel,
                   /users/*/events/*/requests
 
-            - id: event-service
-              uri: lb://core-event
+            - id: event_service
+              uri: lb://event-service
               predicates:
                 - Path=
                   /admin/events/**,
