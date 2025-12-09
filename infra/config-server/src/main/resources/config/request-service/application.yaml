@@ -22,7 +22,7 @@ explore-with-me:
   stat.datetime.format: yyyy-MM-dd HH:mm:ss
 
 server:
-  port: 0
+  port: 8084
   shutdown: graceful
 
 spring:
