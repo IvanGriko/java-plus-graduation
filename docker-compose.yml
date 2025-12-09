@@ -56,10 +56,10 @@ services:
       - eureka.instance.hostname=user-service
       - server.port=8082
 
-  core-event:
-    build: core/core-event
-    image: core-event
-    container_name: core-event
+  event-service:
+    build: core/event-service
+    image: event-service
+    container_name: event-service
     restart: on-failure
     ports:
       - "8083:8083"
@@ -70,13 +70,13 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db-main:5432/main_db?currentSchema=event_service
       - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
-      - eureka.instance.hostname=core-event
+      - eureka.instance.hostname=event-service
       - server.port=8083
 
-  core-request:
-    build: core/core-request
-    image: core-request
-    container_name: core-request
+  request-service:
+    build: core/request-service
+    image: request-service
+    container_name: request-service
     restart: on-failure
     ports:
       - "8084:8084"
@@ -87,13 +87,13 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db-main:5432/main_db?currentSchema=request_service
       - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
-      - eureka.instance.hostname=core-request
+      - eureka.instance.hostname=request-service
       - server.port=8084
 
-  core-comment:
-    build: core/core-comment
-    image: core-comment
-    container_name: core-comment
+  comment-service:
+    build: core/comment-service
+    image: comment-service
+    container_name: comment-service
     restart: on-failure
     ports:
       - "8085:8085"
@@ -104,7 +104,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db-main:5432/main_db?currentSchema=comment_service
       - eureka.client.serviceUrl.defaultZone=http://discovery-server:8761/eureka/
-      - eureka.instance.hostname=core-comment
+      - eureka.instance.hostname=comment-service
       - server.port=8085
 
   stats-server:

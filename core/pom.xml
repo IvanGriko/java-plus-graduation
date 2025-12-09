@@ -15,10 +15,10 @@
 
     <modules>
         <module>core-common</module>
-        <module>core-event</module>
+        <module>event-service</module>
         <module>user-service</module>
-        <module>core-comment</module>
-        <module>core-request</module>
+        <module>comment-service</module>
+        <module>request-service</module>
     </modules>
 
 </project>
