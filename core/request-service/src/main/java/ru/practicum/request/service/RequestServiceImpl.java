@@ -67,10 +67,17 @@ public class RequestServiceImpl implements RequestService {
                 throw new ConflictException("Участие ограничено, достигнут максимальный предел заявок",
                         "Запрещённое действие");
             }
+//            ParticipationRequestStatus newRequestStatus = ParticipationRequestStatus.PENDING;
+//            if (!eventDto.getRequestModeration()) newRequestStatus = ParticipationRequestStatus.CONFIRMED;
+//            if (Objects.equals(eventDto.getParticipantLimit(), 0L))
+//                newRequestStatus = ParticipationRequestStatus.CONFIRMED;
             ParticipationRequestStatus newRequestStatus = ParticipationRequestStatus.PENDING;
-            if (!eventDto.getRequestModeration()) newRequestStatus = ParticipationRequestStatus.CONFIRMED;
-            if (Objects.equals(eventDto.getParticipantLimit(), 0L))
+            if (!eventDto.getRequestModeration()) { // Без модерации заявок
                 newRequestStatus = ParticipationRequestStatus.CONFIRMED;
+            }
+            if (eventDto.getParticipantLimit().equals(0L)) { // Отсутствие ограничения на участников
+                newRequestStatus = ParticipationRequestStatus.CONFIRMED;
+            }
             Request newRequest = Request.builder()
                     .requesterId(userId)
                     .eventId(eventId)
