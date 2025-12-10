@@ -24,7 +24,7 @@ public abstract class EventClientAbstractHelper {
             return eventApiClient.getEventInteractionDto(eventId);
         } catch (RuntimeException e) {
             if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
-            log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
+            log.info("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о событии с ID " + eventId,
                     "Сервис событий недоступен");
