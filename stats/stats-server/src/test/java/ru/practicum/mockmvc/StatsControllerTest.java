@@ -12,9 +12,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.controller.StatsController;
 import ru.practicum.dto.EventHitDto;
 import ru.practicum.dto.EventStatsResponseDto;
-import ru.practicum.controller.StatsController;
 import ru.practicum.service.StatsService;
 
 import java.time.LocalDateTime;
