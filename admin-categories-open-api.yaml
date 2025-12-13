@@ -1,0 +1,183 @@
+openapi: 3.0.1
+info:
+  title: Admin Categories API
+  description: Управление категориями администратора
+  version: 1.0.0
+servers:
+  - url: http://localhost:8083/admin/categories
+
+tags:
+  - name: Категории администрирования
+    description: Методы управления категориями
+
+paths:
+  /categories:
+    post:
+      tags:
+        - Категории администрирования
+      summary: Создание новой категории
+      description: Создать новую категорию.
+      operationId: addCategory
+      requestBody:
+        description: Объект категории для создания
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryDto"
+      responses:
+        '201':
+          description: Новая категория успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryDto"
+        '400':
+          description: Некорректные данные в запросе
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        '409':
+          description: Конфликт, категория с таким именем уже существует
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        default:
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /categories/{catId}:
+    patch:
+      tags:
+        - Категории администрирования
+      summary: Обновление существующей категории
+      description: Изменить существующий объект категории.
+      operationId: updateCategory
+      parameters:
+        - name: catId
+          in: path
+          description: Уникальный идентификатор категории
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        description: Объект категории для обновления
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryDto"
+      responses:
+        '200':
+          description: Категория успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryDto"
+        '400':
+          description: Некорректные данные в запросе
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        '404':
+          description: Категория с указанным ID не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        '409':
+          description: Название категории уже занято другим объектом
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        default:
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+    delete:
+      tags:
+        - Категории администрирования
+      summary: Удаление категории
+      description: Удалить категорию по уникальному идентификатору.
+      operationId: deleteCategory
+      parameters:
+        - name: catId
+          in: path
+          description: Уникальный идентификатор категории
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: Категория успешно удалена
+        '404':
+          description: Категория с указанным ID не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        '409':
+          description: Категория связана с событием и не может быть удалена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        default:
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+components:
+  schemas:
+    CategoryDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор категории
+        name:
+          type: string
+          description: Название категории
+          minLength: 1
+          maxLength: 50
+      required:
+        - name
+      example:
+        id: 1
+        name: Новинки
+
+    ApiError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Код статуса HTTP
+        reason:
+          type: string
+          description: Причина ошибки
+        message:
+          type: string
+          description: Сообщение об ошибке
+        timestamp:
+          type: string
+          format: date-time
+          description: Время возникновения ошибки
+      example:
+        status: BAD_REQUEST
+        reason: Некорректные аргументы запроса
+        message: Поле name пустое
+        timestamp: 2023-09-14T12:34:56Z
