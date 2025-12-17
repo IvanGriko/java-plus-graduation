@@ -1,0 +1,438 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Event Public API",
+    "description": "Public API for fetching event-related information.",
+    "version": "1.0-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8083"
+    }
+  ],
+  "paths": {
+    "/events": {
+      "get": {
+        "summary": "Fetch events using multiple filters",
+        "operationId": "getAllEventsByParams",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "text",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search term to match against annotations or descriptions"
+          },
+          {
+            "in": "query",
+            "name": "categories",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "description": "IDs of categories to filter events"
+          },
+          {
+            "in": "query",
+            "name": "paid",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter events by payment requirement"
+          },
+          {
+            "in": "query",
+            "name": "rangeStart",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Start of event date range"
+          },
+          {
+            "in": "query",
+            "name": "rangeEnd",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "End of event date range"
+          },
+          {
+            "in": "query",
+            "name": "onlyAvailable",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "Show only events with available spots"
+          },
+          {
+            "in": "query",
+            "name": "eventSort",
+            "schema": {
+              "type": "string",
+              "enum": ["EVENT_DATE", "VIEWS"]
+            },
+            "description": "Sorting order for events"
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Starting offset for pagination"
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Number of records per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Events found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid parameter values"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "summary": "Fetch detailed information about a specific event",
+        "operationId": "getInformationAboutEventByEventId",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed event information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventFullDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/events/{id}/dto/comment": {
+      "get": {
+        "summary": "Fetch comment details for an event",
+        "operationId": "getEventCommentDto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event comment details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventCommentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/events/dto/list/comment": {
+      "post": {
+        "summary": "Fetch comments for multiple events",
+        "operationId": "getEventCommentDtoList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comments for selected events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventCommentDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid event IDs"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/events/{id}/dto/interaction": {
+      "get": {
+        "summary": "Fetch interaction statistics for an event",
+        "operationId": "getEventInteractionDto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Interaction statistics for the event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventInteractionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EventShortDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmedRequests": {
+            "type": "integer"
+          },
+          "views": {
+            "type": "integer"
+          }
+        }
+      },
+      "EventFullDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["PENDING", "CANCELED", "PUBLISHED"]
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
+          },
+          "participantLimit": {
+            "type": "integer"
+          },
+          "requestModeration": {
+            "type": "boolean"
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmedRequests": {
+            "type": "integer"
+          },
+          "views": {
+            "type": "integer"
+          }
+        }
+      },
+      "EventCommentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["PENDING", "CANCELED", "PUBLISHED"]
+          }
+        }
+      },
+      "EventInteractionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "initiatorId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["PENDING", "CANCELED", "PUBLISHED"]
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
+          },
+          "participantLimit": {
+            "type": "integer"
+          },
+          "requestModeration": {
+            "type": "boolean"
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LocationDto": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lon": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

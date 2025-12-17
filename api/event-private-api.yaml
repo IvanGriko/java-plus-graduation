@@ -1,0 +1,384 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Event Private API",
+    "description": "API for managing user's own events.",
+    "version": "1.0-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8083/users"
+    }
+  ],
+  "paths": {
+    "/{userId}/events": {
+      "post": {
+        "summary": "Create a new event by user",
+        "operationId": "addNewEventByUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID who creates the event"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventFullDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid input data"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all events by user ID",
+        "operationId": "getAllEventsByUserId",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID whose events will be fetched"
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Pagination start index"
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Pagination page size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success: Events retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid input data"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{userId}/events/{eventId}": {
+      "get": {
+        "summary": "Get single event by user ID and event ID",
+        "operationId": "getEventByUserIdAndEventId",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID"
+          },
+          {
+            "in": "path",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success: Single event retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventFullDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found: Event or user not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an event by user ID and event ID",
+        "operationId": "updateEventByUserIdAndEventId",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID"
+          },
+          {
+            "in": "path",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success: Event updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventFullDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found: Event or user not found"
+          },
+          "409": {
+            "description": "Conflict: Event cannot be modified because it's either canceled or published"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EventFullDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["PENDING", "CANCELED", "PUBLISHED"]
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
+          },
+          "participantLimit": {
+            "type": "integer"
+          },
+          "requestModeration": {
+            "type": "boolean"
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmedRequests": {
+            "type": "integer"
+          },
+          "views": {
+            "type": "integer"
+          }
+        }
+      },
+      "EventShortDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmedRequests": {
+            "type": "integer"
+          },
+          "views": {
+            "type": "integer"
+          }
+        }
+      },
+      "NewEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "participantLimit": {
+            "type": "integer"
+          },
+          "requestModeration": {
+            "type": "boolean"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["title", "annotation", "description", "category", "location", "eventDate"]
+      },
+      "UpdateEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "participantLimit": {
+            "type": "integer"
+          },
+          "requestModeration": {
+            "type": "boolean"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateAction": {
+            "type": "string",
+            "enum": ["SEND_TO_REVIEW", "CANCEL_REVIEW"]
+          }
+        }
+      },
+      "LocationDto": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lon": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

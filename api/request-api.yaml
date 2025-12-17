@@ -1,0 +1,366 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Request API",
+    "description": "API for managing participation requests in events.",
+    "version": "1.0-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8084"
+    }
+  ],
+  "paths": {
+    "/users/{userId}/requests": {
+      "post": {
+        "summary": "Submit a participation request for an event",
+        "operationId": "addRequest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID submitting the request"
+          },
+          {
+            "in": "query",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID where the user wants to participate"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Request submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParticipationRequestDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid parameters"
+          },
+          "409": {
+            "description": "Conflict: Already applied or other conflict issue"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all participation requests made by a user",
+        "operationId": "getRequesterRequests",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID whose requests need to be retrieved"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of participation requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ParticipationRequestDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid user ID"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/{userId}/requests/{requestId}/cancel": {
+      "patch": {
+        "summary": "Cancel a previously submitted participation request",
+        "operationId": "cancelRequest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID requesting cancellation"
+          },
+          {
+            "in": "path",
+            "name": "requestId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Request ID being cancelled"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request cancelled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParticipationRequestDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid parameters"
+          },
+          "409": {
+            "description": "Conflict: Unable to cancel this request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/{userId}/events/{eventId}/requests": {
+      "get": {
+        "summary": "Get all participation requests for a particular event managed by a user",
+        "operationId": "getEventRequests",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID of the organizer"
+          },
+          {
+            "in": "path",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of participation requests for the event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ParticipationRequestDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid parameters"
+          },
+          "403": {
+            "description": "Forbidden: Only organizers can access these requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Change the status of participation requests for an event",
+        "operationId": "moderateRequest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "User ID of the organizer"
+          },
+          {
+            "in": "path",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Event ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventRequestStatusUpdateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Statuses updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventRequestStatusUpdateResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid parameters"
+          },
+          "403": {
+            "description": "Forbidden: Only organizers can change statuses"
+          },
+          "409": {
+            "description": "Conflict: Incorrect status change attempted"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/requests/confirmed": {
+      "post": {
+        "summary": "Get number of confirmed requests for each event",
+        "operationId": "getConfirmedRequestsByEventIds",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Number of confirmed requests for each event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Invalid event IDs"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ParticipationRequestDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "requester": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "event": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "CONFIRMED", "REJECTED", "CANCELED"]
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EventRequestStatusUpdateRequestDto": {
+        "type": "object",
+        "properties": {
+          "requestIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": ["CONFIRMED", "REJECTED"]
+          }
+        },
+        "required": ["requestIds", "status"]
+      },
+      "EventRequestStatusUpdateResultDto": {
+        "type": "object",
+        "properties": {
+          "confirmedRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipationRequestDto"
+            }
+          },
+          "rejectedRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipationRequestDto"
+            }
+          }
+        }
+      }
+    }
+  }
+}

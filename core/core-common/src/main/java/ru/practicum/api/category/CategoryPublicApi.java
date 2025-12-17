@@ -17,13 +17,19 @@ public interface CategoryPublicApi {
     @ResponseStatus(HttpStatus.OK)
     Collection<CategoryDto> readAllCategories(
             @RequestParam(defaultValue = "0")
-            @PositiveOrZero int from,
+            @PositiveOrZero(message = "Индекс смещения должен быть неотрицательным числом.")
+            int from,
             @RequestParam(defaultValue = "10")
-            @Positive int size
+            @Positive(message = "Размер страницы должен быть положительным числом.")
+            int size
     );
 
     @GetMapping("/categories/{catId}")
     @ResponseStatus(HttpStatus.OK)
-    CategoryDto readCategoryById(@PathVariable Long catId);
+    CategoryDto readCategoryById(
+            @PathVariable
+            @Positive(message = "Идентификатор категории должен быть положительным числом.")
+            Long catId
+    );
 
 }

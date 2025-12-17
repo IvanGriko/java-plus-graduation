@@ -1,0 +1,273 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Event Admin API",
+    "description": "Administrative API for managing events within the system.",
+    "version": "1.0-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8083/admin"
+    }
+  ],
+  "paths": {
+    "/events": {
+      "get": {
+        "summary": "Get all events filtered by various parameters",
+        "operationId": "getAllEventsByParams",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "users",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "description": "List of user IDs whose events should be returned"
+          },
+          {
+            "in": "query",
+            "name": "states",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["PENDING", "CANCELED", "PUBLISHED"]
+              }
+            },
+            "description": "List of event states to filter results"
+          },
+          {
+            "in": "query",
+            "name": "categories",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "description": "List of category IDs that the events belong to"
+          },
+          {
+            "in": "query",
+            "name": "rangeStart",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Minimum date time for filtering events"
+          },
+          {
+            "in": "query",
+            "name": "rangeEnd",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Maximum date time for filtering events"
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Offset for pagination"
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            },
+            "description": "Page size for pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of events matching the specified criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventFullDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request due to invalid parameters"
+          },
+          "500": {
+            "description": "Internal Server Error occurred while processing the request"
+          }
+        }
+      }
+    },
+    "/events/{eventId}": {
+      "patch": {
+        "summary": "Update an event by administrator",
+        "operationId": "updateEventByAdmin",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Unique identifier of the event to be updated"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Event updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventFullDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "409": {
+            "description": "Conflict when updating the event"
+          },
+          "500": {
+            "description": "Internal Server Error during event update process"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EventFullDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["PENDING", "CANCELED", "PUBLISHED"]
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
+          },
+          "participantLimit": {
+            "type": "integer"
+          },
+          "requestModeration": {
+            "type": "boolean"
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmedRequests": {
+            "type": "integer"
+          },
+          "views": {
+            "type": "integer"
+          }
+        }
+      },
+      "UpdateEventDto": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "$ref": "#/components/schemas/LocationDto"
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "participantLimit": {
+            "type": "integer"
+          },
+          "requestModeration": {
+            "type": "boolean"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateAction": {
+            "type": "string",
+            "enum": ["REJECT_EVENT", "PUBLISH_EVENT"]
+          }
+        }
+      },
+      "LocationDto": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lon": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
