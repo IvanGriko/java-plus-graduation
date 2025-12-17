@@ -40,26 +40,27 @@ My Area Guide (Мой гид) — это удобное веб-приложен�
 🔐 Конфигурационные данные хранятся централизованно в специальном сервисе Configuration Service, управляемом через Spring Cloud Config Server. Это позволяет унифицированно конфигурировать окружение для всех сервисов.
 
 Спецификации API:
-[Category Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/category-admin-api.yaml)
-
-[Category Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/category-public-api.yaml)
-
-[Comment Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/comment-admin-api.yaml)
-
-[Comment Private API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/comment-private-api.yaml)
-
-[Comment Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/comment-public-api.yaml)
-
-[Compilation Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/compilation-admin-api.yaml)
-
-[Compilation Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/compilation-public-api.yaml)
-
-[Event Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/event-admin-api.yaml)
-
-[Event Private API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/event-private-api.yaml)
-
-[Event Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/event-public-api.yaml)
-
-[Request API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/request-api.yaml)
-
-[User API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/user-api.yaml)
+- [Category Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/category-admin-api.yaml)
+ 
+- [Category Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/category-public-api.yaml)
+ 
+- [Comment Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/comment-admin-api.yaml)
+ 
+- [Comment Private API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/comment-private-api.yaml)
+ 
+- [Comment Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/comment-public-api.yaml)
+ 
+- [Compilation Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/compilation-admin-api.yaml)
+ 
+- [Compilation Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/compilation-public-api.yaml)
+ 
+- [Event Admin API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/event-admin-api.yaml)
+ 
+- [Event Private API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/event-private-api.yaml)
+ 
+- [Event Public API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/event-public-api.yaml)
+ 
+- [Request API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/request-api.yaml)
+ 
+- [User API] (https://github.com/IvanGriko/java-plus-graduation/blob/microservices/api/user-api.yaml)
+ 
