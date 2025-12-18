@@ -1,0 +1,353 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Comment Admin API",
+    "description": "This API enables admin users to perform operations on comments including searching, approving, rejecting, listing, and deleting them.",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8083/api/v1/admin/comments"
+    }
+  ],
+  "paths": {
+    "/search": {
+      "get": {
+        "summary": "Search comments based on their content",
+        "operationId": "searchComments",
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Text used for searching comments"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "description": "Starting point for pagination"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "description": "Number of records per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully searched comments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommentDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or validation errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "summary": "Get all comments posted by a particular user",
+        "operationId": "getCommentsByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Unique identifier of the user whose comments are being fetched"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "description": "Pagination starting point"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "description": "Records per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user's comments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommentDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User with the given ID not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{comId}": {
+      "delete": {
+        "summary": "Delete a comment by its ID",
+        "operationId": "deleteComment",
+        "parameters": [
+          {
+            "name": "comId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Unique identifier of the comment to be deleted"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Comment successfully deleted"
+          },
+          "404": {
+            "description": "Comment with the given ID not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{comId}/approve": {
+      "patch": {
+        "summary": "Approve a comment",
+        "operationId": "approveComment",
+        "parameters": [
+          {
+            "name": "comId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Unique identifier of the comment to be approved"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment with the given ID not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{comId}/reject": {
+      "patch": {
+        "summary": "Reject a comment",
+        "operationId": "rejectComment",
+        "parameters": [
+          {
+            "name": "comId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Unique identifier of the comment to be rejected"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment with the given ID not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CommentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "author": {
+            "type": "object",
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "event": {
+            "type": "object",
+            "$ref": "#/components/schemas/EventCommentDto"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "text": {
+            "type": "string"
+          },
+          "approved": {
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "id": 1,
+          "author": {
+            "id": 1,
+            "email": "test@example.com",
+            "fullName": "John Doe"
+          },
+          "event": {
+            "id": 1,
+            "title": "Example Event"
+          },
+          "createTime": "2023-10-05T12:00:00Z",
+          "text": "Example comment.",
+          "approved": true
+        }
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "fullName": {
+            "type": "string"
+          }
+        }
+      },
+      "EventCommentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "status": 404,
+          "reason": "Resource not found",
+          "message": "The resource you tried to access could not be found.",
+          "timestamp": "2023-10-05T12:00:00Z"
+        }
+      }
+    }
+  }
+}

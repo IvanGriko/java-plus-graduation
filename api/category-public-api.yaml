@@ -1,0 +1,107 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Category Public API",
+    "description": "API for retrieving information about categories available publicly.",
+    "version": "1.0-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8083/categories"
+    }
+  ],
+  "paths": {
+    "/all": {
+      "get": {
+        "summary": "Get all categories paginated",
+        "operationId": "readAllCategories",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Starting index for pagination"
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Page size for pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A collection of categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{catId}": {
+      "get": {
+        "summary": "Retrieve a specific category by its ID",
+        "operationId": "readCategoryById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "catId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the requested category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: The category with the provided ID was not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        },
+        "required": ["name"]
+      }
+    }
+  }
+}
