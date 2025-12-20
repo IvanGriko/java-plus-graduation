@@ -154,6 +154,7 @@ public class EventPublicServiceImpl implements EventPublicService {
 
     @Override
     public String sendLike(Long userId, Long eventId) {
+        log.info("Отправка информации о лайке пользователя с ID {} к событию с ID {}", userId, eventId);
         if (!requestClientHelper.passedParticipationCheck(userId, eventId))
             throw new BadRequestException("Пользователь с ID " + userId + " пытается лайкнуть событие c ID " + eventId
                     + ", в котором не участвовал");

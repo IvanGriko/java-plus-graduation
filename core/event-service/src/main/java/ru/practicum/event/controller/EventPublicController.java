@@ -81,6 +81,7 @@ public class EventPublicController implements EventPublicApi {
 
     @Override
     public String sendLike(Long userId, Long eventId) {
+        log.info("Отправка информации о лайке пользователя с ID {} к событию с ID {}", userId, eventId);
         return eventPublicService.sendLike(userId, eventId);
     }
 }

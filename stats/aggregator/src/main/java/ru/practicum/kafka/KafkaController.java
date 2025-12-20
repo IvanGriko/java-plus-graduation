@@ -3,6 +3,7 @@ package ru.practicum.kafka;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -16,6 +17,7 @@ import ru.practicum.service.UserActionService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class KafkaController {
 
@@ -28,10 +30,16 @@ public class KafkaController {
     public void initKafkaProducer() {
         kafkaTemplate.flush();
         kafkaRegistry.start();
+        log.info("Инициализирован Kafka Producer");
     }
 
     @KafkaListener(topics = "#{customProperties.kafka.userActionTopic}")
     public void listen(UserActionAvro userActionAvro) {
-        userActionService.handleUserAction(userActionAvro);
+        try {
+            userActionService.handleUserAction(userActionAvro);
+            log.info("Получено и обработано действие пользователя: {}", userActionAvro.toString());
+        } catch (Exception e) {
+            log.error("Ошибка при обработке действия пользователя: {}", e.getMessage(), e);
+        }
     }
 }
