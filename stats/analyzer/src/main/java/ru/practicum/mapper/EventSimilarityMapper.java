@@ -15,5 +15,4 @@ public class EventSimilarityMapper {
                 .timestamp(avro.getTimestamp())
                 .build();
     }
-
 }

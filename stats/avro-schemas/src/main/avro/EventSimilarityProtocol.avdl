@@ -1,12 +1,11 @@
-@namespace("ru.practicum.ewm.stats.avro")
+namespace ru.practicum.ewm.stats.avro;
 
-protocol EventSimilarityProtocol {
+// Optional: main schema (using it creates a .avsc equivalent file)
+schema EventSimilarityAvro;
 
-	record EventSimilarityAvro {
-		long eventA;
-		long eventB;
-		double score;
-		timestamp_ms timestamp;
-	}
-
+record EventSimilarityAvro {
+	long eventA;
+	long eventB;
+	double score;
+	timestamp_ms timestamp;
 }

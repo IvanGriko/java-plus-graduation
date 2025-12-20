@@ -36,7 +36,8 @@ public abstract class RequestClientAbstractHelper {
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(),
                     e.getMessage());
-            throw new ServiceInteractionException("Unable to confirm participation of user " + userId + " in event " + eventId);
+            throw new ServiceInteractionException("Нельзя подтвердить участие пользователя с ID " + userId
+                    + " в событии с ID " + eventId);
         }
     }
 

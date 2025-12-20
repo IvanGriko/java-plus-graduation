@@ -42,5 +42,4 @@ public class Category implements Serializable {
             unique = true
     )
     String name;
-
 }

@@ -9,5 +9,4 @@ public class UserClientHelper extends UserClientAbstractHelper {
     public UserClientHelper(UserApi userApiClient) {
         super(userApiClient);
     }
-
 }

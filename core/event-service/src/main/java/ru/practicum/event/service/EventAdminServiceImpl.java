@@ -57,7 +57,6 @@ public class EventAdminServiceImpl implements EventAdminService {
         Map<Long, UserShortDto> userMap = userClientHelper.fetchUserShortDtoMapByUserIdList(userIds);
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(eventIds);
         Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(eventIds);
-
         return events.stream()
                 .map(e -> EventMapper.toEventFullDto(
                         e,
@@ -120,5 +119,4 @@ public class EventAdminServiceImpl implements EventAdminService {
             return EventMapper.toEventFullDto(event, userShortDto, confirmedRequestsMap.get(eventId), ratingMap.get(eventId));
         });
     }
-
 }

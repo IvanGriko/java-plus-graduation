@@ -1,12 +1,14 @@
 package ru.practicum.ewm.client;
 
 import com.google.protobuf.Timestamp;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import ru.practicum.EventHitDto;
-import ru.practicum.EventStatsResponseDto;
+import ru.practicum.dto.EventHitDto;
+import ru.practicum.dto.EventStatsResponseDto;
 import ru.practicum.grpc.collector.RecommendationsControllerGrpc;
 import ru.practicum.grpc.collector.UserActionControllerGrpc;
 import ru.practicum.grpc.similarity.reports.InteractionsCountRequestProto;
@@ -25,11 +27,11 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GrpcStatClient implements StatClient {
 
-    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionStub;
-    private final RecommendationsControllerGrpc.RecommendationsControllerBlockingStub recommendationsStub;
-
+    UserActionControllerGrpc.UserActionControllerBlockingStub userActionStub;
+    RecommendationsControllerGrpc.RecommendationsControllerBlockingStub recommendationsStub;
 
     @Override
     public void hit(EventHitDto eventHitDto) {
@@ -64,7 +66,6 @@ public class GrpcStatClient implements StatClient {
                 .build();
         try {
             Iterator<RecommendedEventProto> recommendations = recommendationsStub.getRecommendationsForUser(requestProto);
-
             Map<Long, Double> result = StreamSupport.stream(
                     Spliterators.spliteratorUnknownSize(recommendations, Spliterator.ORDERED),
                     false
@@ -87,7 +88,6 @@ public class GrpcStatClient implements StatClient {
                 .build();
         try {
             Iterator<RecommendedEventProto> ratingIterator = recommendationsStub.getInteractionsCount(requestProto);
-
             Map<Long, Double> result = StreamSupport.stream(
                     Spliterators.spliteratorUnknownSize(ratingIterator, Spliterator.ORDERED),
                     false
@@ -124,5 +124,4 @@ public class GrpcStatClient implements StatClient {
             return "false";
         }
     }
-
 }

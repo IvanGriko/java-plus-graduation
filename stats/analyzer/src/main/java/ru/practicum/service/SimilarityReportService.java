@@ -88,5 +88,4 @@ public class SimilarityReportService {
                         .build())
                 .toList();
     }
-
 }

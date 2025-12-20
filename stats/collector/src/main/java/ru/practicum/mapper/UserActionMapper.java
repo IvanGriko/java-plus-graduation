@@ -54,5 +54,4 @@ public class UserActionMapper {
     public static Instant fromProtoToAvro(Timestamp ts) {
         return Instant.ofEpochSecond(ts.getSeconds(), ts.getNanos());
     }
-
 }

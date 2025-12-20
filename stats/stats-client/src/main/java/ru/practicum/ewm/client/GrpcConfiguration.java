@@ -4,6 +4,8 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.NameResolverRegistry;
 import jakarta.annotation.PostConstruct;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import net.devh.boot.grpc.client.nameresolver.DiscoveryClientResolverFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,12 +16,12 @@ import ru.practicum.grpc.collector.RecommendationsControllerGrpc;
 import ru.practicum.grpc.collector.UserActionControllerGrpc;
 
 @Configuration
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GrpcConfiguration {
 
-    private final String collectorDiscoveryName;
-    private final String analyzerDiscoveryName;
-
-    private final DiscoveryClient discoveryClient;
+    String collectorDiscoveryName;
+    String analyzerDiscoveryName;
+    DiscoveryClient discoveryClient;
 
     public GrpcConfiguration(
             @Value("${explore-with-me.collector.discovery.name:collector}") String collectorDiscoveryName,
@@ -36,8 +38,6 @@ public class GrpcConfiguration {
         DiscoveryClientResolverFactory resolverFactory = new DiscoveryClientResolverFactory(discoveryClient);
         NameResolverRegistry.getDefaultRegistry().register(resolverFactory);
     }
-
-    // COLLECTOR
 
     @Bean(destroyMethod = "shutdownNow")
     public ManagedChannel collectorChannel() {
@@ -56,8 +56,6 @@ public class GrpcConfiguration {
         return UserActionControllerGrpc.newBlockingStub(channel);
     }
 
-    // ANALYZER
-
     @Bean(destroyMethod = "shutdownNow")
     public ManagedChannel analyzerChannel() {
         return ManagedChannelBuilder.forTarget("discovery:///" + analyzerDiscoveryName)
@@ -74,5 +72,4 @@ public class GrpcConfiguration {
     ) {
         return RecommendationsControllerGrpc.newBlockingStub(channel);
     }
-
 }

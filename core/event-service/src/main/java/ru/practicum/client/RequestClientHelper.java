@@ -9,5 +9,4 @@ public class RequestClientHelper extends RequestClientAbstractHelper {
     public RequestClientHelper(RequestApi requestApiClient) {
         super(requestApiClient);
     }
-
 }

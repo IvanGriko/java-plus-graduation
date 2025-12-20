@@ -17,5 +17,4 @@ public class KafkaProducerInitializer {
     public void initKafkaProducer() {
         kafkaTemplate.flush();
     }
-
 }

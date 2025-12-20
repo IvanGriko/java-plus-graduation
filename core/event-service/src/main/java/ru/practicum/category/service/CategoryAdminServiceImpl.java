@@ -68,5 +68,4 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         log.info("Категория с ID {} успешно обновлена", catId);
         return CategoryMapper.toCategoryDto(category);
     }
-
 }

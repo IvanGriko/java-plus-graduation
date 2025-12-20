@@ -18,5 +18,4 @@ public @interface NotBlankButNullAllowed {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }

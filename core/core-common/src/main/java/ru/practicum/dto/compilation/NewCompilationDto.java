@@ -28,5 +28,4 @@ public class NewCompilationDto {
             message = "Длина заголовка должна быть от 1 до 50 символов"
     )
     String title;
-
 }

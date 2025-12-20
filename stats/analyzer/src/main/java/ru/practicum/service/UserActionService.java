@@ -38,5 +38,4 @@ public class UserActionService {
         userActionRepository.save(userAction);
         log.debug("Created user action: {}", userAction);
     }
-
 }

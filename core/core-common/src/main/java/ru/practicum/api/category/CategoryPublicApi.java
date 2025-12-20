@@ -31,5 +31,4 @@ public interface CategoryPublicApi {
             @Positive(message = "Идентификатор категории должен быть положительным числом.")
             Long catId
     );
-
 }

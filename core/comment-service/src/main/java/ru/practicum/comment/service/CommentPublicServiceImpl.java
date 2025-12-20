@@ -93,5 +93,4 @@ public class CommentPublicServiceImpl implements CommentPublicService {
         log.info("Комментарий с ID {} успешно получен", comId);
         return CommentMapper.toCommentDto(comment, userDto, eventCommentDto);
     }
-
 }

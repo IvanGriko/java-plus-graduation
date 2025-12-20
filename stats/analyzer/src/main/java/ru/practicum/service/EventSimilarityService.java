@@ -35,5 +35,4 @@ public class EventSimilarityService {
         log.debug("{} similarity for {} and {} : Set score to {}",
                 logAction, eventSimilarity.getEventA(), eventSimilarity.getEventB(), eventSimilarity.getScore());
     }
-
 }

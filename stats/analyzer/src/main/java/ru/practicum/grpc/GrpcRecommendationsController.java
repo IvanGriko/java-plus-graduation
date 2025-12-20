@@ -67,5 +67,4 @@ public class GrpcRecommendationsController extends RecommendationsControllerGrpc
             );
         }
     }
-
 }

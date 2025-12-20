@@ -20,5 +20,4 @@ public @interface AtLeastOneNotNull {
     Class<? extends Payload>[] payload() default {};
 
     String[] fields();
-
 }

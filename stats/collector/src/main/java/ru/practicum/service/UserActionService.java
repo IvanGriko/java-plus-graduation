@@ -23,10 +23,9 @@ public class UserActionService {
     CustomProperties customProperties;
 
     public void handleUserAction(UserActionProto userActionProto) {
-        log.debug("Received Proto: {}", TextFormat.printer().emittingSingleLine(true).printToString(userActionProto));
+        log.info("Получено Proto: {}", TextFormat.printer().emittingSingleLine(true).printToString(userActionProto));
         UserActionAvro userActionAvro = UserActionMapper.fromProtoToAvro(userActionProto);
         kafkaTemplate.send(customProperties.getKafka().getUserActionTopic(), userActionAvro);
-        log.debug("Sent Avro: {}", userActionAvro);
+        log.info("Отправлено Avro: {}", userActionAvro);
     }
-
 }

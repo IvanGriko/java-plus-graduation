@@ -50,7 +50,7 @@ public class EventPublicServiceImpl implements EventPublicService {
             params.setRangeEnd(null);
         }
         List<Event> events = transactionTemplate.execute(status -> {
-            PageRequest pageRequest = PageRequest.of(params.getFrom() / params.getSize(), params.getSize(), sort);
+            PageRequest pageRequest = PageRequest.of(params.getFrom() / params.getSize(), params.getSize());
             return eventRepository.findAll(EventDynamicFilters.buildPublicFilter(params), pageRequest).getContent();
         });
         if (events == null) return List.of();
@@ -155,10 +155,8 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     public String sendLike(Long userId, Long eventId) {
         if (!requestClientHelper.passedParticipationCheck(userId, eventId))
-            throw new BadRequestException("Пользователь с ID " + userId
-                    + " пытается лайкнуть событие c ID " + eventId
+            throw new BadRequestException("Пользователь с ID " + userId + " пытается лайкнуть событие c ID " + eventId
                     + ", в котором не участвовал");
         return statClient.sendLike(userId, eventId);
     }
-
 }

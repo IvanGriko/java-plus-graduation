@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
         @Index(name = "idx_requests_requester_id", columnList = "requester_id"),
         @Index(name = "idx_requests_event_id", columnList = "event_id")
 })
-
 public class Request {
 
     @Id
@@ -41,5 +40,4 @@ public class Request {
 
     @Column(name = "created_at", nullable = false)
     LocalDateTime created;
-
 }

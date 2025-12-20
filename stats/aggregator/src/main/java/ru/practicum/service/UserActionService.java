@@ -25,13 +25,13 @@ public class UserActionService {
     CustomProperties customProperties;
 
     // Map<userId, Map<eventId, weight>> - таблица весов с быстрым доступом по userId
-    private final Map<Long, Map<Long, BigDecimal>> weightsByUser = new HashMap<>();
+    Map<Long, Map<Long, BigDecimal>> weightsByUser = new HashMap<>();
     // Map<eventId, Map<userId, weight>> - таблица весов с быстрым доступом по eventId
-    private final Map<Long, Map<Long, BigDecimal>> weightsByEvent = new HashMap<>();
+    Map<Long, Map<Long, BigDecimal>> weightsByEvent = new HashMap<>();
     // Map<eventId, sum> - таблица сумм векторов для каждого события
-    private final Map<Long, BigDecimal> eventSums = new HashMap<>();
+    Map<Long, BigDecimal> eventSums = new HashMap<>();
     // Map<eventId1, Map<eventId2, sum>> - таблица сумм минимумов пар векторов событий
-    private final Map<Long, Map<Long, BigDecimal>> minWeightSums = new HashMap<>();
+    Map<Long, Map<Long, BigDecimal>> minWeightSums = new HashMap<>();
 
     public void handleUserAction(UserActionAvro userActionAvro) {
         Long userId = userActionAvro.getUserId();
@@ -144,5 +144,4 @@ public class UserActionService {
             }
         }
     }
-
 }

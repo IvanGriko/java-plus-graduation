@@ -28,5 +28,4 @@ public interface CompilationAdminApi {
             @PathVariable Long compId,
             @RequestBody @Valid UpdateCompilationDto updateCompilationDto
     );
-
 }

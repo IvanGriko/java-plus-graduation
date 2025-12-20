@@ -7,5 +7,4 @@ public class UserActionAvroDeserializer extends AbstractAvroDeserializer<UserAct
     public UserActionAvroDeserializer() {
         super(UserActionAvro.getClassSchema());
     }
-
 }

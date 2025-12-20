@@ -35,5 +35,4 @@ public class CompilationAdminController implements CompilationAdminApi {
         log.info("Обновление компиляции с ID {}", compId);
         return compilationAdminService.updateCompilation(compId, updateCompilationDto);
     }
-
 }

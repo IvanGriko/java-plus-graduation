@@ -11,9 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class EventCommentDto {
 
     Long id;
-
     String title;
-
     State state;
 
     public static EventCommentDto withOnlyId(Long id) {
@@ -21,5 +19,4 @@ public class EventCommentDto {
                 .id(id)
                 .build();
     }
-
 }

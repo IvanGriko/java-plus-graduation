@@ -44,5 +44,4 @@ public class KafkaController {
     public void listenEventSimilarity(EventSimilarityAvro eventSimilarityAvro) {
         eventSimilarityService.handleEventSimilarity(eventSimilarityAvro);
     }
-
 }

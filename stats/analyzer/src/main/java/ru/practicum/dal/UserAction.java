@@ -39,5 +39,4 @@ public class UserAction {
 
     @Column(name = "timestamp", nullable = false)
     Instant timestamp;
-
 }

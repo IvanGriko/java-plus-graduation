@@ -144,5 +144,4 @@ public class RestStatClient implements StatClient {
     public Map<Long, Double> getRatingsByEventIdList(List<Long> eventIdList) {
         throw new UnsupportedOperationException("Method getRatingsByEventIdList() is not supported");
     }
-
 }

@@ -39,5 +39,4 @@ public interface CommentPrivateApi {
             @RequestBody
             @Valid CommentCreateDto commentCreateDto
     );
-
 }

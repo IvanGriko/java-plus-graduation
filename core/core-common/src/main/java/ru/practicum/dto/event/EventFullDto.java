@@ -18,25 +18,15 @@ import java.util.List;
 public class EventFullDto {
 
     Long id;
-
     UserShortDto initiator;
-
     CategoryDto category;
-
     String title;
-
     String annotation;
-
     String description;
-
     State state;
-
     LocationDto location;
-
     Long participantLimit;
-
     Boolean requestModeration;
-
     Boolean paid;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -49,9 +39,6 @@ public class EventFullDto {
     LocalDateTime createdOn;
 
     Long confirmedRequests;
-
     Double rating;
-
     List<CommentShortDto> comments;
-
 }

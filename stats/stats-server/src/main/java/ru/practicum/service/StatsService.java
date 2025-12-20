@@ -17,5 +17,4 @@ public interface StatsService {
             List<String> uris,
             boolean isUnique
     );
-
 }

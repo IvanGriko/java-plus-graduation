@@ -20,5 +20,4 @@ public class CommentCreateDto {
             message = "Длина текста комментария должна быть от 1 до 1000 символов"
     )
     private String text;
-
 }

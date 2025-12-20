@@ -54,5 +54,4 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Object[]> getConfirmedRequestsByEventIds(
             @Param("eventIds") Collection<Long> eventIds
     );
-
 }

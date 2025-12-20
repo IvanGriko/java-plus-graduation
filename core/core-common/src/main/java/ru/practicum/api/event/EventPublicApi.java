@@ -57,8 +57,6 @@ public interface EventPublicApi {
             @Positive(message = "Идентификатор события должен быть положительным числом.") Long id
     );
 
-
-
     @GetMapping("/events/recommendations")
     @ResponseStatus(HttpStatus.OK)
     Collection<EventShortDto> getRecommendations(
@@ -75,5 +73,4 @@ public interface EventPublicApi {
             @PathVariable
             @Positive(message = "Идентификатор события должен быть положительным числом.") Long eventId
     );
-
 }

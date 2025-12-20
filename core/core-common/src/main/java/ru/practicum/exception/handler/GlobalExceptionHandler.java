@@ -165,5 +165,4 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.SERVICE_UNAVAILABLE);
     }
-
 }

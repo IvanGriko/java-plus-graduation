@@ -29,5 +29,4 @@ public class NewUserRequestDto {
             message = "Имя должно быть от 2 до 250 символов"
     )
     String name;
-
 }

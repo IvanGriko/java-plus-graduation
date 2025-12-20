@@ -21,14 +21,12 @@ public abstract class AbstractAvroDeserializer<T extends SpecificRecordBase> imp
     @Override
     public T deserialize(String topic, byte[] bytes) {
         if (bytes == null) return null;
-
         try {
             BinaryDecoder decoder = decoderFactory.binaryDecoder(bytes, null);
             DatumReader<T> reader = new SpecificDatumReader<>(schema);
             return reader.read(null, decoder);
         } catch (Exception e) {
-            throw new SerializationException("Deserialization Error for topic " + topic, e);
+            throw new SerializationException("Ошибка десериализации топика " + topic, e);
         }
     }
-
 }

@@ -17,5 +17,4 @@ public class CustomProperties {
         private String userActionTopic = "user-actions";
         private String eventsSimilarityTopic = "events-similarity";
     }
-
 }

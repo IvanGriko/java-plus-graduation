@@ -30,5 +30,4 @@ public class UpdateCompilationDto {
             message = "Длина названия должна быть от 1 до 50 символов"
     )
     String title;
-
 }

@@ -27,5 +27,4 @@ public class CommentMapper {
                 .text(comment.getText())
                 .build();
     }
-
 }

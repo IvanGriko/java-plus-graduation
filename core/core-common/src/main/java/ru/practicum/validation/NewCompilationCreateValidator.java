@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NewCompilationCreateValidator implements CreateOrUpdateValidator.Create {
+
     private final Validator validator;
 
     public NewCompilationCreateValidator(Validator validator) {

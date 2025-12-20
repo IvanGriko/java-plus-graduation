@@ -26,8 +26,7 @@ public class GeneralAvroSerializer implements Serializer<SpecificRecordBase> {
             }
             return out.toByteArray();
         } catch (IOException e) {
-            throw new SerializationException("Serialization Error for topic " + topic, e);
+            throw new SerializationException("Ошибка сериализации топика " + topic, e);
         }
     }
-
 }

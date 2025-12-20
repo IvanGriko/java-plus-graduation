@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class UserShortDto {
 
     Long id;
-
     String name;
 
     public static UserShortDto withOnlyId(Long id) {
@@ -19,5 +18,4 @@ public class UserShortDto {
                 .id(id)
                 .build();
     }
-
 }

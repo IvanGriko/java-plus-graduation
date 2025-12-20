@@ -7,5 +7,4 @@ public class EventsSimilarityAvroDeserializer extends AbstractAvroDeserializer<E
     public EventsSimilarityAvroDeserializer() {
         super(EventSimilarityAvro.getClassSchema());
     }
-
 }

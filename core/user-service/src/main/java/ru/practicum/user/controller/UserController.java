@@ -62,5 +62,4 @@ public class UserController implements UserApi {
         log.info("Получение полного списка пользователей по ID {}", ids);
         return userService.findUserDtoListByIds(ids);
     }
-
 }

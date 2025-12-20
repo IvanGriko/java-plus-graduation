@@ -34,5 +34,4 @@ public class KafkaController {
     public void listen(UserActionAvro userActionAvro) {
         userActionService.handleUserAction(userActionAvro);
     }
-
 }

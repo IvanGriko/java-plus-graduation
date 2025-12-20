@@ -46,18 +46,15 @@ public class UpdateEventDto {
     String description;
 
     LocationDto location;
-
     Boolean paid;
 
     @PositiveOrZero(message = "Лимит участников должен быть неотрицательным числом")
     Long participantLimit;
 
     Boolean requestModeration;
-
     StateAction stateAction;
 
     @Future(message = "Дата события должна быть в будущем")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
-
 }

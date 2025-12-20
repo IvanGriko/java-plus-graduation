@@ -29,5 +29,4 @@ public class CompilationPublicController implements CompilationPublicApi {
         log.info("Получение компиляции с ID {}", compId);
         return compilationPublicService.readCompilationById(compId);
     }
-
 }

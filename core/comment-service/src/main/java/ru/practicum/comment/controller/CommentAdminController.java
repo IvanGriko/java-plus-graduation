@@ -20,13 +20,15 @@ public class CommentAdminController implements CommentAdminApi {
 
     @Override
     public Collection<CommentDto> search(String text, int from, int size) {
-        log.info("Выполняется поиск комментариев по запросу '{}', начиная с {} элемента, размер выборки {}", text, from, size);
+        log.info("Выполняется поиск комментариев по запросу '{}', начиная с {} элемента, размер выборки {}",
+                text, from, size);
         return commentAdminService.search(text, from, size);
     }
 
     @Override
     public Collection<CommentDto> get(Long userId, int from, int size) {
-        log.info("Получение списка комментариев пользователя с ID {}, начиная с {} элемента, размер выборки {}", userId, from, size);
+        log.info("Получение списка комментариев пользователя с ID {}, начиная с {} элемента, размер выборки {}",
+                userId, from, size);
         return commentAdminService.findAllByUserId(userId, from, size);
     }
 
@@ -47,5 +49,4 @@ public class CommentAdminController implements CommentAdminApi {
         log.info("Отвергается комментарий с ID {}", comId);
         return commentAdminService.rejectComment(comId);
     }
-
 }

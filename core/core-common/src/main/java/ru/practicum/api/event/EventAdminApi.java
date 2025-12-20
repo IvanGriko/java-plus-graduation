@@ -39,5 +39,4 @@ public interface EventAdminApi {
             @RequestBody
             @Valid UpdateEventDto updateEventDto
     );
-
 }

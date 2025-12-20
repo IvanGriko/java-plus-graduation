@@ -21,5 +21,4 @@ public interface EventPublicService {
     Collection<EventShortDto> getRecommendations(Long userId, Integer size);
 
     String sendLike(Long userId, Long eventId);
-
 }

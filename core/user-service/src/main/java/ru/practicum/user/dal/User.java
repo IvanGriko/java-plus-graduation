@@ -36,5 +36,4 @@ public class User {
             nullable = false
     )
     String name;
-
 }

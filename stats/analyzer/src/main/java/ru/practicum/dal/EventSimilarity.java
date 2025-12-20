@@ -41,5 +41,4 @@ public class EventSimilarity {
 
     @Column(name = "timestamp", nullable = false)
     Instant timestamp;
-
 }

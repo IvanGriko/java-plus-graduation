@@ -212,5 +212,4 @@ public class RequestServiceImpl implements RequestService {
         throw new NotFoundException("Не найдено подтверждённых заявок пользователя с ID " + userId
                 + " на событие с ID " + eventId);
     }
-
 }

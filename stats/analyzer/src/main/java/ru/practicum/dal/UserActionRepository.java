@@ -42,5 +42,4 @@ public interface UserActionRepository extends JpaRepository<UserAction, Long> {
     List<Object[]> findWeightSumListByEventIdList(
             @Param("eventList") List<Long> eventList
     );
-
 }

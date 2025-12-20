@@ -44,5 +44,4 @@ public class EventPrivateController implements EventPrivateApi {
         log.info("Пользователь с ID {} обновляет событие с ID {}", userId, eventId);
         return eventPrivateService.updateEventByUserIdAndEventId(userId, eventId, updateEventDto);
     }
-
 }

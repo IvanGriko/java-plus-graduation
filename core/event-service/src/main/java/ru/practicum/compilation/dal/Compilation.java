@@ -51,5 +51,4 @@ public class Compilation {
             inverseJoinColumns = @JoinColumn(name = "events_id", nullable = false))
     @OnDelete(action = OnDeleteAction.CASCADE)
     Set<Event> events;
-
 }

@@ -66,5 +66,4 @@ public class RequestController implements RequestApi {
         log.info("Проверка участия пользователя с ID {} в событии с ID {}", userId, eventId);
         return requestService.checkParticipation(userId, eventId);
     }
-
 }

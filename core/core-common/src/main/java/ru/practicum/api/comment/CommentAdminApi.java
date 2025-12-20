@@ -48,5 +48,4 @@ public interface CommentAdminApi {
             @PathVariable
             @Positive(message = "Идентификатор комментария должен быть положительным числом.") Long comId
     );
-
 }

@@ -23,5 +23,4 @@ public class CompilationMapper {
                 .events(eventShortDtoList)
                 .build();
     }
-
 }

@@ -50,5 +50,4 @@ public class EventAdminController implements EventAdminApi {
         log.info("Администратор обновляет событие с ID {}", eventId);
         return eventAdminService.updateEventByAdmin(eventId, updateEventDto);
     }
-
 }

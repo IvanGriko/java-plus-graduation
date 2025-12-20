@@ -63,5 +63,4 @@ public interface EventSimilarityRepository extends JpaRepository<EventSimilarity
             @Param("userId") Long userId,
             @Param("eventList") List<Long> eventList
     );
-
 }

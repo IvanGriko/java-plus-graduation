@@ -41,9 +41,7 @@ public class NewEventDto {
     String description;
 
     LocationDto location;
-
     Boolean requestModeration = true;
-
     Boolean paid = false;
 
     @PositiveOrZero(message = "Максимальное количество участников должно быть неотрицательным числом")
@@ -53,5 +51,4 @@ public class NewEventDto {
     @Future(message = "Дата события должна быть в будущем")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
-
 }

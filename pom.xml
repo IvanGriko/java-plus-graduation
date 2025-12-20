@@ -32,6 +32,7 @@
 		<avro.version>1.12.1</avro.version>
 		<grpc.version>1.76.0</grpc.version>
 		<protobuf.version>4.33.1</protobuf.version>
+		<protobuf-plugin.version>4.0.2</protobuf-plugin.version>
 		<grpc-spring-boot-starter.version>3.1.0.RELEASE</grpc-spring-boot-starter.version>
 	</properties>
 

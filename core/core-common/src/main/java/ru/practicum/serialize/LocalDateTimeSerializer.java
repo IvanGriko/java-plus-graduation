@@ -15,13 +15,13 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
 
     private DateTimeFormatter formatter;
 
-    public LocalDateTimeSerializer() {
-        super(LocalDateTime.class);
-    }
-
     @Value("${explore-with-me.main.datetime.format}")
     public void setFormatter(String dateTimeFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+    }
+
+    public LocalDateTimeSerializer() {
+        super(LocalDateTime.class);
     }
 
     @Override
@@ -32,5 +32,4 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
     ) throws IOException {
         jsonGenerator.writeString(localDateTime.format(formatter));
     }
-
 }

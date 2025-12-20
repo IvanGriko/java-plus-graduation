@@ -10,28 +10,6 @@ import java.time.LocalDateTime;
 
 public class EventMapper {
 
-    public static Event toNewEvent(
-            NewEventDto newEventDto,
-            Long userId,
-            Category category
-    ) {
-        return Event.builder()
-                .initiatorId(userId)
-                .category(category)
-                .title(newEventDto.getTitle())
-                .annotation(newEventDto.getAnnotation())
-                .description(newEventDto.getDescription())
-                .state(State.PENDING)
-                .location(LocationMapper.toEntity(newEventDto.getLocation()))
-                .participantLimit(newEventDto.getParticipantLimit())
-                .requestModeration(newEventDto.getRequestModeration())
-                .paid(newEventDto.getPaid())
-                .eventDate(newEventDto.getEventDate())
-                .createdOn(LocalDateTime.now())
-                .build();
-    }
-
-
     public static EventFullDto toEventFullDto(
             Event event,
             UserShortDto userShortDto,
@@ -81,6 +59,27 @@ public class EventMapper {
                 .build();
     }
 
+    public static Event toNewEvent(
+            NewEventDto newEventDto,
+            Long userId,
+            Category category
+    ) {
+        return Event.builder()
+                .initiatorId(userId)
+                .category(category)
+                .title(newEventDto.getTitle())
+                .annotation(newEventDto.getAnnotation())
+                .description(newEventDto.getDescription())
+                .state(State.PENDING)
+                .location(LocationMapper.toEntity(newEventDto.getLocation()))
+                .participantLimit(newEventDto.getParticipantLimit())
+                .requestModeration(newEventDto.getRequestModeration())
+                .paid(newEventDto.getPaid())
+                .eventDate(newEventDto.getEventDate())
+                .createdOn(LocalDateTime.now())
+                .build();
+    }
+
     public static EventCommentDto toEventComment(Event event) {
         return EventCommentDto.builder()
                 .id(event.getId())
@@ -107,5 +106,4 @@ public class EventMapper {
                 .createdOn(event.getCreatedOn())
                 .build();
     }
-
 }

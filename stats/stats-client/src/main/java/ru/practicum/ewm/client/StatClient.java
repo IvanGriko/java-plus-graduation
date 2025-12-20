@@ -28,5 +28,4 @@ public interface StatClient {
     Map<Long, Double> getUserRecommendations(Long userId, Integer size);
 
     Map<Long, Double> getRatingsByEventIdList(List<Long> eventIdList);
-
 }
