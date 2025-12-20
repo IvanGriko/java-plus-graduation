@@ -15,6 +15,7 @@ import ru.practicum.dto.request.EventRequestStatusUpdateRequestDto;
 import ru.practicum.dto.request.EventRequestStatusUpdateResultDto;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.dto.request.ParticipationRequestStatus;
+import ru.practicum.ewm.client.StatClient;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.request.dal.Request;
@@ -35,13 +36,14 @@ public class RequestServiceImpl implements RequestService {
     RequestRepository requestRepository;
     UserClientHelper userClientHelper;
     EventClientAbstractHelper eventClientHelper;
+    StatClient statClient;
 
     @Override
     public ParticipationRequestDto addRequest(Long userId, Long eventId) {
         log.info("Пользователь с ID {} отправляет заявку на участие в событии с ID {}", userId, eventId);
         userClientHelper.fetchUserShortDtoByUserIdOrFail(userId);
         EventInteractionDto eventDto = eventClientHelper.fetchEventInteractionByIdOrFail(eventId);
-        return transactionTemplate.execute(status -> {
+        ParticipationRequestDto result = transactionTemplate.execute(status -> {
             if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
                 log.error("Пользователь с ID {} пытается подать повторную заявку на событие с ID {}",
                         userId, eventId);
@@ -83,6 +85,8 @@ public class RequestServiceImpl implements RequestService {
             requestRepository.save(newRequest);
             return RequestMapper.toDto(newRequest);
         });
+        statClient.sendRegister(userId, eventId);
+        return result;
     }
 
     @Override
@@ -153,7 +157,7 @@ public class RequestServiceImpl implements RequestService {
                 long confirmedRequestCount = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
                 if (confirmedRequestCount >= eventDto.getParticipantLimit()) {
                     log.error("Уже достигнут лимит участников для события с ID {}", eventId);
-                    throw new ConflictException("Достичь лимит участников для события", "Запрещённое действие");
+                    throw new ConflictException("Уже достигнут лимит участников для события", "Запрещённое действие");
                 } else if (updateRequestDto.getRequestIds().size() < eventDto.getParticipantLimit() - confirmedRequestCount) {
                     requestsToConfirm = updateRequestDto.getRequestIds();
                     requestRepository.updateStatusByIds(requestsToConfirm, ParticipationRequestStatus.CONFIRMED);
@@ -198,6 +202,15 @@ public class RequestServiceImpl implements RequestService {
                         r -> (Long) r[0],
                         r -> (Long) r[1]
                 ));
+    }
+
+    @Transactional(readOnly = true)
+    public String checkParticipation(Long userId, Long eventId) {
+        if (requestRepository.existsByRequesterIdAndEventIdAndStatus(userId, eventId, ParticipationRequestStatus.CONFIRMED)) {
+            return "true";
+        }
+        throw new NotFoundException("Не найдено подтверждённых заявок пользователя с ID " + userId
+                + " на событие с ID " + eventId);
     }
 
 }

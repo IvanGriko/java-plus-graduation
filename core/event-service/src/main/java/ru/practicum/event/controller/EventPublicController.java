@@ -50,9 +50,8 @@ public class EventPublicController implements EventPublicApi {
     }
 
     @Override
-    public EventFullDto getInformationAboutEventByEventId(Long id, HttpServletRequest request) {
-        log.info("Получение информации о событии с ID {}", id);
-        return eventPublicService.getEventById(id, request);
+    public EventFullDto getInformationAboutEventByEventId(Long userId, Long eventId, HttpServletRequest request) {
+        return eventPublicService.getEventById(userId, eventId, request);
     }
 
     @Override
@@ -71,6 +70,17 @@ public class EventPublicController implements EventPublicApi {
     public EventInteractionDto getEventInteractionDto(Long id) {
         log.info("Получение статистики взаимодействия с событием с ID {}", id);
         return eventPublicService.getEventInteractionDto(id);
+    }
+
+    @Override
+    public Collection<EventShortDto> getRecommendations(Long userId, Integer size) {
+        log.info("Получение рекомендаций для пользователя с ID {}", userId);
+        return eventPublicService.getRecommendations(userId, size);
+    }
+
+    @Override
+    public String sendLike(Long userId, Long eventId) {
+        return eventPublicService.sendLike(userId, eventId);
     }
 
 }

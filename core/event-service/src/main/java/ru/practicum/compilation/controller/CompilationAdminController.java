@@ -20,7 +20,7 @@ public class CompilationAdminController implements CompilationAdminApi {
 
     @Override
     public CompilationDto postCompilations(NewCompilationDto newCompilationDto) {
-        log.info("Создан новый сборник {}", newCompilationDto.getTitle());
+        log.info("Создание новой компиляции {}", newCompilationDto.getTitle());
         return compilationAdminService.createCompilation(newCompilationDto);
     }
 

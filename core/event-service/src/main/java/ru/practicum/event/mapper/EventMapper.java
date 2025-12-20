@@ -36,9 +36,10 @@ public class EventMapper {
             Event event,
             UserShortDto userShortDto,
             Long confirmedRequests,
-            Long views
+            Double rating
     ) {
         if (confirmedRequests == null) confirmedRequests = 0L;
+        if (rating == null) rating = 0.0;
         return EventFullDto.builder()
                 .id(event.getId())
                 .initiator(userShortDto)
@@ -55,7 +56,7 @@ public class EventMapper {
                 .publishedOn(event.getPublishedOn())
                 .createdOn(event.getCreatedOn())
                 .confirmedRequests(confirmedRequests)
-                .views(views)
+                .rating(rating)
                 .build();
     }
 
@@ -63,10 +64,10 @@ public class EventMapper {
             Event event,
             UserShortDto userShortDto,
             Long confirmedRequests,
-            Long views
+            Double rating
     ) {
         if (confirmedRequests == null) confirmedRequests = 0L;
-        if (views == null) views = 0L;
+        if (rating == null) rating = 0.0;
         return EventShortDto.builder()
                 .id(event.getId())
                 .initiator(userShortDto)
@@ -76,7 +77,7 @@ public class EventMapper {
                 .paid(event.getPaid())
                 .eventDate(event.getEventDate())
                 .confirmedRequests(confirmedRequests)
-                .views(views)
+                .rating(rating)
                 .build();
     }
 

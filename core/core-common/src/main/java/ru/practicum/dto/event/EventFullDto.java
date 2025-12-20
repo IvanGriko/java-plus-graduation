@@ -50,7 +50,7 @@ public class EventFullDto {
 
     Long confirmedRequests;
 
-    Long views;
+    Double rating;
 
     List<CommentShortDto> comments;
 

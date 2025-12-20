@@ -24,6 +24,7 @@ public interface RequestService {
             EventRequestStatusUpdateRequestDto updateRequestDto
     );
 
-    @Transactional(readOnly = true)
     Map<Long, Long> getConfirmedRequestsByEventIds(Collection<Long> eventIds);
+
+    String checkParticipation(Long userId, Long eventId);
 }

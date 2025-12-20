@@ -32,6 +32,6 @@ public class EventShortDto {
 
     Long confirmedRequests;
 
-    Long views;
+    Double rating;
 
 }

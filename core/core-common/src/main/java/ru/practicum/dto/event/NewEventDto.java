@@ -17,15 +17,27 @@ public class NewEventDto {
     Long category;
 
     @NotBlank(message = "Название события обязательно")
-    @Size(min = 3, max = 120, message = "Название события должно быть длиной от 3 до 120 символов")
+    @Size(
+            min = 3,
+            max = 120,
+            message = "Название события должно быть длиной от 3 до 120 символов"
+    )
     String title;
 
     @NotBlank(message = "Краткое описание события обязательно")
-    @Size(min = 20, max = 2000, message = "Краткое описание должно быть длиной от 20 до 2000 символов")
+    @Size(
+            min = 20,
+            max = 2000,
+            message = "Краткое описание должно быть длиной от 20 до 2000 символов"
+    )
     String annotation;
 
     @NotBlank(message = "Полное описание события обязательно")
-    @Size(min = 20, max = 7000, message = "Полное описание должно быть длиной от 20 до 7000 символов")
+    @Size(
+            min = 20,
+            max = 7000,
+            message = "Полное описание должно быть длиной от 20 до 7000 символов"
+    )
     String description;
 
     LocationDto location;

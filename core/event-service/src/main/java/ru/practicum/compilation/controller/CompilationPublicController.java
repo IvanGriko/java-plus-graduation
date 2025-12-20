@@ -20,13 +20,13 @@ public class CompilationPublicController implements CompilationPublicApi {
 
     @Override
     public Collection<CompilationDto> getCompilation(Boolean pinned, int from, int size) {
-        log.info("Получение списка сборников, закрепленных={}", pinned);
+        log.info("Получение списка компиляций");
         return compilationPublicService.readAllCompilations(pinned, from, size);
     }
 
     @Override
     public CompilationDto getCompilationById(Long compId) {
-        log.info("Получение сборника с ID {}", compId);
+        log.info("Получение компиляции с ID {}", compId);
         return compilationPublicService.readCompilationById(compId);
     }
 

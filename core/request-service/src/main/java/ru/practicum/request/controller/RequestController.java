@@ -40,8 +40,11 @@ public class RequestController implements RequestApi {
     }
 
     @Override
-    public EventRequestStatusUpdateResultDto moderateRequest(Long userId, Long eventId,
-                                                             EventRequestStatusUpdateRequestDto updateRequestDto) {
+    public EventRequestStatusUpdateResultDto moderateRequest(
+            Long userId,
+            Long eventId,
+            EventRequestStatusUpdateRequestDto updateRequestDto
+    ) {
         log.info("Модерация заявок на событие с ID {} пользователем с ID {}", eventId, userId);
         return requestService.moderateRequest(userId, eventId, updateRequestDto);
     }
@@ -56,6 +59,12 @@ public class RequestController implements RequestApi {
     public Map<Long, Long> getConfirmedRequestsByEventIds(Collection<Long> eventIds) {
         log.info("Получение подтвержденных заявок для событий с ID {}", eventIds);
         return requestService.getConfirmedRequestsByEventIds(eventIds);
+    }
+
+    @Override
+    public String checkParticipation(Long userId, Long eventId) {
+        log.info("Проверка участия пользователя с ID {} в событии с ID {}", userId, eventId);
+        return requestService.checkParticipation(userId, eventId);
     }
 
 }

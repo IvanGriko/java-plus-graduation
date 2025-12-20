@@ -27,11 +27,13 @@ public interface EventPublicApi {
             HttpServletRequest request
     );
 
-    @GetMapping("/events/{id}")
+    @GetMapping("/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     EventFullDto getInformationAboutEventByEventId(
+            @RequestHeader("X-EWM-USER-ID")
+            @Positive(message = "Идентификатор пользователя должен быть положительным числом.") Long userId,
             @PathVariable
-            @Positive(message = "Идентификатор события должен быть положительным числом.") Long id,
+            @Positive(message = "Идентификатор события должен быть положительным числом.") Long eventId,
             HttpServletRequest request
     );
 
@@ -53,6 +55,25 @@ public interface EventPublicApi {
     EventInteractionDto getEventInteractionDto(
             @PathVariable
             @Positive(message = "Идентификатор события должен быть положительным числом.") Long id
+    );
+
+
+
+    @GetMapping("/events/recommendations")
+    @ResponseStatus(HttpStatus.OK)
+    Collection<EventShortDto> getRecommendations(
+            @RequestHeader("X-EWM-USER-ID")
+            @Positive(message = "Идентификатор пользователя должен быть положительным числом.") Long userId,
+            @RequestParam(defaultValue = "10") Integer size
+    );
+
+    @PutMapping("/events/{eventId}/like")
+    @ResponseStatus(HttpStatus.OK)
+    String sendLike(
+            @RequestHeader("X-EWM-USER-ID")
+            @Positive(message = "Идентификатор пользователя должен быть положительным числом.") Long userId,
+            @PathVariable
+            @Positive(message = "Идентификатор события должен быть положительным числом.") Long eventId
     );
 
 }

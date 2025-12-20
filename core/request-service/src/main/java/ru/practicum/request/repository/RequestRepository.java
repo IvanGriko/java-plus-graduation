@@ -14,6 +14,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
 
+    boolean existsByRequesterIdAndEventIdAndStatus(Long userId, Long eventId, ParticipationRequestStatus status);
+
     long countByEventIdAndStatus(Long eventId, ParticipationRequestStatus status);
 
     List<Request> findByRequesterId(Long userId);
@@ -22,8 +24,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query("""
-            UPDATE Request r 
-            SET r.status = :status 
+            UPDATE Request r
+            SET r.status = :status
             WHERE r.id IN :ids
             """)
     void updateStatusByIds(

@@ -20,7 +20,7 @@ import ru.practicum.event.filter.EventDynamicFilters;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.mapper.LocationMapper;
 import ru.practicum.event.repository.EventRepository;
-import ru.practicum.event.repository.ViewRepository;
+import ru.practicum.ewm.client.StatClient;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 
@@ -40,9 +40,9 @@ public class EventAdminServiceImpl implements EventAdminService {
     TransactionTemplate transactionTemplate;
     EventRepository eventRepository;
     CategoryRepository categoryRepository;
-    ViewRepository viewRepository;
     RequestClientHelper requestClientHelper;
     UserClientHelper userClientHelper;
+    StatClient statClient;
 
     @Override
     public List<EventFullDto> getAllEventsByParams(EventAdminParams params) {
@@ -56,15 +56,14 @@ public class EventAdminServiceImpl implements EventAdminService {
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, UserShortDto> userMap = userClientHelper.fetchUserShortDtoMapByUserIdList(userIds);
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(eventIds);
-        Map<Long, Long> viewsMap = viewRepository.countsByEventIds(eventIds)
-                .stream()
-                .collect(Collectors.toMap(r -> (Long) r[0], r -> (Long) r[1]));
+        Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(eventIds);
+
         return events.stream()
                 .map(e -> EventMapper.toEventFullDto(
                         e,
                         userMap.get(e.getInitiatorId()),
                         confirmedRequestsMap.get(e.getId()),
-                        viewsMap.get(e.getId())
+                        ratingMap.get(e.getId())
                 ))
                 .toList();
     }
@@ -79,6 +78,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         });
         UserShortDto userShortDto = userClientHelper.fetchUserShortDtoByUserId(initiatorId);
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(List.of(eventId));
+        Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(List.of(eventId));
         return transactionTemplate.execute(status -> {
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
@@ -117,8 +117,7 @@ public class EventAdminServiceImpl implements EventAdminService {
                 event.setPublishedOn(LocalDateTime.now());
             }
             eventRepository.save(event);
-            Long views = viewRepository.countByEventId(eventId);
-            return EventMapper.toEventFullDto(event, userShortDto, confirmedRequestsMap.get(eventId), views);
+            return EventMapper.toEventFullDto(event, userShortDto, confirmedRequestsMap.get(eventId), ratingMap.get(eventId));
         });
     }
 

@@ -29,9 +29,18 @@ public class Category implements Serializable {
     @Column(name = "id")
     Long id;
 
-    @Size(min = 1, max = 50, message = "Название категории должно быть от 1 до 50 символов")
+    @Size(
+            min = 1,
+            max = 50,
+            message = "Название категории должно быть от 1 до 50 символов"
+    )
     @NotEmpty(message = "Название категории обязательно")
-    @Column(name = "cat_name", length = 50, nullable = false, unique = true)
+    @Column(
+            name = "cat_name",
+            length = 50,
+            nullable = false,
+            unique = true
+    )
     String name;
 
 }
