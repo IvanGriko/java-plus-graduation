@@ -37,7 +37,6 @@ public class KafkaController {
             throw new IllegalStateException("Ошибка инициализации Kafka-потребителей", e);
         }
     }
-}
 
     @KafkaListener(
             topics = "#{customProperties.kafka.userActionTopic}",
