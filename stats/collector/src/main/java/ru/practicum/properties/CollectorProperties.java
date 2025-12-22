@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 @ConfigurationProperties("my-area-guide")
-public class CustomProperties {
+public class CollectorProperties {
 
     private final Kafka kafka = new Kafka();
 

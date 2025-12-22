@@ -51,7 +51,8 @@ public class GrpcConfiguration {
 
     @Bean
     public UserActionControllerGrpc.UserActionControllerBlockingStub userActionControllerBlockingStub(
-            @Qualifier("collectorChannel") ManagedChannel channel
+            @Qualifier("collectorChannel")
+            ManagedChannel channel
     ) {
         return UserActionControllerGrpc.newBlockingStub(channel);
     }
@@ -68,7 +69,8 @@ public class GrpcConfiguration {
 
     @Bean
     public RecommendationsControllerGrpc.RecommendationsControllerBlockingStub recommendationsControllerBlockingStub(
-            @Qualifier("analyzerChannel") ManagedChannel channel
+            @Qualifier("analyzerChannel")
+            ManagedChannel channel
     ) {
         return RecommendationsControllerGrpc.newBlockingStub(channel);
     }

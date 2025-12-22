@@ -122,26 +122,26 @@ public class RestStatClient implements StatClient {
 
     @Override
     public String sendView(Long userId, Long eventId) {
-        throw new UnsupportedOperationException("Method sendView() is not supported");
+        throw new UnsupportedOperationException("Метод sendView() не поддерживается");
     }
 
     @Override
     public String sendRegister(Long userId, Long eventId) {
-        throw new UnsupportedOperationException("Method sendRegister() is not supported");
+        throw new UnsupportedOperationException("Метод sendRegister() не поддерживается");
     }
 
     @Override
     public String sendLike(Long userId, Long eventId) {
-        throw new UnsupportedOperationException("Method sendLike() is not supported");
+        throw new UnsupportedOperationException("Метод sendLike() не поддерживается");
     }
 
     @Override
     public Map<Long, Double> getUserRecommendations(Long userId, Integer size) {
-        throw new UnsupportedOperationException("Method getUserRecommendations() is not supported");
+        throw new UnsupportedOperationException("Метод getUserRecommendations() не поддерживается");
     }
 
     @Override
     public Map<Long, Double> getRatingsByEventIdList(List<Long> eventIdList) {
-        throw new UnsupportedOperationException("Method getRatingsByEventIdList() is not supported");
+        throw new UnsupportedOperationException("Метод getRatingsByEventIdList() не поддерживается");
     }
 }

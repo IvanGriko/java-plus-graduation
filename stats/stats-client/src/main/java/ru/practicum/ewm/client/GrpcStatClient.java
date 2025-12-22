@@ -35,12 +35,12 @@ public class GrpcStatClient implements StatClient {
 
     @Override
     public void hit(EventHitDto eventHitDto) {
-        throw new UnsupportedOperationException("Method hit() is not supported");
+        throw new UnsupportedOperationException("Метод hit() не поддерживается");
     }
 
     @Override
     public Collection<EventStatsResponseDto> stats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        throw new UnsupportedOperationException("Method stats() is not supported");
+        throw new UnsupportedOperationException("Метод stats() не поддерживается");
     }
 
     @Override
@@ -73,10 +73,10 @@ public class GrpcStatClient implements StatClient {
                     RecommendedEventProto::getEventId,
                     RecommendedEventProto::getScore
             ));
-            log.debug("Received {} recommendations for user {}", result.size(), userId);
+            log.debug("Получено {} рекомендаций для пользователя с ID {}", result.size(), userId);
             return result;
         } catch (Exception e) {
-            log.warn("Failed getting User Recommendations by GRPC: {}", e.getMessage());
+            log.warn("Ошибка получения рекомендаций через GRPC: {}", e.getMessage());
             return Map.of();
         }
     }
@@ -95,10 +95,10 @@ public class GrpcStatClient implements StatClient {
                     RecommendedEventProto::getEventId,
                     RecommendedEventProto::getScore
             ));
-            log.debug("Received {} ratings for {} events", result.size(), eventIdList.size());
+            log.debug("Получено {} рейтингов для {} событий", result.size(), eventIdList.size());
             return result;
         } catch (Exception e) {
-            log.warn("Failed getting Event Ratings by GRPC: {}", e.getMessage());
+            log.warn("Ошибка получения рейтингов событий через GRPC: {}", e.getMessage());
             return Map.of();
         }
     }
@@ -117,10 +117,10 @@ public class GrpcStatClient implements StatClient {
                 .build();
         try {
             userActionStub.collectUserAction(userActionProto);
-            log.debug("Sent Event View action: {}", userActionProto);
+            log.debug("Отправлено действие с событием: {}", userActionProto);
             return "true";
         } catch (Exception e) {
-            log.warn("Failed sending Event View action by GRPC: {}", e.getMessage());
+            log.warn("Ошибка отправки действия с событием через GRPC: {}", e.getMessage());
             return "false";
         }
     }

@@ -23,12 +23,36 @@ public class GrpcUserActionController extends UserActionControllerGrpc.UserActio
     ) {
         try {
             userActionService.handleUserAction(request);
-            responseObserver.onNext(Empty.getDefaultInstance());
+            Empty emptyResponse = Empty.getDefaultInstance();
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(
-                    new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e))
-            );
+        } catch (Throwable t) {
+            StatusRuntimeException exception = new StatusRuntimeException(
+                    Status.INTERNAL.withDescription(t.getLocalizedMessage()));
+            responseObserver.onError(exception);
         }
     }
 }
+
+//@GrpcService
+//@RequiredArgsConstructor
+//public class GrpcUserActionController extends UserActionControllerGrpc.UserActionControllerImplBase {
+//
+//    private final UserActionService userActionService;
+//
+//    @Override
+//    public void collectUserAction(
+//            UserActionProto request,
+//            StreamObserver<Empty> responseObserver
+//    ) {
+//        try {
+//            userActionService.handleUserAction(request);
+//            responseObserver.onNext(Empty.getDefaultInstance());
+//            responseObserver.onCompleted();
+//        } catch (Exception e) {
+//            responseObserver.onError(
+//                    new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e))
+//            );
+//        }
+//    }
+//}

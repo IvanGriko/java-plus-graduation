@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @ConfigurationProperties("my-area-guide")
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CustomProperties {
+public class AnalyzerProperties {
 
     Kafka kafka = new Kafka();
     Analyzer analyzer = new Analyzer();
@@ -46,7 +46,7 @@ public class CustomProperties {
         private String register = "0.7";
         private String view = "0.3";
 
-        public BigDecimal ofUserAction(UserActionAvro userActionAvro) {
+        public BigDecimal convertUserActionToWeight(UserActionAvro userActionAvro) {
             return switch (userActionAvro.getActionType()) {
                 case LIKE -> new BigDecimal(like);
                 case REGISTER -> new BigDecimal(register);

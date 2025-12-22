@@ -41,4 +41,9 @@ public class EventSimilarity {
 
     @Column(name = "timestamp", nullable = false)
     Instant timestamp;
+
+    public void updateFields(double newScore, Instant newTimestamp) {
+        this.score = newScore;
+        this.timestamp = newTimestamp;
+    }
 }

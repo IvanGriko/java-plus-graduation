@@ -1,4 +1,4 @@
-package ru.practicum.kafka;
+package ru.practicum.kafka.config;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -13,7 +13,7 @@ import ru.practicum.deserializer.EventsSimilarityAvroDeserializer;
 import ru.practicum.deserializer.UserActionAvroDeserializer;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
-import ru.practicum.properties.CustomProperties;
+import ru.practicum.properties.AnalyzerProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,31 +22,41 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KafkaConsumerConfig {
 
-    private final CustomProperties customProperties;
+    private final AnalyzerProperties properties;
 
-    private Map<String, Object> getNewCommonConsumerProperties() {
+//    private Map<String, Object> getNewCommonConsumerProperties() {
+//        Map<String, Object> props = new HashMap<>();
+//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, VoidDeserializer.class);
+//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getKafka().getBootstrapServers());
+//        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, properties.getKafka().getAutoOffsetReset());
+//        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, properties.getKafka().getEnableAutoCommit());
+//        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, properties.getKafka().getMaxPollRecords());
+//        return props;
+//    }
+
+    private Map<String, Object> getCommonConsumerProps() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, VoidDeserializer.class);
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, customProperties.getKafka().getBootstrapServers());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, customProperties.getKafka().getAutoOffsetReset());
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, customProperties.getKafka().getEnableAutoCommit());
-        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, customProperties.getKafka().getMaxPollRecords());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getKafka().getBootstrapServers());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, properties.getKafka().getAutoOffsetReset());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, properties.getKafka().getEnableAutoCommit());
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, properties.getKafka().getMaxPollRecords());
         return props;
     }
 
     @Bean
     public ConsumerFactory<String, UserActionAvro> userActionConsumerFactory() {
-        Map<String, Object> props = getNewCommonConsumerProperties();
+        Map<String, Object> props = getCommonConsumerProps();
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, UserActionAvroDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, customProperties.getKafka().getUserActionConsumerGroup());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, properties.getKafka().getUserActionConsumerGroup());
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
     public ConsumerFactory<String, EventSimilarityAvro> eventsSimilarityConsumerFactory() {
-        Map<String, Object> props = getNewCommonConsumerProperties();
+        Map<String, Object> props = getCommonConsumerProps();
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EventsSimilarityAvroDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, customProperties.getKafka().getEventsSimilarityConsumerGroup());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, properties.getKafka().getEventsSimilarityConsumerGroup());
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

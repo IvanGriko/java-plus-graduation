@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.CollectionUtils;
 import ru.practicum.dto.EventHitDto;
 import ru.practicum.client.RequestClientHelper;
 import ru.practicum.client.UserClientHelper;
@@ -128,28 +130,57 @@ public class EventPublicServiceImpl implements EventPublicService {
         return EventMapper.toInteractionDto(event);
     }
 
+//    @Override
+//    public Collection<EventShortDto> getRecommendations(Long userId, Integer size) {
+//        log.info("Получение рекомендаций для пользователя с ID {}", userId);
+//        Map<Long, Double> recommendationMap = statClient.getUserRecommendations(userId, size);
+//        if (recommendationMap.isEmpty()) return List.of();
+//        List<Event> events = transactionTemplate.execute(status -> {
+//            return eventRepository.findAllById(recommendationMap.keySet());
+//        });
+//        if (events == null || events.isEmpty()) return List.of();
+//        Set<Long> userIds = events.stream().map(Event::getInitiatorId).collect(Collectors.toSet());
+//        Map<Long, UserShortDto> userMap = userClientHelper.fetchUserShortDtoMapByUserIdList(userIds);
+//        List<Long> eventIds = events.stream().map(Event::getId).toList();
+//        Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(eventIds);
+//        return events.stream()
+//                .map(e -> EventMapper.toEventShortDto(
+//                        e,
+//                        userMap.get(e.getInitiatorId()),
+//                        confirmedRequestsMap.get(e.getId()),
+//                        recommendationMap.get(e.getId())
+//                ))
+//                .sorted(Comparator.comparing(EventShortDto::getRating).reversed())
+//                .toList();
+//    }
+
     @Override
     public Collection<EventShortDto> getRecommendations(Long userId, Integer size) {
         log.info("Получение рекомендаций для пользователя с ID {}", userId);
         Map<Long, Double> recommendationMap = statClient.getUserRecommendations(userId, size);
-        if (recommendationMap.isEmpty()) return List.of();
-        List<Event> events = transactionTemplate.execute(status -> {
-            return eventRepository.findAllById(recommendationMap.keySet());
+        if (recommendationMap.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Set<Long> eventIds = recommendationMap.keySet();
+        List<Event> events = transactionTemplate.execute((TransactionCallback<List<Event>>) status -> {
+            return eventRepository.findAllById(eventIds);
         });
-        if (events == null || events.isEmpty()) return List.of();
-        Set<Long> userIds = events.stream().map(Event::getInitiatorId).collect(Collectors.toSet());
+        if (CollectionUtils.isEmpty(events)) {
+            return Collections.emptyList();
+        }
+        Set<Long> userIds = events.stream()
+                .map(Event::getInitiatorId)
+                .collect(Collectors.toSet());
         Map<Long, UserShortDto> userMap = userClientHelper.fetchUserShortDtoMapByUserIdList(userIds);
-        List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(eventIds);
         return events.stream()
                 .map(e -> EventMapper.toEventShortDto(
                         e,
-                        userMap.get(e.getInitiatorId()),
-                        confirmedRequestsMap.get(e.getId()),
-                        recommendationMap.get(e.getId())
-                ))
-                .sorted(Comparator.comparing(EventShortDto::getRating).reversed())
-                .toList();
+                        userMap.getOrDefault(e.getInitiatorId(), new UserShortDto()),
+                        confirmedRequestsMap.getOrDefault(e.getId(), 0L),
+                        recommendationMap.get(e.getId())))
+                .sorted(Comparator.comparingDouble(EventShortDto::getRating).reversed())
+                .collect(Collectors.toList());
     }
 
     @Override
