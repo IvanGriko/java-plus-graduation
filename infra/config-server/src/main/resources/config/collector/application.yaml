@@ -40,4 +40,4 @@ grpc:
 logging:
   level:
     ru.practicum.service.UserActionService: DEBUG
-    io.grpc: INFO
+    io.grpc: DEBUG
