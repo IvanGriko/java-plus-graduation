@@ -1,5 +1,15 @@
 package ru.practicum.grpc;
 
+//import com.google.protobuf.Empty;
+//import io.grpc.Status;
+//import io.grpc.StatusRuntimeException;
+//import io.grpc.stub.StreamObserver;
+//import lombok.RequiredArgsConstructor;
+//import net.devh.boot.grpc.server.service.GrpcService;
+//import ru.practicum.grpc.collector.UserActionControllerGrpc;
+//import ru.practicum.grpc.user.action.UserActionProto;
+//import ru.practicum.service.UserActionService;
+
 import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -7,8 +17,8 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.practicum.grpc.collector.UserActionControllerGrpc;
-import ru.practicum.grpc.user.action.UserActionProto;
 import ru.practicum.service.UserActionService;
+import ru.practicum.grpc.user.action.UserActionProto;
 
 @GrpcService
 @RequiredArgsConstructor
