@@ -10,28 +10,6 @@ import ru.practicum.grpc.collector.UserActionControllerGrpc;
 import ru.practicum.grpc.user.action.UserActionProto;
 import ru.practicum.service.UserActionService;
 
-@GrpcService
-@RequiredArgsConstructor
-public class GrpcUserActionController extends UserActionControllerGrpc.UserActionControllerImplBase {
-
-    private final UserActionService userActionService;
-
-    @Override
-    public void collectUserAction(UserActionProto request, StreamObserver<Empty> responseObserver) {
-        try {
-            userActionService.handleUserAction(request);
-            responseObserver.onNext(Empty.getDefaultInstance());
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(
-                    new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e))
-            );
-        }
-    }
-
-}
-
-
 //@GrpcService
 //@RequiredArgsConstructor
 //public class GrpcUserActionController extends UserActionControllerGrpc.UserActionControllerImplBase {
@@ -39,10 +17,7 @@ public class GrpcUserActionController extends UserActionControllerGrpc.UserActio
 //    private final UserActionService userActionService;
 //
 //    @Override
-//    public void collectUserAction(
-//            UserActionProto request,
-//            StreamObserver<Empty> responseObserver
-//    ) {
+//    public void collectUserAction(UserActionProto request, StreamObserver<Empty> responseObserver) {
 //        try {
 //            userActionService.handleUserAction(request);
 //            responseObserver.onNext(Empty.getDefaultInstance());
@@ -53,4 +28,29 @@ public class GrpcUserActionController extends UserActionControllerGrpc.UserActio
 //            );
 //        }
 //    }
+//
 //}
+
+
+@GrpcService
+@RequiredArgsConstructor
+public class GrpcUserActionController extends UserActionControllerGrpc.UserActionControllerImplBase {
+
+    private final UserActionService userActionService;
+
+    @Override
+    public void collectUserAction(
+            UserActionProto request,
+            StreamObserver<Empty> responseObserver
+    ) {
+        try {
+            userActionService.handleUserAction(request);
+            responseObserver.onNext(Empty.getDefaultInstance());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(
+                    new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e))
+            );
+        }
+    }
+}
