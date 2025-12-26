@@ -36,7 +36,7 @@ public class KafkaController {
         log.info("Kafka producer успешно инициализирован.");
     }
 
-    @KafkaListener(topics = "#{customProperties.kafka.userActionTopic}")
+    @KafkaListener(topics = "#{properties.kafka.userActionTopic}")
     public void processUserAction(UserActionAvro userActionAvro) {
         try {
             userActionService.processUserActivity(userActionAvro);

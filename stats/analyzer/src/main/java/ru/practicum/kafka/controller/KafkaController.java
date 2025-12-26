@@ -39,7 +39,7 @@ public class KafkaController {
     }
 
     @KafkaListener(
-            topics = "#{customProperties.kafka.userActionTopic}",
+            topics = "#{properties.kafka.userActionTopic}",
             containerFactory = "userActionListenerContainerFactory"
     )
     public void listenUserAction(UserActionAvro userActionAvro) {
@@ -48,7 +48,7 @@ public class KafkaController {
     }
 
     @KafkaListener(
-            topics = "#{customProperties.kafka.eventsSimilarityTopic}",
+            topics = "#{properties.kafka.eventsSimilarityTopic}",
             containerFactory = "eventsSimilarityListenerContainerFactory"
     )
     public void listenEventSimilarity(EventSimilarityAvro eventSimilarityAvro) {
