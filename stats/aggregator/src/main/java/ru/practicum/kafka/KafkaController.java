@@ -27,7 +27,7 @@ public class KafkaController {
 
     KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
     KafkaListenerEndpointRegistry kafkaRegistry;
-    @Value("${my.area.guide.kafka.userActionTopic}")  // Извлекаем значение через @Value
+    @Value("${my-area-guide.kafka.user-action-topic}")
     String userActionTopic;
     AggregatorProperties properties;
     UserActionService userActionService;
@@ -39,7 +39,7 @@ public class KafkaController {
         log.info("Kafka producer успешно инициализирован.");
     }
 
-    @KafkaListener(topics = "${my.area.guide.kafka.userActionTopic}")  // Тоже через выражение SpEL
+    @KafkaListener(topics = "${my-area-guide.kafka.user-action-topic}")  // Тоже через выражение SpEL
     public void processUserAction(UserActionAvro userActionAvro) {
         try {
             userActionService.processUserActivity(userActionAvro);
