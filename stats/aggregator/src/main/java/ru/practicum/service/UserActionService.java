@@ -9,13 +9,12 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
-import ru.practicum.kafka.AggregatorProperties;
+import ru.practicum.properties.CustomProperties;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 public class UserActionService {
 
     KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
-    AggregatorProperties properties;
+    CustomProperties properties;
 
     // Карта связей пользователей и событий с соответствующими весами
     ConcurrentHashMap<Long, Map<Long, BigDecimal>> userWeights = new ConcurrentHashMap<>();
