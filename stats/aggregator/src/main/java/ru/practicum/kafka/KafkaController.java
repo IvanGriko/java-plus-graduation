@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -26,6 +27,8 @@ public class KafkaController {
 
     KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
     KafkaListenerEndpointRegistry kafkaRegistry;
+    @Value("${my.area.guide.kafka.userActionTopic}")  // Извлекаем значение через @Value
+    String userActionTopic;
     AggregatorProperties properties;
     UserActionService userActionService;
 
@@ -36,7 +39,7 @@ public class KafkaController {
         log.info("Kafka producer успешно инициализирован.");
     }
 
-    @KafkaListener(topics = "#{properties.kafka.userActionTopic}")
+    @KafkaListener(topics = "${my.area.guide.kafka.userActionTopic}")  // Тоже через выражение SpEL
     public void processUserAction(UserActionAvro userActionAvro) {
         try {
             userActionService.processUserActivity(userActionAvro);
@@ -46,6 +49,35 @@ public class KafkaController {
         }
     }
 }
+
+//@Service
+//@RequiredArgsConstructor(onConstructor_ = {@Autowired})
+//@Slf4j
+//@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+//public class KafkaController {
+//
+//    KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
+//    KafkaListenerEndpointRegistry kafkaRegistry;
+//    AggregatorProperties properties;
+//    UserActionService userActionService;
+//
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void initializeKafkaProducer() {
+//        kafkaTemplate.flush();
+//        kafkaRegistry.start();
+//        log.info("Kafka producer успешно инициализирован.");
+//    }
+//
+//    @KafkaListener(topics = "#{properties.kafka.userActionTopic}")
+//    public void processUserAction(UserActionAvro userActionAvro) {
+//        try {
+//            userActionService.processUserActivity(userActionAvro);
+//            log.info("Обработано действие пользователя: {}", userActionAvro);
+//        } catch (Exception ex) {
+//            log.error("Ошибка обработки действия пользователя: {}", ex.getMessage(), ex);
+//        }
+//    }
+//}
 
 //package ru.practicum.kafka;
 //

@@ -49,6 +49,8 @@ public class AggregatorProperties {
             };
         }
     }
+}
+
 
 //    @Data
 //    @EqualsAndHashCode(callSuper = false)
@@ -65,7 +67,7 @@ public class AggregatorProperties {
 //            };
 //        }
 //    }
-}
+
 
 //package ru.practicum.properties;
 //
