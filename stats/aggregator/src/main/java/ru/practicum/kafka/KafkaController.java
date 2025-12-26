@@ -13,7 +13,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import ru.practicum.properties.AggregatorProperties;
+import ru.practicum.kafka.AggregatorProperties;
 import ru.practicum.service.UserActionService;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
 

@@ -9,7 +9,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
-import ru.practicum.properties.AggregatorProperties;
+import ru.practicum.kafka.AggregatorProperties;
 
 import java.math.BigDecimal;
 import java.time.Instant;

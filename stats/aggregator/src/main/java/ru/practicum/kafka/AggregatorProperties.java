@@ -1,4 +1,4 @@
-package ru.practicum.properties;
+package ru.practicum.kafka;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -13,8 +13,7 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ConfigurationProperties(prefix = "my.area.guide")
-@Component
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Component@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AggregatorProperties {
 
     Kafka kafka = new Kafka();
@@ -50,7 +49,6 @@ public class AggregatorProperties {
         }
     }
 }
-
 
 //    @Data
 //    @EqualsAndHashCode(callSuper = false)
