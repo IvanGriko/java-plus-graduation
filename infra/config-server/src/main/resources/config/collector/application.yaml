@@ -35,7 +35,7 @@ spring:
 
 grpc:
   server:
-    port: 0
+    port: 9099
 
 logging:
   level:

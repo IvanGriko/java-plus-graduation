@@ -2,7 +2,7 @@ spring:
   application:
     name: collector
   config:
-    import: "configserver:http://localhost:8181/"
+    import: "configserver:"
   #  config:
   #    import: "configserver:"
   cloud:
