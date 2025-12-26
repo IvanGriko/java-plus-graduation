@@ -1,6 +1,8 @@
 syntax = "proto3";
 package stats.service.dashboard;
 
+import "google/protobuf/empty.proto";
+
 import "message/similarity_reports.proto";
 
 option java_package = "ru.practicum.grpc.collector";
@@ -16,4 +18,5 @@ service RecommendationsController {
 
   rpc GetInteractionsCount (grpc.message.similarity.reports.InteractionsCountRequestProto)
       returns (stream grpc.message.similarity.reports.RecommendedEventProto);
+
 }
