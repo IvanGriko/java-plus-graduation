@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ConfigurationProperties(prefix = "my.area.guide")
+@ConfigurationProperties(prefix = "my-area-guide")
 @Component@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AggregatorProperties {
 
