@@ -2,7 +2,6 @@ package ru.practicum.dal;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Check;
 
 import java.time.Instant;
@@ -15,7 +14,6 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(
         name = "similarities",
         indexes = {@Index(name = "idx_similarities_event_a_event_b", columnList = "event_a, event_b")},
@@ -28,22 +26,18 @@ public class EventSimilarity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     @Column(name = "id")
-    Long id;
+    private Long id;
 
     @Column(name = "event_a", nullable = false)
-    Long eventA;
+    private Long eventA;
 
     @Column(name = "event_b", nullable = false)
-    Long eventB;
+    private Long eventB;
 
     @Column(name = "score", nullable = false)
-    Double score;
+    private Double score;
 
     @Column(name = "timestamp", nullable = false)
-    Instant timestamp;
+    private Instant timestamp;
 
-    public void updateFields(double newScore, Instant newTimestamp) {
-        this.score = newScore;
-        this.timestamp = newTimestamp;
-    }
 }

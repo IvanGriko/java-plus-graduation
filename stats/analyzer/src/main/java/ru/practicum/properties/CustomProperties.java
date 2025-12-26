@@ -1,9 +1,7 @@
 package ru.practicum.properties;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
@@ -14,11 +12,10 @@ import java.math.BigDecimal;
 @Setter
 @ConfigurationProperties("my-area-guide")
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AnalyzerProperties {
+public class CustomProperties {
 
-    Kafka kafka = new Kafka();
-    Analyzer analyzer = new Analyzer();
+    private final Kafka kafka = new Kafka();
+    private final Analyzer analyzer = new Analyzer();
 
     @Getter
     @Setter
@@ -46,7 +43,7 @@ public class AnalyzerProperties {
         private String register = "0.7";
         private String view = "0.3";
 
-        public BigDecimal convertUserActionToWeight(UserActionAvro userActionAvro) {
+        public BigDecimal ofUserAction(UserActionAvro userActionAvro) {
             return switch (userActionAvro.getActionType()) {
                 case LIKE -> new BigDecimal(like);
                 case REGISTER -> new BigDecimal(register);
@@ -54,4 +51,5 @@ public class AnalyzerProperties {
             };
         }
     }
+
 }

@@ -11,9 +11,7 @@ public interface EventSimilarityRepository extends JpaRepository<EventSimilarity
 
     EventSimilarity findByEventAAndEventB(Long eventA, Long eventB);
 
-    @Query(
-            nativeQuery = true,
-            value = """
+    @Query(nativeQuery = true, value = """
             (
               SELECT s.event_b event_id, s.score score
               FROM similarities s
@@ -29,17 +27,14 @@ public interface EventSimilarityRepository extends JpaRepository<EventSimilarity
             )
             ORDER BY score DESC
             LIMIT :limit;
-            """
-    )
+            """)
     List<Object[]> findSimilarByEventIdListNotSeenByUser(
             @Param("userId") Long userId,
             @Param("eventList") List<Long> eventList,
             @Param("limit") Integer limit
     );
 
-    @Query(
-            nativeQuery = true,
-            value = """
+    @Query(nativeQuery = true, value = """
             WITH simwt AS (
             (
               SELECT s.event_a src_event, s.event_b event_id, s.score score, a.weight weight
@@ -58,10 +53,10 @@ public interface EventSimilarityRepository extends JpaRepository<EventSimilarity
             FROM simwt
             GROUP BY src_event
             ORDER BY result_score DESC
-            """
-    )
+            """)
     List<Object[]> findWeightedAverageListByEventIdList(
             @Param("userId") Long userId,
             @Param("eventList") List<Long> eventList
     );
+
 }
