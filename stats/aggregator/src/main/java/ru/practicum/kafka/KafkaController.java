@@ -1,6 +1,7 @@
 package ru.practicum.kafka;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +21,24 @@ import ru.practicum.ewm.stats.avro.UserActionAvro;
 //import javax.annotation.PostConstruct;
 
 @Service
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class KafkaController {
 
+    @Autowired
     KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
+
+    @Autowired
     KafkaListenerEndpointRegistry kafkaRegistry;
+
     @Value("${my-area-guide.kafka.user-action-topic}")
     String userActionTopic;
+
+    @Autowired
     AggregatorProperties properties;
+
+    @Autowired
     UserActionService userActionService;
 
     @EventListener(ApplicationReadyEvent.class)
@@ -39,7 +48,7 @@ public class KafkaController {
         log.info("Kafka producer успешно инициализирован.");
     }
 
-    @KafkaListener(topics = "${my-area-guide.kafka.user-action-topic}")  // Тоже через выражение SpEL
+    @KafkaListener(topics = "${my-area-guide.kafka.user-action-topic}")
     public void processUserAction(UserActionAvro userActionAvro) {
         try {
             userActionService.processUserActivity(userActionAvro);
