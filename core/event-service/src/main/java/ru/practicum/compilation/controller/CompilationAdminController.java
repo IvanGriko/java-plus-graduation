@@ -20,19 +20,16 @@ public class CompilationAdminController implements CompilationAdminApi {
 
     @Override
     public CompilationDto postCompilations(NewCompilationDto newCompilationDto) {
-        log.info("Создание новой компиляции {}", newCompilationDto.getTitle());
         return compilationAdminService.createCompilation(newCompilationDto);
     }
 
     @Override
     public String deleteCompilation(Long compId) {
-        log.info("Удаление компиляции с ID {}", compId);
         return compilationAdminService.deleteCompilation(compId);
     }
 
     @Override
     public CompilationDto patchCompilation(Long compId, UpdateCompilationDto updateCompilationDto) {
-        log.info("Обновление компиляции с ID {}", compId);
         return compilationAdminService.updateCompilation(compId, updateCompilationDto);
     }
 }
