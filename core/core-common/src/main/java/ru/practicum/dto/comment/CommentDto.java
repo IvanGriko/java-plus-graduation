@@ -16,11 +16,8 @@ import java.time.LocalDateTime;
 public class CommentDto {
 
     Long id;
-
     String text;
-
     UserDto author;
-
     EventCommentDto event;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -30,5 +27,4 @@ public class CommentDto {
     LocalDateTime patchTime;
 
     Boolean approved;
-
 }

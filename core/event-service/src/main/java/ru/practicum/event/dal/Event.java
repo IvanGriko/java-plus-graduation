@@ -72,5 +72,4 @@ public class Event {
 
     @Column(name = "created_on", nullable = false)
     LocalDateTime createdOn;
-
 }

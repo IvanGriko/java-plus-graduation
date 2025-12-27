@@ -37,5 +37,4 @@ public class CommentPublicController implements CommentPublicApi {
         log.info("Запрашивается полный комментарий с ID {} для события с ID {}", commentId, eventId);
         return commentPublicService.getCommentByEventAndCommentId(eventId, commentId);
     }
-
 }

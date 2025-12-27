@@ -18,5 +18,4 @@ public interface StatMapper {
     Stat toStat(EventHitDto statDto);
 
     EventHitDto toEventHitDto(Stat stat);
-
 }

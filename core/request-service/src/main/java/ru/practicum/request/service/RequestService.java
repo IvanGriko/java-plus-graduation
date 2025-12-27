@@ -1,6 +1,5 @@
 package ru.practicum.request.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequestDto;
 import ru.practicum.dto.request.EventRequestStatusUpdateResultDto;
 import ru.practicum.dto.request.ParticipationRequestDto;
@@ -24,6 +23,7 @@ public interface RequestService {
             EventRequestStatusUpdateRequestDto updateRequestDto
     );
 
-    @Transactional(readOnly = true)
     Map<Long, Long> getConfirmedRequestsByEventIds(Collection<Long> eventIds);
+
+    String checkParticipation(Long userId, Long eventId);
 }

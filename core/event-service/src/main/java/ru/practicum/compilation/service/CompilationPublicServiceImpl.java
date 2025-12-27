@@ -72,5 +72,4 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
                 .map(c -> CompilationMapper.toCompilationDto(c, userMap))
                 .toList();
     }
-
 }

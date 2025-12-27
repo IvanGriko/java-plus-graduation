@@ -14,5 +14,4 @@ public class RequestMapper {
         dto.setCreated(request.getCreated());
         return dto;
     }
-
 }

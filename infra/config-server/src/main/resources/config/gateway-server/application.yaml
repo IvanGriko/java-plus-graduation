@@ -44,6 +44,7 @@ spring:
                   /users/*/requests,
                   /users/*/requests/*/cancel,
                   /users/*/events/*/requests
+                  /users/*/events/*/check/participation
 
             - id: event_service
               uri: lb://event-service
@@ -60,6 +61,7 @@ spring:
                   /admin/categories/**,
                   /compilations/**,
                   /admin/compilations/**
+                  /events/*/like
 
 logging:
   level:

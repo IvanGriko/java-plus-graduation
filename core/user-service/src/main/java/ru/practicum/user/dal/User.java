@@ -22,10 +22,18 @@ public class User {
     @Column(name = "id")
     Long id;
 
-    @Column(name = "email", length = 254, nullable = false, unique = true)
+    @Column(
+            name = "email",
+            length = 254,
+            nullable = false,
+            unique = true
+    )
     String email;
 
-    @Column(name = "name", length = 250, nullable = false)
+    @Column(
+            name = "name",
+            length = 250,
+            nullable = false
+    )
     String name;
-
 }

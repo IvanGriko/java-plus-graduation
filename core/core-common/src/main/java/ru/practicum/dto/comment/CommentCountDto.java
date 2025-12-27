@@ -11,7 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class CommentCountDto {
 
     Long eventId;
-
     Long commentCount;
-
 }

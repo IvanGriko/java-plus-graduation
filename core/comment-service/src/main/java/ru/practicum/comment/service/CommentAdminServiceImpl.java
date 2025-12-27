@@ -128,5 +128,4 @@ public class CommentAdminServiceImpl implements CommentAdminService {
         EventCommentDto eventCommentDto = eventClientHelper.fetchEventCommentById(comment.getEventId());
         return CommentMapper.toCommentDto(comment, userDto, eventCommentDto);
     }
-
 }

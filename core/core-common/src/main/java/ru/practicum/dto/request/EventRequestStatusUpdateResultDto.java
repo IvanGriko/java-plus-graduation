@@ -18,5 +18,4 @@ public class EventRequestStatusUpdateResultDto {
 
     @Builder.Default
     List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
-
 }

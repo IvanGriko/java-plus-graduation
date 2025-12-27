@@ -28,5 +28,4 @@ public class CategoryAdminController implements CategoryAdminApi {
     public CategoryDto updateCategory(Long catId, CategoryDto categoryDto) {
         return categoryAdminService.updateCategory(catId, categoryDto);
     }
-
 }

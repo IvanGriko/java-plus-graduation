@@ -28,5 +28,4 @@ public interface CategoryAdminApi {
             @RequestBody
             @Validated(CreateOrUpdateValidator.Update.class) CategoryDto categoryDto
     );
-
 }

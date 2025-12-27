@@ -14,21 +14,12 @@ import java.util.List;
 public class EventParams {
 
     String text;
-
     List<Long> categories;
-
     Boolean paid;
-
     LocalDateTime rangeStart;
-
     LocalDateTime rangeEnd;
-
     Boolean onlyAvailable;
-
     EventSort eventSort;
-
     Integer from;
-
     Integer size;
-
 }

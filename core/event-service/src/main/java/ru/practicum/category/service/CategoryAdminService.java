@@ -9,5 +9,4 @@ public interface CategoryAdminService {
     String deleteCategory(Long catId);
 
     CategoryDto updateCategory(Long catId, CategoryDto categoryDto);
-
 }

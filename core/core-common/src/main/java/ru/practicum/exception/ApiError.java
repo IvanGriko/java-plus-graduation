@@ -20,9 +20,7 @@ import java.util.List;
 public class ApiError {
 
     HttpStatus status;
-
     String reason;
-
     String message;
 
     @Builder.Default
@@ -31,5 +29,4 @@ public class ApiError {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     LocalDateTime timestamp;
-
 }

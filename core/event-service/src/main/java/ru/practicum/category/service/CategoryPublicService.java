@@ -9,5 +9,4 @@ public interface CategoryPublicService {
     List<CategoryDto> readAllCategories(Integer from, Integer size);
 
     CategoryDto readCategoryById(Long catId);
-
 }

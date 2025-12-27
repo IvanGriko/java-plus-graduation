@@ -64,4 +64,12 @@ public interface RequestApi {
             @RequestBody Collection<Long> eventIds
     );
 
+    @GetMapping("/users/{userId}/events/{eventId}/check/participation")
+    @ResponseStatus(HttpStatus.OK)
+    String checkParticipation(
+            @PathVariable
+            @Positive(message = "Неверный идентификатор пользователя") Long userId,
+            @PathVariable
+            @Positive(message = "Неверный идентификатор мероприятия") Long eventId
+    );
 }

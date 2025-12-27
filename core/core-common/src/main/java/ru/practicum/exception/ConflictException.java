@@ -16,5 +16,4 @@ public class ConflictException extends RuntimeException {
         super(message);
         this.reason = reason;
     }
-
 }

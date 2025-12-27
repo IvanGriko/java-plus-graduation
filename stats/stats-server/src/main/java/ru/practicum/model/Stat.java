@@ -32,5 +32,4 @@ public class Stat {
 
     @Column(name = "uri", nullable = false, length = 50)
     String uri;
-
 }

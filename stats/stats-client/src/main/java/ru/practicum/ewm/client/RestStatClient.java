@@ -20,10 +20,7 @@ import ru.practicum.dto.EventStatsResponseDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -123,4 +120,28 @@ public class RestStatClient implements StatClient {
         }
     }
 
+    @Override
+    public String sendView(Long userId, Long eventId) {
+        throw new UnsupportedOperationException("Метод sendView() не поддерживается");
+    }
+
+    @Override
+    public String sendRegister(Long userId, Long eventId) {
+        throw new UnsupportedOperationException("Метод sendRegister() не поддерживается");
+    }
+
+    @Override
+    public String sendLike(Long userId, Long eventId) {
+        throw new UnsupportedOperationException("Метод sendLike() не поддерживается");
+    }
+
+    @Override
+    public Map<Long, Double> getUserRecommendations(Long userId, Integer size) {
+        throw new UnsupportedOperationException("Метод getUserRecommendations() не поддерживается");
+    }
+
+    @Override
+    public Map<Long, Double> getRatingsByEventIdList(List<Long> eventIdList) {
+        throw new UnsupportedOperationException("Метод getRatingsByEventIdList() не поддерживается");
+    }
 }

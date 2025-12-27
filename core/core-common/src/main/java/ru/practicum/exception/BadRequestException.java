@@ -16,5 +16,4 @@ public class BadRequestException extends RuntimeException {
         super(message);
         this.reason = reason;
     }
-
 }

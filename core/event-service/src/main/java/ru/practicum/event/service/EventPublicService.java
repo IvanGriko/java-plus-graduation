@@ -10,7 +10,7 @@ public interface EventPublicService {
 
     List<EventShortDto> getAllEventsByParams(EventParams eventParams, HttpServletRequest request);
 
-    EventFullDto getEventById(Long id, HttpServletRequest request);
+    EventFullDto getEventById(Long id, Long eventId, HttpServletRequest request);
 
     EventCommentDto getEventCommentDto(Long id);
 
@@ -18,4 +18,7 @@ public interface EventPublicService {
 
     EventInteractionDto getEventInteractionDto(Long id);
 
+    Collection<EventShortDto> getRecommendations(Long userId, Integer size);
+
+    String sendLike(Long userId, Long eventId);
 }

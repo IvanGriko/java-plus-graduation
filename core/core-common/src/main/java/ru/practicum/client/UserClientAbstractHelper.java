@@ -94,5 +94,4 @@ public abstract class UserClientAbstractHelper {
         if (e.getCause() != null && e.getCause() instanceof FeignException.NotFound) return true;
         return false;
     }
-
 }

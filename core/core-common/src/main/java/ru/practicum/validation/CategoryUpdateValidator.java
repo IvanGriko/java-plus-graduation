@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CategoryUpdateValidator implements CreateOrUpdateValidator.Update {
+
     private final Validator validator;
 
     public CategoryUpdateValidator(Validator validator) {

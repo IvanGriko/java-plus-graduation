@@ -18,5 +18,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             WHERE c.text ILIKE CONCAT('%', ?1, '%')
             """)
     Page<Comment> findByText(String text, Pageable pageable);
-
 }

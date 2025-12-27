@@ -32,7 +32,11 @@ public class Compilation {
     @Column(name = "pinned", nullable = false)
     Boolean pinned;
 
-    @Size(min = 1, max = 50, message = "Название должно быть от 1 до 50 символов")
+    @Size(
+            min = 1,
+            max = 50,
+            message = "Название должно быть от 1 до 50 символов"
+    )
     @NotEmpty(message = "Название компиляции обязательно")
     @Column(name = "title", length = 50, nullable = false)
     String title;
@@ -43,5 +47,4 @@ public class Compilation {
             inverseJoinColumns = @JoinColumn(name = "events_id", nullable = false))
     @OnDelete(action = OnDeleteAction.CASCADE)
     Set<Event> events;
-
 }

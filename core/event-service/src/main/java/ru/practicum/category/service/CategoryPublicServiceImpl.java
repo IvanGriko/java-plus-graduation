@@ -43,5 +43,4 @@ public class CategoryPublicServiceImpl implements CategoryPublicService {
         log.info("Результат: получена категория с именем {}", category.getName());
         return CategoryMapper.toCategoryDto(category);
     }
-
 }

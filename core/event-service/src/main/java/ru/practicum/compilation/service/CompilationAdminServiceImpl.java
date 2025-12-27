@@ -103,5 +103,4 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
             return CompilationMapper.toCompilationDto(compilation, userMap);
         });
     }
-
 }

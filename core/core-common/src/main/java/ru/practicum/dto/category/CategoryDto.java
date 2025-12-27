@@ -26,5 +26,4 @@ public class CategoryDto {
             groups = {CreateOrUpdateValidator.Create.class, CreateOrUpdateValidator.Update.class}
     )
     String name;
-
 }

@@ -9,5 +9,4 @@ public class EventClientHelper extends EventClientAbstractHelper {
     public EventClientHelper(EventAllApi eventApiClient) {
         super(eventApiClient);
     }
-
 }

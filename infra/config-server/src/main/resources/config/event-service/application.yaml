@@ -45,6 +45,8 @@ management:
   info.env.enabled: true
 
 explore-with-me:
+  analyzer.discovery.name: analyzer
+  collector.discovery.name: collector
   stat-server.discovery.name: stats-server
   datetime.format: yyyy-MM-dd HH:mm:ss
   main.datetime.format: yyyy-MM-dd HH:mm:ss

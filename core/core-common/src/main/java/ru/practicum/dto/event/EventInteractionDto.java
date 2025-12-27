@@ -14,25 +14,15 @@ import java.time.LocalDateTime;
 public class EventInteractionDto {
 
     Long id;
-
     Long initiatorId;
-
     Long categoryId;
-
     String title;
-
     String annotation;
-
     String description;
-
     State state;
-
     LocationDto location;
-
     Long participantLimit;
-
     Boolean requestModeration;
-
     Boolean paid;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -49,5 +39,4 @@ public class EventInteractionDto {
                 .id(id)
                 .build();
     }
-
 }

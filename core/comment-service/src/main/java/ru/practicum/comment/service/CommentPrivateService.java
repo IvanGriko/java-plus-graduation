@@ -10,5 +10,4 @@ public interface CommentPrivateService {
     String deleteComment(Long userId, Long comId);
 
     CommentDto patchComment(Long userId, Long comId, CommentCreateDto commentCreateDto);
-
 }

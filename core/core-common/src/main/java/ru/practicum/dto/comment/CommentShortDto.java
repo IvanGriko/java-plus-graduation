@@ -13,12 +13,9 @@ import ru.practicum.dto.user.UserDto;
 public class CommentShortDto {
 
     Long id;
-
     String text;
-
     UserDto author;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     String createTime;
-
 }

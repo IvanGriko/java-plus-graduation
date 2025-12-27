@@ -14,17 +14,10 @@ import java.util.List;
 public class EventAdminParams {
 
     List<Long> users;
-
     List<State> states;
-
     List<Long> categories;
-
     LocalDateTime rangeStart;
-
     LocalDateTime rangeEnd;
-
     Integer from;
-
     Integer size;
-
 }

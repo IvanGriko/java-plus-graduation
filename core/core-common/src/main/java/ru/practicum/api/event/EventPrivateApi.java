@@ -50,5 +50,4 @@ public interface EventPrivateApi {
             @Valid
             @RequestBody UpdateEventDto updateEventDto
     );
-
 }

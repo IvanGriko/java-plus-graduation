@@ -60,5 +60,4 @@ public interface UserApi {
     Collection<UserDto> getUserDtoListByIds(
             @RequestParam(required = false) Collection<Long> ids
     );
-
 }

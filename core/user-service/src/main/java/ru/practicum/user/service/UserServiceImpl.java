@@ -98,5 +98,4 @@ public class UserServiceImpl implements UserService{
                 .map(UserMapper::toDto)
                 .toList();
     }
-
 }

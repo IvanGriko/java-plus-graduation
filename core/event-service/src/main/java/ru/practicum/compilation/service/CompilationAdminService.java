@@ -11,5 +11,4 @@ public interface CompilationAdminService {
     String deleteCompilation(Long compId);
 
     CompilationDto updateCompilation(Long compId, UpdateCompilationDto updateCompilationDto);
-
 }

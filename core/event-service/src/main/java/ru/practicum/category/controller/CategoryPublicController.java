@@ -25,5 +25,4 @@ public class CategoryPublicController implements CategoryPublicApi {
     public CategoryDto readCategoryById(Long catId) {
         return categoryPublicService.readCategoryById(catId);
     }
-
 }

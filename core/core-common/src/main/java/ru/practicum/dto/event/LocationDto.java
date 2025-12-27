@@ -11,7 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class LocationDto {
 
     Float lat;
-
     Float lon;
-
 }

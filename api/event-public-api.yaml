@@ -271,6 +271,84 @@
           }
         }
       }
+    },
+    "/events/recommendations": {
+      "get": {
+        "summary": "Fetch recommendations for a user",
+        "operationId": "getRecommendations",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Identifier of the user for whom recommendations are fetched"
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Number of recommended events to fetch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recommended events retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventShortDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No recommendations found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/events/{eventId}/like": {
+      "put": {
+        "summary": "Send like to an event",
+        "operationId": "sendLike",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "The ID of the event to like"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Like sent successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {

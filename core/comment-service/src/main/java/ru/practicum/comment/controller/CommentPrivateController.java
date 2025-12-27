@@ -34,5 +34,4 @@ public class CommentPrivateController implements CommentPrivateApi {
         log.info("Редактируется комментарий с ID {} пользователем с ID {}", comId, userId);
         return commentPrivateService.patchComment(userId, comId, commentCreateDto);
     }
-
 }

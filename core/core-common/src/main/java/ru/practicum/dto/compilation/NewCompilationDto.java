@@ -22,7 +22,10 @@ public class NewCompilationDto {
     Boolean pinned = false;
 
     @NotBlank(message = "Заголовок подборки обязателен")
-    @Size(min = 1, max = 50, message = "Длина заголовка должна быть от 1 до 50 символов")
+    @Size(
+            min = 1,
+            max = 50,
+            message = "Длина заголовка должна быть от 1 до 50 символов"
+    )
     String title;
-
 }
