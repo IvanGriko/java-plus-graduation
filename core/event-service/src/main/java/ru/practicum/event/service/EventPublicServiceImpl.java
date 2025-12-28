@@ -130,30 +130,6 @@ public class EventPublicServiceImpl implements EventPublicService {
         return EventMapper.toInteractionDto(event);
     }
 
-//    @Override
-//    public Collection<EventShortDto> getRecommendations(Long userId, Integer size) {
-//        log.info("Получение рекомендаций для пользователя с ID {}", userId);
-//        Map<Long, Double> recommendationMap = statClient.getUserRecommendations(userId, size);
-//        if (recommendationMap.isEmpty()) return List.of();
-//        List<Event> events = transactionTemplate.execute(status -> {
-//            return eventRepository.findAllById(recommendationMap.keySet());
-//        });
-//        if (events == null || events.isEmpty()) return List.of();
-//        Set<Long> userIds = events.stream().map(Event::getInitiatorId).collect(Collectors.toSet());
-//        Map<Long, UserShortDto> userMap = userClientHelper.fetchUserShortDtoMapByUserIdList(userIds);
-//        List<Long> eventIds = events.stream().map(Event::getId).toList();
-//        Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(eventIds);
-//        return events.stream()
-//                .map(e -> EventMapper.toEventShortDto(
-//                        e,
-//                        userMap.get(e.getInitiatorId()),
-//                        confirmedRequestsMap.get(e.getId()),
-//                        recommendationMap.get(e.getId())
-//                ))
-//                .sorted(Comparator.comparing(EventShortDto::getRating).reversed())
-//                .toList();
-//    }
-
     @Override
     public Collection<EventShortDto> getRecommendations(Long userId, Integer size) {
         log.info("Получение рекомендаций для пользователя с ID {}", userId);

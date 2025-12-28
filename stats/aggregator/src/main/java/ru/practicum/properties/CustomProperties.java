@@ -1,7 +1,9 @@
 package ru.practicum.properties;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
@@ -12,10 +14,11 @@ import java.math.BigDecimal;
 @Setter
 @ConfigurationProperties("my-area-guide")
 @Component
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CustomProperties {
 
-    private final Kafka kafka = new Kafka();
-    private final Aggregator aggregator = new Aggregator();
+    Kafka kafka = new Kafka();
+    Aggregator aggregator = new Aggregator();
 
     @Getter
     @Setter
@@ -46,5 +49,4 @@ public class CustomProperties {
             };
         }
     }
-
 }

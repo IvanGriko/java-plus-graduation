@@ -1,6 +1,8 @@
 package ru.practicum.kafka;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -14,23 +16,22 @@ import ru.practicum.service.UserActionService;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class KafkaController {
 
-    private final KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
-    private final KafkaListenerEndpointRegistry kafkaRegistry;
+    KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
+    KafkaListenerEndpointRegistry kafkaRegistry;
+    CustomProperties customProperties;
+    UserActionService userActionService;
 
-    private final CustomProperties customProperties;
-    private final UserActionService userActionService;
+    @KafkaListener(topics = "#{customProperties.kafka.userActionTopic}")
+    public void listen(UserActionAvro userActionAvro) {
+        userActionService.processUserAction(userActionAvro);
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void initKafkaProducer() {
         kafkaTemplate.flush();
         kafkaRegistry.start();
     }
-
-    @KafkaListener(topics = "#{customProperties.kafka.userActionTopic}")
-    public void listen(UserActionAvro userActionAvro) {
-        userActionService.handleUserAction(userActionAvro);
-    }
-
 }

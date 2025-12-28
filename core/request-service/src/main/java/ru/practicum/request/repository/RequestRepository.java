@@ -12,16 +12,6 @@ import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
-
-    boolean existsByRequesterIdAndEventIdAndStatus(Long userId, Long eventId, ParticipationRequestStatus status);
-
-    long countByEventIdAndStatus(Long eventId, ParticipationRequestStatus status);
-
-    List<Request> findByRequesterId(Long userId);
-
-    List<Request> findByEventId(Long eventId);
-
     @Modifying(clearAutomatically = true)
     @Query("""
             UPDATE Request r
@@ -54,4 +44,14 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Object[]> getConfirmedRequestsByEventIds(
             @Param("eventIds") Collection<Long> eventIds
     );
+
+    List<Request> findByRequesterId(Long userId);
+
+    List<Request> findByEventId(Long eventId);
+
+    boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
+
+    boolean existsByRequesterIdAndEventIdAndStatus(Long userId, Long eventId, ParticipationRequestStatus status);
+
+    long countByEventIdAndStatus(Long eventId, ParticipationRequestStatus status);
 }

@@ -13,15 +13,15 @@ public interface RequestService {
 
     ParticipationRequestDto cancelRequest(Long userId, Long requestId);
 
-    Collection<ParticipationRequestDto> findRequesterRequests(Long userId);
-
-    Collection<ParticipationRequestDto> findEventRequests(Long userId, Long eventId);
-
     EventRequestStatusUpdateResultDto moderateRequest(
             Long userId,
             Long eventId,
             EventRequestStatusUpdateRequestDto updateRequestDto
     );
+
+    Collection<ParticipationRequestDto> findRequesterRequests(Long userId);
+
+    Collection<ParticipationRequestDto> findEventRequests(Long userId, Long eventId);
 
     Map<Long, Long> getConfirmedRequestsByEventIds(Collection<Long> eventIds);
 
