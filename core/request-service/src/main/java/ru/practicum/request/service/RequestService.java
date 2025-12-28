@@ -1,6 +1,5 @@
 package ru.practicum.request.service;
 
-import org.springframework.stereotype.Service;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequestDto;
 import ru.practicum.dto.request.EventRequestStatusUpdateResultDto;
 import ru.practicum.dto.request.ParticipationRequestDto;
@@ -8,7 +7,6 @@ import ru.practicum.dto.request.ParticipationRequestDto;
 import java.util.Collection;
 import java.util.Map;
 
-@Service
 public interface RequestService {
 
     ParticipationRequestDto addRequest(Long userId, Long eventId);
