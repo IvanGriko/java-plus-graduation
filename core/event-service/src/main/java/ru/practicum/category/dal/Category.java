@@ -3,7 +3,6 @@ package ru.practicum.category.dal;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.constraints.UniqueElements;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 

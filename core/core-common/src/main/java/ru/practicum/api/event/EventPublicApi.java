@@ -31,9 +31,11 @@ public interface EventPublicApi {
     @ResponseStatus(HttpStatus.OK)
     EventFullDto getInformationAboutEventByEventId(
             @RequestHeader("X-EWM-USER-ID")
-            @Positive(message = "Идентификатор пользователя должен быть положительным числом.") Long userId,
+            @Positive(message = "Идентификатор пользователя должен быть положительным числом.")
+            Long userId,
             @PathVariable
-            @Positive(message = "Идентификатор события должен быть положительным числом.") Long eventId,
+            @Positive(message = "Идентификатор события должен быть положительным числом.")
+            Long eventId,
             HttpServletRequest request
     );
 

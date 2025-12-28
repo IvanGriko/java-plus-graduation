@@ -46,5 +46,4 @@ public abstract class RequestClientAbstractHelper {
         if (e.getCause() != null && e.getCause() instanceof FeignException.NotFound) return true;
         return false;
     }
-
 }

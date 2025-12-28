@@ -162,9 +162,7 @@ public class EventPublicServiceImpl implements EventPublicService {
             return Collections.emptyList();
         }
         Set<Long> eventIds = recommendationMap.keySet();
-        List<Event> events = transactionTemplate.execute((TransactionCallback<List<Event>>) status -> {
-            return eventRepository.findAllById(eventIds);
-        });
+        List<Event> events = transactionTemplate.execute(status -> eventRepository.findAllById(eventIds));
         if (CollectionUtils.isEmpty(events)) {
             return Collections.emptyList();
         }
