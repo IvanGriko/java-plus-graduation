@@ -28,15 +28,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RequestServiceImpl {
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class RequestServiceImpl implements RequestService {
 
-    private final TransactionTemplate transactionTemplate;
-    private final RequestRepository requestRepository;
-
-    private final UserClientHelper userClientHelper;
-    private final EventClientAbstractHelper eventClientHelper;
-
-    private final StatClient statClient;
+    TransactionTemplate transactionTemplate;
+    RequestRepository requestRepository;
+    UserClientHelper userClientHelper;
+    EventClientAbstractHelper eventClientHelper;
+    StatClient statClient;
 
     // ЗАЯВКИ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
 
