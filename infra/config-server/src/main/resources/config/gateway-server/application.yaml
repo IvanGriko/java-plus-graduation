@@ -43,7 +43,7 @@ spring:
                   /requests/**,
                   /users/*/requests,
                   /users/*/requests/*/cancel,
-                  /users/*/events/*/requests
+                  /users/*/events/*/requests,
                   /users/*/events/*/check/participation
 
             - id: event_service
@@ -60,7 +60,7 @@ spring:
                   /categories/**,
                   /admin/categories/**,
                   /compilations/**,
-                  /admin/compilations/**
+                  /admin/compilations/**,
                   /events/*/like
 
 logging:
