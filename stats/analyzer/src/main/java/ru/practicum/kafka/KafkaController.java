@@ -1,6 +1,8 @@
 package ru.practicum.kafka;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,18 +16,13 @@ import ru.practicum.service.UserActionService;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class KafkaController {
 
-    private final KafkaListenerEndpointRegistry kafkaRegistry;
-
-    private final CustomProperties customProperties;
-    private final UserActionService userActionService;
-    private final EventSimilarityService eventSimilarityService;
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void initKafkaProducer() {
-        kafkaRegistry.start();
-    }
+    KafkaListenerEndpointRegistry kafkaRegistry;
+    CustomProperties customProperties;
+    UserActionService userActionService;
+    EventSimilarityService eventSimilarityService;
 
     @KafkaListener(
             topics = "#{customProperties.kafka.userActionTopic}",
@@ -43,4 +40,8 @@ public class KafkaController {
         eventSimilarityService.handleEventSimilarity(eventSimilarityAvro);
     }
 
+    @EventListener(ApplicationReadyEvent.class)
+    public void initKafkaProducer() {
+        kafkaRegistry.start();
+    }
 }
