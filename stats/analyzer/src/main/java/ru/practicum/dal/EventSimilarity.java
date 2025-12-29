@@ -2,6 +2,7 @@ package ru.practicum.dal;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Check;
 
 import java.time.Instant;
@@ -20,24 +21,24 @@ import java.time.Instant;
         uniqueConstraints = {@UniqueConstraint(name = "unique_event_a_event_b", columnNames = {"event_a", "event_b"})}
 )
 @Check(constraints = "event_a < event_b")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventSimilarity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     @Column(name = "id")
-    private Long id;
+    Long id;
 
     @Column(name = "event_a", nullable = false)
-    private Long eventA;
+    Long eventA;
 
     @Column(name = "event_b", nullable = false)
-    private Long eventB;
+    Long eventB;
 
     @Column(name = "score", nullable = false)
-    private Double score;
+    Double score;
 
     @Column(name = "timestamp", nullable = false)
-    private Instant timestamp;
-
+    Instant timestamp;
 }

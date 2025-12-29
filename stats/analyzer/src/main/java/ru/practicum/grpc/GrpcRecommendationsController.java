@@ -4,6 +4,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.practicum.grpc.collector.RecommendationsControllerGrpc;
 import ru.practicum.grpc.similarity.reports.InteractionsCountRequestProto;
@@ -14,6 +15,7 @@ import ru.practicum.service.SimilarityReportService;
 
 import java.util.List;
 
+@Slf4j
 @GrpcService
 @RequiredArgsConstructor
 public class GrpcRecommendationsController extends RecommendationsControllerGrpc.RecommendationsControllerImplBase {
@@ -21,12 +23,18 @@ public class GrpcRecommendationsController extends RecommendationsControllerGrpc
     private final SimilarityReportService similarityReportService;
 
     @Override
-    public void getRecommendationsForUser(UserPredictionsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
+    public void getRecommendationsForUser(
+            UserPredictionsRequestProto request,
+            StreamObserver<RecommendedEventProto> responseObserver
+    ) {
+        log.info("Запрашиваем рекомендации для пользователя");
         try {
-            List<RecommendedEventProto> result = similarityReportService.getRecommendationsForUser(request);
-            result.forEach(responseObserver::onNext);
+            List<RecommendedEventProto> recommendations = similarityReportService.getRecommendationsForUser(request);
+            recommendations.forEach(responseObserver::onNext);
             responseObserver.onCompleted();
+            log.info("Передали {} рекомендуемых событий пользователю", recommendations.size());
         } catch (Exception e) {
+            log.error("Ошибка при расчете рекомендаций: {}", e.getMessage(), e);
             responseObserver.onError(
                     new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e))
             );
@@ -34,12 +42,18 @@ public class GrpcRecommendationsController extends RecommendationsControllerGrpc
     }
 
     @Override
-    public void getSimilarEvents(SimilarEventsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
+    public void getSimilarEvents(
+            SimilarEventsRequestProto request,
+            StreamObserver<RecommendedEventProto> responseObserver
+    ) {
+        log.info("Получаем похожие события");
         try {
-            List<RecommendedEventProto> result = similarityReportService.getSimilarEvents(request);
-            result.forEach(responseObserver::onNext);
+            List<RecommendedEventProto> similarEvents = similarityReportService.getSimilarEvents(request);
+            similarEvents.forEach(responseObserver::onNext);
             responseObserver.onCompleted();
+            log.info("Передали {} похожих событий", similarEvents.size());
         } catch (Exception e) {
+            log.error("Ошибка при поиске похожих событий: {}", e.getMessage(), e);
             responseObserver.onError(
                     new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e))
             );
@@ -47,16 +61,21 @@ public class GrpcRecommendationsController extends RecommendationsControllerGrpc
     }
 
     @Override
-    public void getInteractionsCount(InteractionsCountRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
+    public void getInteractionsCount(
+            InteractionsCountRequestProto request,
+            StreamObserver<RecommendedEventProto> responseObserver
+    ) {
+        log.info("Запрашиваем количество взаимодействий с событием");
         try {
-            List<RecommendedEventProto> result = similarityReportService.getInteractionsCount(request);
-            result.forEach(responseObserver::onNext);
+            List<RecommendedEventProto> interactions = similarityReportService.getInteractionsCount(request);
+            interactions.forEach(responseObserver::onNext);
             responseObserver.onCompleted();
+            log.info("Передали {} записей о взаимодействии", interactions.size());
         } catch (Exception e) {
+            log.error("Ошибка при подсчете взаимодействий: {}", e.getMessage(), e);
             responseObserver.onError(
                     new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e))
             );
         }
     }
-
 }

@@ -2,6 +2,7 @@ package ru.practicum.dal;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -18,24 +19,24 @@ import java.time.Instant;
         name = "actions",
         indexes = {@Index(name = "idx_actions_user_id_event_id", columnList = "user_id, event_id")}
 )
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     @Column(name = "id")
-    private Long id;
+    Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    Long userId;
 
     @Column(name = "event_id", nullable = false)
-    private Long eventId;
+    Long eventId;
 
     @Column(name = "weight", nullable = false)
-    private BigDecimal weight;
+    BigDecimal weight;
 
     @Column(name = "timestamp", nullable = false)
-    private Instant timestamp;
-
+    Instant timestamp;
 }

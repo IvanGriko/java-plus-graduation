@@ -15,46 +15,31 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 
-/**
- * Сервис обработки действий пользователей и расчета сходства событий.
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserActionService {
 
-    /**
-     * Шаблон для отправки сообщений в Kafka.
-     */
     KafkaTemplate<Void, SpecificRecordBase> kafkaTemplate;
-
-    /**
-     * Настройки приложения.
-     */
     CustomProperties customProperties;
 
     // Карта весов взаимодействий пользователей с событиями,
     // позволяет быстро получать веса конкретного пользователя по событию.
-    private final Map<Long, Map<Long, BigDecimal>> weightsByUser = new HashMap<>();
+    Map<Long, Map<Long, BigDecimal>> weightsByUser = new HashMap<>();
 
     // Карта весов взаимодействий пользователей с событиями,
     // позволяет быстро получать веса конкретного события по пользователям.
-    private final Map<Long, Map<Long, BigDecimal>> weightsByEvent = new HashMap<>();
+    Map<Long, Map<Long, BigDecimal>> weightsByEvent = new HashMap<>();
 
     // Карта суммируемых весов для каждого события,
     // хранит суммарные значения всех весов, присвоенных данному событию пользователями.
-    private final Map<Long, BigDecimal> eventSums = new HashMap<>();
+    Map<Long, BigDecimal> eventSums = new HashMap<>();
 
     // Карта, содержащая минимальные веса между парами событий,
     // ключом является одно событие, значением — карта второго события и минимальной суммы весов между ними.
-    private final Map<Long, Map<Long, BigDecimal>> minWeightSums = new HashMap<>();
+    Map<Long, Map<Long, BigDecimal>> minWeightSums = new HashMap<>();
 
-    /**
-     * Обрабатывает действие пользователя и рассчитывает сходство событий.
-     *
-     * @param userActionAvro объект действия пользователя
-     */
     public void processUserAction(UserActionAvro userActionAvro) {
         Long userId = userActionAvro.getUserId();
         Long eventId = userActionAvro.getEventId();
@@ -84,12 +69,6 @@ public class UserActionService {
         sendSimilarity(userId, eventId);
     }
 
-    /**
-     * Отправляет сообщение о схожести событий в Kafka.
-     *
-     * @param userId   ID пользователя
-     * @param eventId  ID текущего события
-     */
     private void sendSimilarity(Long userId, Long eventId) {
         for (Long anotherEventId : weightsByUser.get(userId).keySet()) {
             if (!Objects.equals(eventId, anotherEventId)) {
@@ -112,13 +91,6 @@ public class UserActionService {
         }
     }
 
-    /**
-     * Пересчитывает сумму векторов событий.
-     *
-     * @param eventId   ID события
-     * @param oldWeight старый вес
-     * @param newWeight новый вес
-     */
     private void recountEventSum(Long eventId, BigDecimal oldWeight, BigDecimal newWeight) {
         BigDecimal delta = newWeight.subtract(oldWeight);
         BigDecimal prevSum = eventSums.get(eventId);
@@ -126,12 +98,6 @@ public class UserActionService {
         log.info("Сумма весов для события {} пересчитана: {} + {} = {}", eventId, prevSum, delta, eventSums.get(eventId));
     }
 
-    /**
-     * Пересчитывает суммы минимумов весов пар событий (наивный алгоритм).
-     *
-     * @param userId  ID пользователя
-     * @param eventId ID текущего события
-     */
     private void recountEventMinWeightsNaive(Long userId, Long eventId) {
         for (Long secondEventId : weightsByUser.get(userId).keySet()) {
             if (!Objects.equals(secondEventId, eventId)) {
@@ -150,14 +116,6 @@ public class UserActionService {
         }
     }
 
-    /**
-     * Пересчитывает суммы минимумов весов пар событий (оптимизированный алгоритм).
-     *
-     * @param userId    ID пользователя
-     * @param eventId   ID текущего события
-     * @param oldWeight старый вес
-     * @param newWeight новый вес
-     */
     private void recountEventMinWeightsOptimized(Long userId, Long eventId, BigDecimal oldWeight, BigDecimal newWeight) {
         for (Map.Entry<Long, BigDecimal> anotherEventEntry : weightsByUser.get(userId).entrySet()) {
             if (!Objects.equals(eventId, anotherEventEntry.getKey())) {
