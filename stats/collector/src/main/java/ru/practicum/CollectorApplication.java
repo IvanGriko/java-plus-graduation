@@ -11,5 +11,4 @@ public class CollectorApplication {
     public static void main(String[] args) {
         SpringApplication.run(CollectorApplication.class, args);
     }
-
 }

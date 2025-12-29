@@ -18,5 +18,4 @@ service RecommendationsController {
 
   rpc GetInteractionsCount (grpc.message.similarity.reports.InteractionsCountRequestProto)
       returns (stream grpc.message.similarity.reports.RecommendedEventProto);
-
 }

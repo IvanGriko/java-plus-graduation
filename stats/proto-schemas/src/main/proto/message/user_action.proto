@@ -15,7 +15,6 @@ message UserActionProto {
   google.protobuf.Timestamp timestamp = 4;
 }
 
-
 enum ActionTypeProto {
   ACTION_VIEW = 0;
   ACTION_REGISTER = 1;
