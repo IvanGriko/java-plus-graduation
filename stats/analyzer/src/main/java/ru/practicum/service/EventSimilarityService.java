@@ -18,25 +18,23 @@ public class EventSimilarityService {
 
     @Transactional
     public void handleEventSimilarity(EventSimilarityAvro eventSimilarityAvro) {
-        log.debug("IN: {}", eventSimilarityAvro);
-        String logAction;
+        log.info("Начало обработки сходства событий: {}", eventSimilarityAvro);
+        // Определяем минимальное и максимальное ID событий
         Long first = Math.min(eventSimilarityAvro.getEventA(), eventSimilarityAvro.getEventB());
         Long second = Math.max(eventSimilarityAvro.getEventA(), eventSimilarityAvro.getEventB());
-
-        EventSimilarity eventSimilarity = eventSimilarityRepository.findByEventAAndEventB(first, second);
-
-        if (eventSimilarity == null) {
-            eventSimilarity = EventSimilarityMapper.fromAvroToNewEntity(eventSimilarityAvro);
-            logAction = "Created";
+        // Проверяем наличие существующего объекта сходства событий
+        EventSimilarity existingSimilarity = eventSimilarityRepository.findByEventAAndEventB(first, second);
+        if (existingSimilarity == null) {
+            // Если запись отсутствует, создаем новую сущность
+            EventSimilarity newSimilarity = EventSimilarityMapper.fromAvroToNewEntity(eventSimilarityAvro);
+            eventSimilarityRepository.save(newSimilarity);
+            log.info("Создана новая запись сходства событий: {}", newSimilarity);
         } else {
-            eventSimilarity.setScore(eventSimilarityAvro.getScore());
-            eventSimilarity.setTimestamp(eventSimilarityAvro.getTimestamp());
-            logAction = "Updated";
+            // Если запись существует, обновляем её
+            existingSimilarity.setScore(eventSimilarityAvro.getScore());
+            existingSimilarity.setTimestamp(eventSimilarityAvro.getTimestamp());
+            eventSimilarityRepository.save(existingSimilarity);
+            log.info("Обновлена существующая запись сходства событий: {}", existingSimilarity);
         }
-        eventSimilarityRepository.save(eventSimilarity);
-        log.debug("{} similarity for {} and {} : Set score to {}",
-                logAction, eventSimilarity.getEventA(), eventSimilarity.getEventB(), eventSimilarity.getScore());
     }
-
-
 }

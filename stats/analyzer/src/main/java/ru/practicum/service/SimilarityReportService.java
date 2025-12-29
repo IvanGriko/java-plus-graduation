@@ -1,6 +1,8 @@
 package ru.practicum.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.repository.EventSimilarityRepository;
@@ -17,21 +19,20 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SimilarityReportService {
 
-    private final UserActionRepository userActionRepository;
-    private final EventSimilarityRepository eventSimilarityRepository;
+    UserActionRepository userActionRepository;
+    EventSimilarityRepository eventSimilarityRepository;
 
-    // поток рекомендованных мероприятий для указанного пользователя
     public List<RecommendedEventProto> getRecommendationsForUser(UserPredictionsRequestProto request) {
         long userId = request.getUserId();
         int maxResults = request.getMaxResults();
-
-        // Выгрузить мероприятия, с которыми пользователь уже взаимодействовал, от новых к старым, первые N
+        log.info("Генерация рекомендаций для пользователя {}", userId);
+        // Поиск последних просмотренных событий пользователя
         List<Long> recentUserEventIds = userActionRepository.findRecentEventIdListByUserId(userId, maxResults);
-
-        // Найти мероприятия, похожие на те, что отобрали, но при этом пользователь с ними не взаимодействовал
-        // сортировать по коэффициенту подобия от большего к меньшему. Выбрать первые N
+        log.debug("Последние события пользователя {}: {}", userId, recentUserEventIds);
+        // Поиск похожих событий, которые пользователь ещё не видел
         List<Long> similarEventIds = eventSimilarityRepository.findSimilarByEventIdListNotSeenByUser(
                         userId,
                         recentUserEventIds,
@@ -39,9 +40,10 @@ public class SimilarityReportService {
                 ).stream()
                 .map(o -> ((Number) o[0]).longValue())
                 .toList();
-
-        // найдем средневзвешенную оценку для каждого полученного ивента
+        log.debug("Похожие события, не увиденные пользователем {}: {}", userId, similarEventIds);
+        // Расчёт среднего взвешенного рейтинга для найденных событий
         List<Object[]> averageResult = eventSimilarityRepository.findWeightedAverageListByEventIdList(userId, similarEventIds);
+        log.debug("Средневзвешенные оценки найдены: {}", averageResult);
         return averageResult.stream()
                 .map(o -> RecommendedEventProto.newBuilder()
                         .setEventId(((Number) o[0]).longValue())
@@ -50,17 +52,19 @@ public class SimilarityReportService {
                 .toList();
     }
 
-    // поток мероприятий, похожих на заданное, с которыми пользователь не взаимодействовал
     public List<RecommendedEventProto> getSimilarEvents(SimilarEventsRequestProto request) {
         long eventId = request.getEventId();
         long userId = request.getUserId();
         int maxResults = request.getMaxResults();
-
-        return eventSimilarityRepository.findSimilarByEventIdListNotSeenByUser(
-                        userId,
-                        List.of(eventId),
-                        maxResults
-                ).stream()
+        log.info("Поиск похожих событий для события {} и пользователя {}", eventId, userId);
+        // Нахождение похожих событий, не видимых ранее данным пользователем
+        List<Object[]> similarEvents = eventSimilarityRepository.findSimilarByEventIdListNotSeenByUser(
+                userId,
+                List.of(eventId),
+                maxResults
+        );
+        log.debug("Похожие события для события {}: {}", eventId, similarEvents);
+        return similarEvents.stream()
                 .map(o -> RecommendedEventProto.newBuilder()
                         .setEventId(((Number) o[0]).longValue())
                         .setScore(((Number) o[1]).doubleValue())
@@ -68,16 +72,17 @@ public class SimilarityReportService {
                 .toList();
     }
 
-    // поток мероприятий с суммой максимальных весов действий всех пользователей с этими мероприятиями
     public List<RecommendedEventProto> getInteractionsCount(InteractionsCountRequestProto request) {
         List<Long> eventIdList = request.getEventIdList();
+        log.info("Расчет числа взаимодействий для списка событий: {}", eventIdList);
+        // Сбор статистики по количеству взаимодействий
         Map<Long, Double> sumMap = userActionRepository.findWeightSumListByEventIdList(eventIdList)
                 .stream()
                 .collect(Collectors.toMap(
                         o -> ((Number) o[0]).longValue(),
                         o -> ((Number) o[1]).doubleValue()
                 ));
-
+        log.debug("Количество взаимодействий найдено: {}", sumMap);
         return eventIdList.stream()
                 .map(id -> RecommendedEventProto.newBuilder()
                         .setEventId(id)
@@ -85,5 +90,4 @@ public class SimilarityReportService {
                         .build())
                 .toList();
     }
-
 }

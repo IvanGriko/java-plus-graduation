@@ -1,6 +1,8 @@
 package ru.practicum.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,27 +16,26 @@ import java.math.BigDecimal;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserActionService {
 
-    private final CustomProperties customProperties;
-
-    private final UserActionRepository userActionRepository;
+    CustomProperties customProperties;
+    UserActionRepository userActionRepository;
 
     @Transactional
     public void handleUserAction(UserActionAvro userActionAvro) {
-        log.debug("IN: {}", userActionAvro);
-
+        log.info("Получено новое действие пользователя: {}", userActionAvro);
+        // Определение веса действия
         BigDecimal weight = customProperties.getAnalyzer().getWeights().ofUserAction(userActionAvro);
-
+        // Создание сущности действия пользователя
         UserAction userAction = UserAction.builder()
                 .userId(userActionAvro.getUserId())
                 .eventId(userActionAvro.getEventId())
                 .weight(weight)
                 .timestamp(userActionAvro.getTimestamp())
                 .build();
-
+        // Сохранение действия в репозиторий
         userActionRepository.save(userAction);
-        log.debug("Created user action: {}", userAction);
+        log.info("Действие успешно сохранено: {}", userAction);
     }
-
 }
