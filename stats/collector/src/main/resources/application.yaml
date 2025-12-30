@@ -3,8 +3,6 @@ spring:
     name: collector
   config:
     import: "configserver:"
-  #  config:
-  #    import: "configserver:"
   cloud:
     config:
       discovery:
