@@ -32,7 +32,7 @@ public abstract class RequestClientAbstractHelper {
             requestApiClient.checkParticipation(userId, eventId);
             return true;
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) return false;
+            if (isNotFound(e)) return false;
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(),
                     e.getMessage());
@@ -41,9 +41,8 @@ public abstract class RequestClientAbstractHelper {
         }
     }
 
-    private boolean isNotFoundCode(RuntimeException e) {
+    private boolean isNotFound(RuntimeException e) {
         if (e instanceof FeignException.NotFound) return true;
-        if (e.getCause() != null && e.getCause() instanceof FeignException.NotFound) return true;
-        return false;
+        return e.getCause() != null && e.getCause() instanceof FeignException.NotFound;
     }
 }

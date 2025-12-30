@@ -23,7 +23,7 @@ public abstract class UserClientAbstractHelper {
         try {
             return userApiClient.getUserShort(userId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
+            if (isNotFound(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о пользователе с ID " + userId,
@@ -35,7 +35,7 @@ public abstract class UserClientAbstractHelper {
         try {
             return userApiClient.getUserShort(userId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
+            if (isNotFound(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             return UserShortDto.withOnlyId(userId);
@@ -58,7 +58,7 @@ public abstract class UserClientAbstractHelper {
         try {
             return userApiClient.getUser(userId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
+            if (isNotFound(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о пользователе с ID " + userId,
@@ -70,7 +70,7 @@ public abstract class UserClientAbstractHelper {
         try {
             return userApiClient.getUser(userId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
+            if (isNotFound(e)) throw new NotFoundException("Пользователь с ID " + userId + " не найден.");
             log.warn("Ошибка взаимодействия с сервисом: поймано исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             return UserDto.withOnlyId(userId);
@@ -89,9 +89,8 @@ public abstract class UserClientAbstractHelper {
         }
     }
 
-    private boolean isNotFoundCode(RuntimeException e) {
+    private boolean isNotFound(RuntimeException e) {
         if (e instanceof FeignException.NotFound) return true;
-        if (e.getCause() != null && e.getCause() instanceof FeignException.NotFound) return true;
-        return false;
+        return e.getCause() != null && e.getCause() instanceof FeignException.NotFound;
     }
 }

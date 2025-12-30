@@ -23,7 +23,7 @@ public abstract class EventClientAbstractHelper {
         try {
             return eventApiClient.getEventInteractionDto(eventId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
+            if (isNotFound(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о событии с ID " + eventId,
@@ -35,7 +35,7 @@ public abstract class EventClientAbstractHelper {
         try {
             return eventApiClient.getEventInteractionDto(eventId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
+            if (isNotFound(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             return EventInteractionDto.withOnlyId(eventId);
@@ -46,7 +46,7 @@ public abstract class EventClientAbstractHelper {
         try {
             return eventApiClient.getEventCommentDto(eventId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
+            if (isNotFound(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             throw new ServiceInteractionException("Не удалось получить информацию о событии с ID " + eventId,
@@ -58,7 +58,7 @@ public abstract class EventClientAbstractHelper {
         try {
             return eventApiClient.getEventCommentDto(eventId);
         } catch (RuntimeException e) {
-            if (isNotFoundCode(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
+            if (isNotFound(e)) throw new NotFoundException("Мероприятие с ID " + eventId + " не найдено.");
             log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
                     e.getClass().getSimpleName(), e.getMessage());
             return EventCommentDto.withOnlyId(eventId);
@@ -77,9 +77,8 @@ public abstract class EventClientAbstractHelper {
         }
     }
 
-    private boolean isNotFoundCode(RuntimeException e) {
+    private boolean isNotFound(RuntimeException e) {
         if (e instanceof FeignException.NotFound) return true;
-        if (e.getCause() != null && e.getCause() instanceof FeignException.NotFound) return true;
-        return false;
+        return e.getCause() != null && e.getCause() instanceof FeignException.NotFound;
     }
 }
