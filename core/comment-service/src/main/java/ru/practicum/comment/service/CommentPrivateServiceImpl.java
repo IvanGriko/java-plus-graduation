@@ -86,6 +86,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
             return commentRepository.save(commentEntity);
         });
         UserDto userDto = userClientHelper.fetchUserDtoByUserIdOrFail(userId);
+        assert comment != null;
         EventCommentDto eventCommentDto = eventClientHelper.fetchEventCommentByIdOrFail(comment.getEventId());
         log.info("Комментарий с ID {} успешно обновлён", comId);
         return CommentMapper.toCommentDto(comment, userDto, eventCommentDto);
