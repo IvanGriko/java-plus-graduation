@@ -6,6 +6,9 @@ import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
 public class EventSimilarityMapper {
 
     public static EventSimilarity fromAvroToNewEntity(EventSimilarityAvro avro) {
+        if (avro == null || avro.getEventA() == null || avro.getEventB() == null || avro.getScore() == null || avro.getTimestamp() == null) {
+            throw new IllegalArgumentException("Параметры EventSimilarityAvro не могут быть пустыми.");
+        }
         Long first = Math.min(avro.getEventA(), avro.getEventB());
         Long second = Math.max(avro.getEventA(), avro.getEventB());
         return EventSimilarity.builder()
