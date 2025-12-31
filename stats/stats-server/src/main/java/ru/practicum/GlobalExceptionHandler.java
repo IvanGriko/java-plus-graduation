@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
                                                                                HttpServletRequest request) {
-        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
         log.debug("ОШИБКА АРГУМЕНТА: {}", errorMessage);
         return buildErrorResponse(HttpStatus.BAD_REQUEST, errorMessage, request);
     }

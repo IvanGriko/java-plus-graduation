@@ -8,7 +8,7 @@ public class StringToBooleanConverter implements Converter<String, Boolean> {
 
     @Override
     public Boolean convert(String source) {
-        if (source == null || source.trim().isEmpty()) {
+        if (source.trim().isEmpty()) {
             throw new IllegalArgumentException("Источник данных пуст или равен null");
         }
         if ("true".equalsIgnoreCase(source)) return true;
