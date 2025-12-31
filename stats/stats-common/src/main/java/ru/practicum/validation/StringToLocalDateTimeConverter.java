@@ -20,7 +20,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
     @Override
     public LocalDateTime convert(String source) {
-        if (source == null || source.isEmpty()) {
+        if (source.isEmpty()) {
             throw new IllegalArgumentException("Не указан временной диапазон для преобразования");
         }
         try {
