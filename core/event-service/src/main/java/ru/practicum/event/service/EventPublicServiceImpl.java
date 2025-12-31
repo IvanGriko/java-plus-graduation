@@ -8,10 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
-import ru.practicum.dto.EventHitDto;
 import ru.practicum.client.RequestClientHelper;
 import ru.practicum.client.UserClientHelper;
 import ru.practicum.dto.event.*;
@@ -61,7 +59,7 @@ public class EventPublicServiceImpl implements EventPublicService {
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(eventIds);
         Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(eventIds);
-        if (params.getOnlyAvailable() == true && !confirmedRequestsMap.isEmpty()) {
+        if (params.getOnlyAvailable() && !confirmedRequestsMap.isEmpty()) {
             events = events.stream()
                     .filter(e -> {
                         if (Objects.equals(e.getParticipantLimit(), 0L)) return true;
@@ -90,10 +88,9 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     public EventFullDto getEventById(Long userId, Long eventId, HttpServletRequest request) {
         log.info("Получение события с ID {}", eventId);
-        Event event = transactionTemplate.execute(status -> {
-            return eventRepository.findByIdAndState(eventId, State.PUBLISHED)
-                    .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
-        });
+        Event event = transactionTemplate.execute(status -> eventRepository.findByIdAndState(eventId, State.PUBLISHED)
+                .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено")));
+        assert event != null;
         UserShortDto userShortDto = userClientHelper.fetchUserShortDtoByUserId(event.getInitiatorId());
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(List.of(eventId));
         Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(List.of(eventId));

@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException e,
             HttpServletRequest request
     ) {
-        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
         log.warn("Ошибка валидации: {}", errorMessage);
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)

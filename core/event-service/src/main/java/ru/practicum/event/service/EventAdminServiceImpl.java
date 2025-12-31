@@ -70,11 +70,9 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     public EventFullDto updateEventByAdmin(Long eventId, UpdateEventDto updateEventDto) {
         log.info("Начинается обновление события с ID {}", eventId);
-        Long initiatorId = transactionTemplate.execute(status -> {
-            return eventRepository.findById(eventId)
-                    .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"))
-                    .getInitiatorId();
-        });
+        Long initiatorId = transactionTemplate.execute(status -> eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"))
+                .getInitiatorId());
         UserShortDto userShortDto = userClientHelper.fetchUserShortDtoByUserId(initiatorId);
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(List.of(eventId));
         Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(List.of(eventId));

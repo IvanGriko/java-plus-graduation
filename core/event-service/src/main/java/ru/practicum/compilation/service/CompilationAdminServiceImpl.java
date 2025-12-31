@@ -43,9 +43,8 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Map<Long, UserShortDto> userMap = new HashMap<>();
         if (newCompilationDto.getPinned() == null) newCompilationDto.setPinned(false);
         if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
-            events = transactionTemplate.execute(status -> {
-                return new HashSet<>(eventRepository.findAllById(newCompilationDto.getEvents()));
-            });
+            events = transactionTemplate.execute(status -> new HashSet<>(eventRepository.findAllById(newCompilationDto.getEvents())));
+            assert events != null;
             Set<Long> userIds = events.stream().map(Event::getInitiatorId).collect(Collectors.toSet());
             userMap = userClientHelper.fetchUserShortDtoMapByUserIdList(userIds);
         }

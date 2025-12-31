@@ -57,10 +57,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
         log.info("Получение события с ID {} пользователем с ID {}", eventId, userId);
-        Event event = transactionTemplate.execute(status -> {
-            return eventRepository.findById(eventId)
-                    .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
-        });
+        Event event = transactionTemplate.execute(status -> eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено")));
+        assert event != null;
         if (!Objects.equals(userId, event.getInitiatorId()))
             throw new ConflictException("Пользователь с ID " + userId + " не является организатором события с ID " + eventId, "Действие запрещено");
         UserShortDto userShortDto = userClientHelper.fetchUserShortDtoByUserId(userId);
