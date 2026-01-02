@@ -109,6 +109,7 @@ public class CommentAdminServiceImpl implements CommentAdminService {
             return commentRepository.save(commentEntity);
         });
         log.info("Комментарий с ID {} успешно утверждён.", comId);
+        assert comment != null;
         UserDto userDto = userClientHelper.fetchUserDtoByUserId(comment.getAuthorId());
         EventCommentDto eventCommentDto = eventClientHelper.fetchEventCommentById(comment.getEventId());
         return CommentMapper.toCommentDto(comment, userDto, eventCommentDto);
@@ -124,9 +125,9 @@ public class CommentAdminServiceImpl implements CommentAdminService {
             return commentRepository.save(commentEntity);
         });
         log.info("Комментарий с ID {} успешно отклонён.", comId);
+        assert comment != null;
         UserDto userDto = userClientHelper.fetchUserDtoByUserId(comment.getAuthorId());
         EventCommentDto eventCommentDto = eventClientHelper.fetchEventCommentById(comment.getEventId());
         return CommentMapper.toCommentDto(comment, userDto, eventCommentDto);
     }
-
 }

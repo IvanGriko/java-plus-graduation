@@ -19,7 +19,7 @@ import ru.practicum.event.dal.Event;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.mapper.LocationMapper;
 import ru.practicum.event.repository.EventRepository;
-import ru.practicum.event.repository.ViewRepository;
+import ru.practicum.ewm.client.StatClient;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 
@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +37,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     TransactionTemplate transactionTemplate;
     CategoryRepository categoryRepository;
     EventRepository eventRepository;
-    ViewRepository viewRepository;
     UserClientHelper userClientHelper;
     RequestClientHelper requestClientHelper;
+    StatClient statClient;
 
     @Override
     public EventFullDto addEvent(Long userId, NewEventDto newEventDto) {
@@ -51,25 +50,22 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                     .orElseThrow(() -> new NotFoundException("Категория с ID " + newEventDto.getCategory() + " не найдена"));
             Event newEvent = EventMapper.toNewEvent(newEventDto, userId, category);
             eventRepository.save(newEvent);
-            return EventMapper.toEventFullDto(newEvent, userShortDto, 0L, 0L);
+            return EventMapper.toEventFullDto(newEvent, userShortDto, 0L, 0.0);
         });
     }
 
     @Override
     public EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
         log.info("Получение события с ID {} пользователем с ID {}", eventId, userId);
-        Event event = transactionTemplate.execute(status -> {
-            return eventRepository.findById(eventId)
-                    .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
-        });
+        Event event = transactionTemplate.execute(status -> eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено")));
+        assert event != null;
         if (!Objects.equals(userId, event.getInitiatorId()))
             throw new ConflictException("Пользователь с ID " + userId + " не является организатором события с ID " + eventId, "Действие запрещено");
-        Long views = transactionTemplate.execute(status -> {
-            return viewRepository.countByEventId(eventId);
-        });
         UserShortDto userShortDto = userClientHelper.fetchUserShortDtoByUserId(userId);
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(List.of(eventId));
-        return EventMapper.toEventFullDto(event, userShortDto, confirmedRequestsMap.get(eventId), views);
+        Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(List.of(eventId));
+        return EventMapper.toEventFullDto(event, userShortDto, confirmedRequestsMap.get(eventId), ratingMap.get(eventId));
     }
 
     @Override
@@ -83,20 +79,13 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         if (events == null || events.isEmpty()) return List.of();
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(eventIds);
-        Map<Long, Long> viewsMap = transactionTemplate.execute(status -> {
-            return viewRepository.countsByEventIds(eventIds)
-                    .stream()
-                    .collect(Collectors.toMap(
-                            r -> (Long) r[0],
-                            r -> (Long) r[1]
-                    ));
-        });
+        Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(eventIds);
         return events.stream()
                 .map(e -> EventMapper.toEventShortDto(
                         e,
                         userShortDto,
                         confirmedRequestsMap.get(e.getId()),
-                        viewsMap.get(e.getId())
+                        ratingMap.get(e.getId())
                 ))
                 .toList();
     }
@@ -106,6 +95,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         log.info("Обновление события с ID {} пользователем с ID {}", eventId, userId);
         UserShortDto userShortDto = userClientHelper.fetchUserShortDtoByUserId(userId);
         Map<Long, Long> confirmedRequestsMap = requestClientHelper.fetchConfirmedRequestsCountByEventIds(List.of(eventId));
+        Map<Long, Double> ratingMap = statClient.getRatingsByEventIdList(List.of(eventId));
         return transactionTemplate.execute(status -> {
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
@@ -138,9 +128,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 event.setState(State.PENDING);
             }
             eventRepository.save(event);
-            Long views = viewRepository.countByEventId(eventId);
-            return EventMapper.toEventFullDto(event, userShortDto, confirmedRequestsMap.get(eventId), views);
+            return EventMapper.toEventFullDto(event, userShortDto, confirmedRequestsMap.get(eventId), ratingMap.get(eventId));
         });
     }
-
 }

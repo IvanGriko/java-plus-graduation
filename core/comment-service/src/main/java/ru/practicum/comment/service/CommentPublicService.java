@@ -12,5 +12,4 @@ public interface CommentPublicService {
     List<CommentShortDto> getCommentsByEvent(Long eventId, int from, int size);
 
     CommentDto getCommentByEventAndCommentId(Long eventId, Long commentId);
-
 }

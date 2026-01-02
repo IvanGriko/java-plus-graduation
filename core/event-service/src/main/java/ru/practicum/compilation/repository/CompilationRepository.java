@@ -8,5 +8,4 @@ import ru.practicum.compilation.dal.Compilation;
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
 
     Page<Compilation> findAllByPinned(Boolean pinned, Pageable pageable);
-
 }

@@ -41,10 +41,9 @@ public class CommentPublicServiceImpl implements CommentPublicService {
     @Override
     public CommentDto getComment(Long comId) {
         log.info("Начало получения комментария с ID {}", comId);
-        Comment comment = transactionTemplate.execute(status -> {
-            return commentRepository.findById(comId)
-                    .orElseThrow(() -> new NotFoundException("Комментарий с ID " + comId + " не найден"));
-        });
+        Comment comment = transactionTemplate.execute(status -> commentRepository.findById(comId)
+                .orElseThrow(() -> new NotFoundException("Комментарий с ID " + comId + " не найден")));
+        assert comment != null;
         if (!Objects.equals(comment.getApproved(), true)) {
             log.warn("Комментарий с ID {} ожидает одобрения", comId);
             throw new ForbiddenException("Комментарий с ID " + comId + " ожидает одобрения");
@@ -58,7 +57,7 @@ public class CommentPublicServiceImpl implements CommentPublicService {
     @Override
     public List<CommentShortDto> getCommentsByEvent(Long eventId, int from, int size) {
         log.info("Начало получения комментариев для события с ID {}", eventId);
-        EventCommentDto eventCommentDto = eventClientHelper.fetchEventCommentById(eventId);
+//        EventCommentDto eventCommentDto = eventClientHelper.fetchEventCommentById(eventId);
         List<Comment> comments = transactionTemplate.execute(status -> {
             Pageable pageable = PageRequest.of(from / size, size, Sort.by("createTime").ascending());
             return commentRepository.findAllByEventIdAndApproved(eventId, true, pageable).getContent();
@@ -76,10 +75,9 @@ public class CommentPublicServiceImpl implements CommentPublicService {
     @Override
     public CommentDto getCommentByEventAndCommentId(Long eventId, Long comId) {
         log.info("Начало получения комментария с ID {} для события с ID {}", comId, eventId);
-        Comment comment = transactionTemplate.execute(status -> {
-            return commentRepository.findById(comId)
-                    .orElseThrow(() -> new NotFoundException("Комментарий с ID " + comId + " не найден"));
-        });
+        Comment comment = transactionTemplate.execute(status -> commentRepository.findById(comId)
+                .orElseThrow(() -> new NotFoundException("Комментарий с ID " + comId + " не найден")));
+        assert comment != null;
         if (!Objects.equals(comment.getEventId(), eventId)) {
             log.warn("Комментарий с ID {} не относится к событию с ID {}", comId, eventId);
             throw new NotFoundException("Комментарий с ID " + comId + " не относится к событию с ID " + eventId);
@@ -93,5 +91,4 @@ public class CommentPublicServiceImpl implements CommentPublicService {
         log.info("Комментарий с ID {} успешно получен", comId);
         return CommentMapper.toCommentDto(comment, userDto, eventCommentDto);
     }
-
 }

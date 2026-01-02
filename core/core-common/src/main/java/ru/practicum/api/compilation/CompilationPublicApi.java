@@ -28,5 +28,4 @@ public interface CompilationPublicApi {
     CompilationDto getCompilationById(
             @PathVariable Long compId
     );
-
 }

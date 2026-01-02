@@ -1,8 +1,10 @@
 package ru.practicum.client;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.practicum.api.request.RequestApi;
+import ru.practicum.exception.ServiceInteractionException;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,4 +27,22 @@ public abstract class RequestClientAbstractHelper {
         }
     }
 
+    public boolean passedParticipationCheck(Long userId, Long eventId) {
+        try {
+            requestApiClient.checkParticipation(userId, eventId);
+            return true;
+        } catch (RuntimeException e) {
+            if (isNotFound(e)) return false;
+            log.warn("Ошибка взаимодействия с сервисом: получено исключение {}. Причина: {}",
+                    e.getClass().getSimpleName(),
+                    e.getMessage());
+            throw new ServiceInteractionException("Нельзя подтвердить участие пользователя с ID " + userId
+                    + " в событии с ID " + eventId);
+        }
+    }
+
+    private boolean isNotFound(RuntimeException e) {
+        if (e instanceof FeignException.NotFound) return true;
+        return e.getCause() != null && e.getCause() instanceof FeignException.NotFound;
+    }
 }

@@ -1,0 +1,15 @@
+namespace ru.practicum.ewm.stats.avro;
+
+// Optional: main schema (using it creates a .avsc equivalent file)
+schema UserActionAvro;
+
+record UserActionAvro {
+	long userId;
+	long eventId;
+	ActionTypeAvro actionType;
+	timestamp_ms timestamp;
+}
+
+enum ActionTypeAvro {
+	VIEW, REGISTER, LIKE
+}

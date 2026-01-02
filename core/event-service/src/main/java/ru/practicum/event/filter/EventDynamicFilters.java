@@ -56,5 +56,4 @@ public class EventDynamicFilters {
             return criteriaBuilder.and(conditions.toArray(Predicate[]::new));
         };
     }
-
 }

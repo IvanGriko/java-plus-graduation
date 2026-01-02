@@ -63,7 +63,8 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
                 .orElseThrow(() -> new NotFoundException("Комментарий с ID " + comId + " не найден"));
         if (!Objects.equals(comment.getAuthorId(), userId)) {
             log.warn("Пользователь с ID {} пытается удалить чужой комментарий с ID {}", userId, comId);
-            throw new ConflictException("Пользователь с ID " + userId + " не имеет права удалять комментарий с ID " + comId);
+            throw new ConflictException("Пользователь с ID " + userId
+                    + " не имеет права удалять комментарий с ID " + comId);
         }
         commentRepository.deleteById(comId);
         log.info("Комментарий с ID {} успешно удалён", comId);
@@ -77,16 +78,17 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
                     .orElseThrow(() -> new NotFoundException("Комментарий с ID " + comId + " не найден"));
             if (!Objects.equals(commentEntity.getAuthorId(), userId)) {
                 log.warn("Пользователь с ID {} пытается изменить чужой комментарий с ID {}", userId, comId);
-                throw new ConflictException("Пользователь с ID " + userId + " не имеет права редактировать комментарий с ID " + comId);
+                throw new ConflictException("Пользователь с ID " + userId
+                        + " не имеет права редактировать комментарий с ID " + comId);
             }
             commentEntity.setText(commentCreateDto.getText());
             commentEntity.setPatchTime(LocalDateTime.now());
             return commentRepository.save(commentEntity);
         });
         UserDto userDto = userClientHelper.fetchUserDtoByUserIdOrFail(userId);
+        assert comment != null;
         EventCommentDto eventCommentDto = eventClientHelper.fetchEventCommentByIdOrFail(comment.getEventId());
         log.info("Комментарий с ID {} успешно обновлён", comId);
         return CommentMapper.toCommentDto(comment, userDto, eventCommentDto);
     }
-
 }

@@ -14,13 +14,8 @@ import java.time.Instant;
 public class ErrorResponse {
 
     Instant timestamp;
-
     HttpStatus status;
-
     String error;
-
     String message;
-
     String path;
-
 }

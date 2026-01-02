@@ -3,7 +3,6 @@ package ru.practicum.category.dal;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.constraints.UniqueElements;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -29,9 +28,17 @@ public class Category implements Serializable {
     @Column(name = "id")
     Long id;
 
-    @Size(min = 1, max = 50, message = "Название категории должно быть от 1 до 50 символов")
+    @Size(
+            min = 1,
+            max = 50,
+            message = "Название категории должно быть от 1 до 50 символов"
+    )
     @NotEmpty(message = "Название категории обязательно")
-    @Column(name = "cat_name", length = 50, nullable = false, unique = true)
+    @Column(
+            name = "cat_name",
+            length = 50,
+            nullable = false,
+            unique = true
+    )
     String name;
-
 }

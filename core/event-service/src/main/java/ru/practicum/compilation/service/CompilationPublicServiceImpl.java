@@ -37,11 +37,10 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     @Override
     public CompilationDto readCompilationById(Long compId) {
         log.info("Начинается получение компиляции с ID {}", compId);
-        Compilation compilation = transactionTemplate.execute(status -> {
-            return compilationRepository.findById(compId)
-                    .orElseThrow(() -> new NotFoundException("Компиляция с ID " + compId + " не найдена"));
-        });
+        Compilation compilation = transactionTemplate.execute(status -> compilationRepository.findById(compId)
+                .orElseThrow(() -> new NotFoundException("Компиляция с ID " + compId + " не найдена")));
         Map<Long, UserShortDto> userMap = new HashMap<>();
+        assert compilation != null;
         if (compilation.getEvents() != null && !compilation.getEvents().isEmpty()) {
             Set<Long> userIds = compilation.getEvents().stream().map(Event::getInitiatorId).collect(Collectors.toSet());
             userMap = userClientHelper.fetchUserShortDtoMapByUserIdList(userIds);
@@ -72,5 +71,4 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
                 .map(c -> CompilationMapper.toCompilationDto(c, userMap))
                 .toList();
     }
-
 }

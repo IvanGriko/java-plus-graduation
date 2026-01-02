@@ -27,5 +27,4 @@ public class EventHitDto {
     @NotNull(message = "Поле 'timestamp' должно точно указывать время произошедшего события.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime timestamp;
-
 }

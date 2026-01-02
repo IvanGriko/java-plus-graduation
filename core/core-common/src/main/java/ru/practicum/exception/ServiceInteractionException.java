@@ -16,5 +16,4 @@ public class ServiceInteractionException extends RuntimeException {
         super(message);
         this.reason = reason;
     }
-
 }

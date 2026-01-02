@@ -16,5 +16,4 @@ public class ForbiddenException extends RuntimeException {
         super(message);
         this.reason = reason;
     }
-
 }

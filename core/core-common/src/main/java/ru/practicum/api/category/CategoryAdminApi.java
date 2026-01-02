@@ -19,7 +19,9 @@ public interface CategoryAdminApi {
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    String deleteCategories(@PathVariable @Positive Long catId);
+    String deleteCategories(
+            @PathVariable
+            @Positive Long catId);
 
     @PatchMapping("/{catId}")
     @ResponseStatus(HttpStatus.OK)
@@ -28,5 +30,4 @@ public interface CategoryAdminApi {
             @RequestBody
             @Validated(CreateOrUpdateValidator.Update.class) CategoryDto categoryDto
     );
-
 }

@@ -24,7 +24,10 @@ public class UpdateCompilationDto {
     Boolean pinned;
 
     @NotBlankButNullAllowed(message = "Название не может быть пустым, если передано")
-    @Size(min = 1, max = 50, message = "Длина названия должна быть от 1 до 50 символов")
+    @Size(
+            min = 1,
+            max = 50,
+            message = "Длина названия должна быть от 1 до 50 символов"
+    )
     String title;
-
 }

@@ -19,5 +19,4 @@ public class EventRequestStatusUpdateRequestDto {
 
     @NotNull(message = "Статус заявки не должен быть пустым")
     ParticipationRequestStatus status;
-
 }
